@@ -14,11 +14,36 @@ doctrine:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
         auto_mapping: true
         mappings:
-            App:
+            Customer:
                 type: attribute
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
+                dir: '%kernel.project_dir%/src/Customer/Domain'
+                prefix: 'App\Customer\Domain'
+            Catalog:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Catalog/Domain'
+                prefix: 'App\Catalog\Domain'
+            Cart:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Cart/Domain'
+                prefix: 'App\Cart\Domain'
+            Ordering:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Ordering/Domain'
+                prefix: 'App\Ordering\Domain'
+            ContentManagement:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/ContentManagement/Domain'
+                prefix: 'App\ContentManagement\Domain'
+            StoreSettings:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/StoreSettings/Domain'
+                prefix: 'App\StoreSettings\Domain'
 
 when@test:
     doctrine:
