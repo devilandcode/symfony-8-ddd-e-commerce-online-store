@@ -2,7 +2,9 @@
 
 namespace App\Storefront\Infrastructure\Http;
 
-class HomeController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class HomeController extends AbstractController
 {
 
 }

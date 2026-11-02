@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Customer\Domain\Entity;
 
-use App\Repository\UserRepository;
+
+use App\Customer\Infrastructure\Persistence\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -14,7 +15,7 @@ class User
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
