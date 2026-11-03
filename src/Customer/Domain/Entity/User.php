@@ -3,6 +3,8 @@
 namespace App\Customer\Domain\Entity;
 
 
+use App\Customer\Domain\Enum\UserRoleEnum;
+use App\Customer\Domain\Enum\UserStatusEnum;
 use App\Customer\Infrastructure\Persistence\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,11 +32,11 @@ class User
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
-    private ?bool $role = null;
+    #[ORM\Column(type: 'string', enumType: UserRoleEnum::class, length: 255, nullable: false)]
+    private ?UserRoleEnum $role = UserRoleEnum::USER;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(type: 'string', enumType: UserStatusEnum::class, length: 255, nullable: true)]
+    private ?UserStatusEnum $status = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $phone = null;
@@ -119,24 +121,24 @@ class User
         return $this;
     }
 
-    public function isRole(): ?bool
+    public function getRole(): ?UserRoleEnum
     {
         return $this->role;
     }
 
-    public function setRole(bool $role): static
+    public function setRole(UserRoleEnum $role): static
     {
         $this->role = $role;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?UserStatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): static
+    public function setStatus(?UserStatusEnum $status): static
     {
         $this->status = $status;
 

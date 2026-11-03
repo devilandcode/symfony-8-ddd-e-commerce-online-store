@@ -2,7 +2,13 @@
 
 namespace App\Customer\Infrastructure\Http;
 
-class LoginController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class LoginController extends AbstractController
 {
 
+    public function getLoginPage()
+    {
+        return $this->render('customer/login.html.twig');
+    }
 }
