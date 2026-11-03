@@ -10,49 +10,49 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`user`')]
 class User
 {
+    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: false)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $surname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $email_verified_at = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $email_verified_at = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private ?string $password = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private ?bool $role = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $verify_token = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $verify_token_expire = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $verify_token_expire = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $remember_token = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $created_at = null;
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    private ?\DateTime $created_at = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updated_at = null;
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    private ?\DateTime $updated_at = null;
 
     public function getId(): ?int
     {
