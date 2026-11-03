@@ -95,12 +95,12 @@ class User
         return $this;
     }
 
-    public function getEmailVerifiedAt(): ?\DateTimeImmutable
+    public function getEmailVerifiedAt(): ?\DateTime
     {
         return $this->email_verified_at;
     }
 
-    public function setEmailVerifiedAt(?\DateTimeImmutable $email_verified_at): static
+    public function setEmailVerifiedAt(?\DateTime $email_verified_at): static
     {
         $this->email_verified_at = $email_verified_at;
 
@@ -191,24 +191,24 @@ class User
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime 
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $created_at): static
+    public function setCreatedAt(?\DateTime $created_at): static
     {
         $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
+    public function setUpdatedAt(?\DateTime $updated_at): static
     {
         $this->updated_at = $updated_at;
 
