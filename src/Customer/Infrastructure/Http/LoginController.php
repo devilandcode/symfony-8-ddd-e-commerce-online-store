@@ -9,6 +9,6 @@ class LoginController extends AbstractController
 
     public function getLoginPage()
     {
-        return $this->render('customer/login.html.twig');
+        return $this->render('auth/login.html.twig');
     }
 }

@@ -1,0 +1,99 @@
+/**
+ * default development theme for jQRangeSlider
+ * Using fam fam icon set from Mark James, http://www.famfamfam.com/lab/icons/silk/ (Creative Commons Attribution 2.5 License)
+ */
+
+
+.ui-rangeSlider{
+	height:auto;
+	position: relative;
+	height: 48px;
+}
+
+.ui-rangeSlider .ui-rangeSlider-innerBar{
+	height: 5px;
+    margin: 0;
+	background:#DDD;
+}
+
+.ui-rangeSlider .ui-rangeSlider-handle{
+	width:4px;
+	height:15px;
+	border-radius: 0;
+    background: #000;
+	cursor:col-resize;
+	top: -5px !important;
+}
+
+.ui-rangeSlider .ui-rangeSlider-bar{
+	margin: 1px 0;
+    background: #000;
+	height:5px;
+	cursor:move;
+	cursor:pointer;
+	cursor: -moz-grab;
+}
+
+.ui-rangeSlider .ui-rangeSlider-bar.ui-draggable-dragging{
+	cursor:	-moz-grabbing;
+	cursor:grabbing;
+}
+
+.ui-rangeSlider-arrow{
+	height:16px;
+	margin:2px 0;
+	width:16px;
+	background-repeat:no-repeat;
+}
+
+.ui-rangeSlider-arrow.ui-rangeSlider-leftArrow{
+	display: none;
+}
+.ui-rangeSlider-arrow.ui-rangeSlider-rightArrow{
+	display: none;
+}
+
+.ui-rangeSlider-arrow-inner{
+	display: none;
+}
+
+.ui-rangeSlider-container{
+    height: 6px;
+}
+
+.ui-rangeSlider-withArrows .ui-rangeSlider-container{
+    margin: 25px 0 0 0;
+}
+
+.ui-rangeSlider-noArrow .ui-rangeSlider-container{
+	margin:0;
+}
+
+.ui-rangeSlider-label{
+    white-space: nowrap;
+    bottom: 20px;
+    padding: 1px 2px;
+    min-width: 38px;
+    text-align: center;
+    cursor: col-resize;
+    font-size: 11px;
+    line-height: 14px;
+    border-radius: 2px;
+    color: #fff;
+    background-color: #000;
+    margin-bottom: 8px;
+}
+
+.ui-rangeSlider-label-inner{
+	display:none;
+}
+
+/*
+ * Edit slider
+ */
+
+input.ui-editRangeSlider-inputValue{
+	width:3em;
+	vertical-align: middle;
+	text-align:center;
+}
