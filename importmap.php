@@ -30,4 +30,6 @@ return [
     'jquery' => ['version' => '3.7.1'],
     'owl.carousel' => ['version' => '2.3.4'],
     'owl.carousel/dist/assets/owl.carousel.min.css' => ['version' => '2.3.4', 'type' => 'css'],
+    '@popperjs/core' => ['version' => '2.10.2'],
+    'tippy.js' => ['version' => '6.3.7'],
 ];

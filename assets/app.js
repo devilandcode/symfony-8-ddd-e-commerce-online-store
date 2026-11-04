@@ -10,13 +10,21 @@ import './styles/app.css';
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 
-// Импортируем jQuery плагины
+// Import jQuery плагины
+import './js/vendor/jquery-ui-1.8.13.slider.min.js';
 import './js/vendor/detectmobilebrowser.js';
 import './js/vendor/jquery.fancybox.min.js';
+import './js/vendor/jQRangeSlider-min.js';
+
+import * as Popper from '@popperjs/core';
+window.Popper = Popper;
+
+import tippy from 'tippy.js';
+window.tippy = tippy;
 
 import 'owl.carousel';
 
-// Импортируем кастомные JS файлы
+// Import main scripts
 import './js/main.js';
 // import './js/map-dealers.js';
 
