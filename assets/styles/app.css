@@ -1,3 +1,2 @@
-body {
-    background-color: skyblue;
-}
+@import url('./common.css');
+@import url('./add.css');

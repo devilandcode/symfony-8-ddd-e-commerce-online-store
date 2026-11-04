@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|replace({'_': '-'}) }}">
+    {% include 'general/head.html.twig' %}
+<body>
+    {% if metrics is defined and metrics.body_start is not empty %}
+        {{ metrics.body_start|raw }}
+    {% endif %}
+<div class="b-wrapper">
+    {% if metrics is defined and metrics.body_start is not empty %}
+        {{ metrics.body_start|raw }}
+    {% endif %}
+
+    {% include 'general/header.html.twig' %}
+
+    {% block content %}{% endblock %}
+</div>
+    {% include 'general/footer.html.twig' %}
+    {% include 'general/fixed.html.twig' %}
+
+    {% block scripts %}{% endblock %}
+
+    {% if metrics is defined and metrics.body_end is not empty %}
+        {{ metrics.body_end|raw }}
+    {% endif %}
+
+    {% block schema_org %}{% endblock %}
+</body>
+</html>
