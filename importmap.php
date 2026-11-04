@@ -27,4 +27,7 @@ return [
     '@hotwired/stimulus' => ['version' => '3.2.2'],
     '@symfony/stimulus-bundle' => ['path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js'],
     '@hotwired/turbo' => ['version' => '8.0.23'],
+    'jquery' => ['version' => '3.7.1'],
+    'owl.carousel' => ['version' => '2.3.4'],
+    'owl.carousel/dist/assets/owl.carousel.min.css' => ['version' => '2.3.4', 'type' => 'css'],
 ];
