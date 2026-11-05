@@ -7,11 +7,15 @@ use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
 use App\Customer\Infrastructure\Persistence\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    private string $plainPassword = '';
+
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -112,6 +116,33 @@ class User
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return [$this->role === UserRoleEnum::ADMIN ? 'ROLE_ADMIN' : 'ROLE_USER'];
+    }
+
+    public function eraseCredentials(): void
+    {
+        $this->plainPassword = null;
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword ?? '';
+
+        return $this;
     }
 
     public function setPassword(string $password): static

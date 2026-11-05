@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign in{% endblock %}
+{% block body_class %}admin-login-page{% endblock %}
+
+{% block javascripts %}{% endblock %}
+
+{% block body %}
+    <main class="admin-login">
+        <section class="admin-login__card" aria-labelledby="admin-login-title">
+            <div class="admin-login__brand">HV-store</div>
+            <h1 class="admin-login__title" id="admin-login-title">Admin sign in</h1>
+            <p class="admin-login__intro">Sign in to manage your store.</p>
+
+            {% if error %}
+                <p class="admin-login__error" role="alert">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </p>
+            {% endif %}
+
+            <form class="admin-login__form" method="post" action="{{ path(login_route) }}">
+                <div class="admin-login__field">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" name="email" value="{{ last_username }}" autocomplete="username" required autofocus>
+                </div>
+
+                <div class="admin-login__field">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" name="password" autocomplete="current-password" required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <button class="admin-login__submit" type="submit">Sign in</button>
+            </form>
+        </section>
+    </main>
+{% endblock %}

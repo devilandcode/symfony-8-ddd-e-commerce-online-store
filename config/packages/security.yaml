@@ -10,18 +10,37 @@ security:
                 class: App\Customer\Domain\Entity\User
                 property: email
 
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler(/|$)|(_wdt|assets|build)/)
             security: false
+        admin:
+            pattern: ^/admin
+            lazy: true
+            provider: app_user_provider
+            user_checker: App\Backoffice\Infrastructure\Security\AdminStatusUserChecker
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                default_target_path: admin
+                username_parameter: email
+                password_parameter: password
+                enable_csrf: true
+            logout:
+                path: admin_logout
+                target: admin_login
         main:
             lazy: true
             provider: app_user_provider
+            user_checker: App\Customer\Infrastructure\Security\AccountStatusUserChecker
             form_login:
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_index
+                default_target_path: index
                 username_parameter: email
                 password_parameter: password
                 enable_csrf: true
@@ -37,9 +56,9 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/account, roles: ROLE_USER }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
