@@ -57,7 +57,7 @@ class UserCrudController extends AbstractCrudController
             return;
         }
 
-        if ('' === $entityInstance->getPlainPassword()) {
+        if (empty($entityInstance->getPlainPassword())) {
             throw new \LogicException('A password is required when creating a user.');
         }
 
