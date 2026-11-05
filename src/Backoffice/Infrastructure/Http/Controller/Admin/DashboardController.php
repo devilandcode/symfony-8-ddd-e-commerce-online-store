@@ -2,6 +2,7 @@
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
+use App\Customer\Domain\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -34,12 +35,15 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Hv Symfony');
+            ->setTitle('HV-store')
+            ->setFaviconPath('/assets/i/favicon.ico')
+            ->renderContentMaximized();
     }
 
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        // yield MenuItem::linkTo(SomeCrudController::class, 'The Label', 'fas fa-list');
+        yield MenuItem::linkTo(UserCrudController::class, User::class ,'fa fa-users');
+        
     }
 }
