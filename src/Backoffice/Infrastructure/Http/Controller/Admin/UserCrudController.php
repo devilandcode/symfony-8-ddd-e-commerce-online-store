@@ -5,6 +5,7 @@ namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
+use App\Customer\Domain\Repository\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -17,8 +18,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
-    {
+    public function __construct(
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+    ){
     }
 
     public static function getEntityFqcn(): string
@@ -66,7 +69,7 @@ class UserCrudController extends AbstractCrudController
         $entityInstance->setCreatedAt($now);
         $entityInstance->setUpdatedAt($now);
 
-        parent::persistEntity($entityManager, $entityInstance);
+        $this->userRepository->save($entityInstance);
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, object $entityInstance): void
@@ -82,7 +85,6 @@ class UserCrudController extends AbstractCrudController
         }
 
         $entityInstance->setUpdatedAt(new \DateTime());
-
-        parent::updateEntity($entityManager, $entityInstance);
+        $this->userRepository->save($entityInstance);
     }
 }

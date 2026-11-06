@@ -3,39 +3,35 @@
 namespace App\Customer\Infrastructure\Persistence;
 
 use App\Customer\Domain\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Customer\Domain\Repository\UserRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-
-class UserRepository extends ServiceEntityRepository
+class UserRepository implements UserRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, User::class);
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+    ) {
     }
 
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findByEmail(string $email): ?User
+    {
+        return $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+    }
 
-//    public function findOneBySomeField($value): ?User
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findById(int $id): ?User
+    {
+        return $this->entityManager->getRepository(User::class)->find($id);
+    }
+
+    public function save(User $user): void
+    {
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+    public function delete(User $user): void
+    {
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+    }
 }
