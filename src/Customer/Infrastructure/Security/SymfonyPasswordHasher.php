@@ -4,15 +4,16 @@ namespace App\Customer\Infrastructure\Security;
 
 use App\Customer\Application\PasswordHasherInterface;
 use App\Customer\Domain\Entity\User;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 final readonly class SymfonyPasswordHasher implements PasswordHasherInterface
 {
-    public function __construct(private UserPasswordHasherInterface $hasher) 
-    {}
-
-    public function hash(string $plainPassword, User $user): string
+    public function __construct(private PasswordHasherFactoryInterface $hasherFactory)
     {
-        return $this->hasher->hashPassword($user, $plainPassword);
+    }
+
+    public function hash(string $plainPassword): string
+    {
+        return $this->hasherFactory->getPasswordHasher(User::class)->hash($plainPassword);
     }
 }

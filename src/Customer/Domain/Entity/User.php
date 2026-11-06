@@ -62,6 +62,76 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    public static function register(
+        string $name,
+        ?string $surname,
+        string $email,
+        string $passwordHash,
+        UserRoleEnum $role,
+        ?UserStatusEnum $status,
+        \DateTime $now,
+    ): self {
+        self::assertProfileIsValid($name, $email);
+
+        $user = new self();
+        $user->name = trim($name);
+        $user->surname = self::normalizeOptionalText($surname);
+        $user->email = mb_strtolower(trim($email));
+        $user->password = $passwordHash;
+        $user->role = $role;
+        $user->status = $status;
+        $user->created_at = $now;
+        $user->updated_at = $now;
+
+        return $user;
+    }
+
+    public function updateProfile(
+        string $name,
+        ?string $surname,
+        string $email,
+        UserRoleEnum $role,
+        ?UserStatusEnum $status,
+        \DateTime $updatedAt,
+    ): void {
+        self::assertProfileIsValid($name, $email);
+
+        $this->name = trim($name);
+        $this->surname = self::normalizeOptionalText($surname);
+        $this->email = mb_strtolower(trim($email));
+        $this->role = $role;
+        $this->status = $status;
+        $this->updated_at = $updatedAt;
+    }
+
+    public function changePassword(string $passwordHash, \DateTime $updatedAt): void
+    {
+        if ('' === $passwordHash) {
+            throw new \InvalidArgumentException('A password hash cannot be empty.');
+        }
+
+        $this->password = $passwordHash;
+        $this->updated_at = $updatedAt;
+    }
+
+    private static function assertProfileIsValid(string $name, string $email): void
+    {
+        if ('' === trim($name)) {
+            throw new \InvalidArgumentException('A user name cannot be empty.');
+        }
+
+        if (false === filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException('A valid email address is required.');
+        }
+    }
+
+    private static function normalizeOptionalText(?string $value): ?string
+    {
+        $value = null === $value ? null : trim($value);
+
+        return '' === $value ? null : $value;
+    }
+
     public function getName(): ?string
     {
         return $this->name;

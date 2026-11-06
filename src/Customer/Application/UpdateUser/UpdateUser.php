@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Customer\Application\UpdateUser;
 
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
-
-<?php
 
 final readonly class UpdateUser
 {
@@ -17,5 +17,6 @@ final readonly class UpdateUser
         public ?string $plainPassword,
         public UserRoleEnum $role,
         public ?UserStatusEnum $status,
-    ) {}
+    ) {
+    }
 }
