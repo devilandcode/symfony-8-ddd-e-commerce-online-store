@@ -14,6 +14,7 @@ final class ContentSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('copyright', TextType::class, ['label' => 'Copyright', 'required' => false])
             ->add('privacy', TextType::class, ['label' => 'Personal data policy URL', 'required' => false])
             ->add('products_count', TextType::class, ['label' => 'Products per page', 'required' => false])
             ->add('brands_count', TextType::class, ['label' => 'Brands per page', 'required' => false])

@@ -9,8 +9,9 @@ use App\StoreSettings\Domain\Enum\SettingSectionKey;
 final readonly class ContactsSettings implements SettingsData
 {
     public function __construct(
-        public string $copyright = '',
+
         public string $email = '',
+        public string $email_callback = '',
         public string $companyInfo = '',
         public string $footerShop1 = '',
         public string $footerShop2 = '',
@@ -22,8 +23,9 @@ final readonly class ContactsSettings implements SettingsData
     public static function fromArray(array $data): self
     {
         return new self(
-            self::stringValue($data, 'copyright'),
+          
             self::stringValue($data, 'email'),
+            self::stringValue($data, 'email_callback'),
             self::stringValue($data, 'company_info'),
             self::stringValue($data, 'footer_shop_1'),
             self::stringValue($data, 'footer_shop_2'),
@@ -40,8 +42,9 @@ final readonly class ContactsSettings implements SettingsData
     public function toArray(): array
     {
         return [
-            'copyright' => $this->copyright,
+
             'email' => $this->email,
+            'email_callback' => $this->email_callback,
             'company_info' => $this->companyInfo,
             'footer_shop_1' => $this->footerShop1,
             'footer_shop_2' => $this->footerShop2,

@@ -15,8 +15,8 @@ final class ContactsSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('copyright', TextType::class, ['label' => 'Copyright', 'required' => false])
-            ->add('email', TextType::class, ['label' => 'Order email addresses', 'required' => false])
+            ->add('email', TextType::class, ['label' => 'Order email addresses via comma', 'required' => false])
+            ->add('email_callback', TextType::class, ['label' => 'Callback email addresses via comma', 'required' => false])
             ->add('company_info', TextareaType::class, ['label' => 'Company information (site footer)', 'required' => false])
             ->add('footer_shop_1', TextareaType::class, ['label' => 'Footer location 1', 'required' => false])
             ->add('footer_shop_2', TextareaType::class, ['label' => 'Footer location 2', 'required' => false])

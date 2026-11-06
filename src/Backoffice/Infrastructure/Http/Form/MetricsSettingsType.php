@@ -17,8 +17,7 @@ final class MetricsSettingsType extends AbstractType
         $builder
             ->add('head', TextareaType::class, ['label' => 'Insert into the head section', 'required' => false])
             ->add('body_start', TextareaType::class, ['label' => 'Insert at the start of the body', 'required' => false])
-            ->add('body_end', TextareaType::class, ['label' => 'Insert at the end of the body', 'required' => false])
-            ->add('yandex_api', TextType::class, ['label' => 'Yandex API key', 'required' => false]);
+            ->add('body_end', TextareaType::class, ['label' => 'Insert at the end of the body', 'required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

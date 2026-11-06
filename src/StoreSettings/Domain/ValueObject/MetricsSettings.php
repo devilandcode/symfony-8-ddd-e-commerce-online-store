@@ -12,7 +12,6 @@ final readonly class MetricsSettings implements SettingsData
         public string $head = '',
         public string $bodyStart = '',
         public string $bodyEnd = '',
-        public string $yandexApi = '',
     ) {
     }
 
@@ -22,7 +21,6 @@ final readonly class MetricsSettings implements SettingsData
             self::stringValue($data, 'head'),
             self::stringValue($data, 'body_start'),
             self::stringValue($data, 'body_end'),
-            self::stringValue($data, 'yandex_api'),
         );
     }
 
@@ -37,7 +35,6 @@ final readonly class MetricsSettings implements SettingsData
             'head' => $this->head,
             'body_start' => $this->bodyStart,
             'body_end' => $this->bodyEnd,
-            'yandex_api' => $this->yandexApi,
         ];
     }
 

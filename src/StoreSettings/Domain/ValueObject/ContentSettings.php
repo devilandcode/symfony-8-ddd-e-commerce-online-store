@@ -9,6 +9,7 @@ use App\StoreSettings\Domain\Enum\SettingSectionKey;
 final readonly class ContentSettings implements SettingsData
 {
     public function __construct(
+        public string $copyright = '',
         public string $privacy = '',
         public string $productsCount = '',
         public string $brandsCount = '',
@@ -19,6 +20,7 @@ final readonly class ContentSettings implements SettingsData
     public static function fromArray(array $data): self
     {
         return new self(
+            self::stringValue($data, 'copyright'),
             self::stringValue($data, 'privacy'),
             self::stringValue($data, 'products_count'),
             self::stringValue($data, 'brands_count'),
@@ -34,6 +36,7 @@ final readonly class ContentSettings implements SettingsData
     public function toArray(): array
     {
         return [
+            'copyright' => $this->copyright,
             'privacy' => $this->privacy,
             'products_count' => $this->productsCount,
             'brands_count' => $this->brandsCount,
