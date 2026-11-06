@@ -1,0 +1,46 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% form_theme contactsForm with ['@EasyAdmin/crud/form_theme.html.twig'] only %}
+{% form_theme contentForm with ['@EasyAdmin/crud/form_theme.html.twig'] only %}
+{% form_theme metricsForm with ['@EasyAdmin/crud/form_theme.html.twig'] only %}
+
+{% block content_title %}Settings{% endblock %}
+
+{% block main %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+    {% endfor %}
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ activeTab == 'contacts' ? ' active' : '' }}" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-panel" type="button" role="tab" aria-controls="contacts-panel" aria-selected="{{ activeTab == 'contacts' ? 'true' : 'false' }}">Contacts</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ activeTab == 'content' ? ' active' : '' }}" id="content-tab" data-bs-toggle="tab" data-bs-target="#content-panel" type="button" role="tab" aria-controls="content-panel" aria-selected="{{ activeTab == 'content' ? 'true' : 'false' }}">Content</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ activeTab == 'metrics' ? ' active' : '' }}" id="metrics-tab" data-bs-toggle="tab" data-bs-target="#metrics-panel" type="button" role="tab" aria-controls="metrics-panel" aria-selected="{{ activeTab == 'metrics' ? 'true' : 'false' }}">Metrics/scripts</button>
+        </li>
+    </ul>
+
+    <div class="tab-content p-3 border border-top-0">
+        <div class="tab-pane fade{{ activeTab == 'contacts' ? ' show active' : '' }}" id="contacts-panel" role="tabpanel" aria-labelledby="contacts-tab" tabindex="0">
+            {{ form_start(contactsForm) }}
+            {{ form_widget(contactsForm) }}
+            <button class="btn btn-primary" type="submit">Save contacts</button>
+            {{ form_end(contactsForm) }}
+        </div>
+        <div class="tab-pane fade{{ activeTab == 'content' ? ' show active' : '' }}" id="content-panel" role="tabpanel" aria-labelledby="content-tab" tabindex="0">
+            {{ form_start(contentForm) }}
+            {{ form_widget(contentForm) }}
+            <button class="btn btn-primary" type="submit">Save content</button>
+            {{ form_end(contentForm) }}
+        </div>
+        <div class="tab-pane fade{{ activeTab == 'metrics' ? ' show active' : '' }}" id="metrics-panel" role="tabpanel" aria-labelledby="metrics-tab" tabindex="0">
+            {{ form_start(metricsForm) }}
+            {{ form_widget(metricsForm) }}
+            <button class="btn btn-primary" type="submit">Save metrics</button>
+            {{ form_end(metricsForm) }}
+        </div>
+    </div>
+{% endblock %}
