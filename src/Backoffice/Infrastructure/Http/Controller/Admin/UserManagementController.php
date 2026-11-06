@@ -6,14 +6,14 @@ namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
 use App\Backoffice\Infrastructure\Http\Form\UserFormData;
 use App\Backoffice\Infrastructure\Http\Form\UserType;
-use App\Customer\Application\CreateUser\CreateUser;
+use App\Customer\Application\CreateUser\CreateUserDTO;
 use App\Customer\Application\CreateUser\CreateUserHandler;
 use App\Customer\Application\DeleteUser\DeleteUserHandler;
 use App\Customer\Application\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\Exception\UserNotFound;
 use App\Customer\Application\FindUser\FindUserHandler;
 use App\Customer\Application\ListUsers\ListUsersHandler;
-use App\Customer\Application\UpdateUser\UpdateUser;
+use App\Customer\Application\UpdateUser\UpdateUserDTO;
 use App\Customer\Application\UpdateUser\UpdateUserHandler;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Enum\UserRoleEnum;
@@ -45,7 +45,7 @@ final class UserManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $createUser(new CreateUser(
+                $createUser(new CreateUserDTO(
                     $data->name,
                     $data->surname,
                     $data->email,
@@ -86,7 +86,7 @@ final class UserManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $updateUser(new UpdateUser(
+                $updateUser(new UpdateUserDTO(
                     $id,
                     $data->name,
                     $data->surname,
