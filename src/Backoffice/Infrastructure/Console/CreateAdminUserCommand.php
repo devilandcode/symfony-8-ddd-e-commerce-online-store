@@ -2,18 +2,17 @@
 
 namespace App\Backoffice\Infrastructure\Console;
 
-use App\Customer\Domain\Entity\User;
+use App\Customer\Application\CreateUser\CreateUser;
+use App\Customer\Application\CreateUser\CreateUserHandler;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
-use App\Customer\Infrastructure\Persistence\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Customer\Application\Exception\UserEmailAlreadyInUse;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
     name: 'app:create-admin-user',
@@ -22,9 +21,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class CreateAdminUserCommand extends Command
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $userRepository,
-        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly CreateUserHandler $createUser,
     ) {
         parent::__construct();
     }
@@ -40,12 +37,6 @@ class CreateAdminUserCommand extends Command
             return Command::FAILURE;
         }
 
-        if (null !== $this->userRepository->findOneBy(['email' => $email])) {
-            $io->error('A user with that email already exists.');
-
-            return Command::FAILURE;
-        }
-
         $name = trim((string) $io->ask('Admin name'));
         if ('' === $name) {
             $io->error('The name cannot be empty.');
@@ -56,23 +47,26 @@ class CreateAdminUserCommand extends Command
         $passwordQuestion = new Question('Admin password (input hidden):');
         $passwordQuestion->setHidden(true);
         $password = $io->askQuestion($passwordQuestion);
-        if (!is_string($password) || '' === $password) {
-            $io->error('The password cannot be empty.');
+        if (!is_string($password) || mb_strlen($password) < 8) {
+            $io->error('The password must contain at least 8 characters.');
 
             return Command::FAILURE;
         }
 
-        $admin = (new User())
-            ->setName($name)
-            ->setEmail($email)
-            ->setPassword($this->passwordHasher->hashPassword($admin, $password))
-            ->setRole(UserRoleEnum::ADMIN)
-            ->setStatus(UserStatusEnum::ACTIVE)
-            ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime());
+        try {
+            ($this->createUser)(new CreateUser(
+                $name,
+                null,
+                $email,
+                $password,
+                UserRoleEnum::ADMIN,
+                UserStatusEnum::ACTIVE,
+            ));
+        } catch (UserEmailAlreadyInUse $exception) {
+            $io->error($exception->getMessage());
 
-        $this->entityManager->persist($admin);
-        $this->entityManager->flush();
+            return Command::FAILURE;
+        }
 
         $io->success(sprintf('Administrator account created for %s.', $email));
 

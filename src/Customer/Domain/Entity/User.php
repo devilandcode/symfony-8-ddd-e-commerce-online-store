@@ -116,11 +116,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private static function assertProfileIsValid(string $name, string $email): void
     {
-        if ('' === trim($name)) {
+        $name = trim($name);
+        $email = trim($email);
+
+        if ('' === $name) {
             throw new \InvalidArgumentException('A user name cannot be empty.');
         }
 
-        if (false === filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
+        if (mb_strlen($name) > 255) {
+            throw new \InvalidArgumentException('A user name cannot exceed 255 characters.');
+        }
+
+        if (mb_strlen($email) > 255 || false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException('A valid email address is required.');
         }
     }
@@ -128,6 +135,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private static function normalizeOptionalText(?string $value): ?string
     {
         $value = null === $value ? null : trim($value);
+
+        if (null !== $value && mb_strlen($value) > 255) {
+            throw new \InvalidArgumentException('A surname cannot exceed 255 characters.');
+        }
 
         return '' === $value ? null : $value;
     }
@@ -137,35 +148,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->name;
     }
 
-    public function setName(?string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getSurname(): ?string
     {
         return $this->surname;
     }
 
-    public function setSurname(?string $surname): static
-    {
-        $this->surname = $surname;
-
-        return $this;
-    }
-
     public function getEmail(): ?string
     {
         return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     public function getEmailVerifiedAt(): ?\DateTime
@@ -195,35 +185,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return [$this->role === UserRoleEnum::ADMIN ? 'ROLE_ADMIN' : 'ROLE_USER'];
     }
 
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
     public function getRole(): ?UserRoleEnum
     {
         return $this->role;
     }
 
-    public function setRole(UserRoleEnum $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     public function getStatus(): ?UserStatusEnum
     {
         return $this->status;
-    }
-
-    public function setStatus(?UserStatusEnum $status): static
-    {
-        $this->status = $status;
-
-        return $this;
     }
 
     public function getPhone(): ?string
@@ -279,22 +248,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->created_at;
     }
 
-    public function setCreatedAt(?\DateTime $created_at): static
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTime
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(?\DateTime $updated_at): static
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
 }
