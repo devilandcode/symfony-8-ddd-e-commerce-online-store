@@ -10,10 +10,9 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Table(name: '`user`')]
+#[ORM\Entity]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    private string $plainPassword = '';
-
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -124,23 +123,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         return [$this->role === UserRoleEnum::ADMIN ? 'ROLE_ADMIN' : 'ROLE_USER'];
-    }
-
-    public function eraseCredentials(): void
-    {
-        $this->plainPassword = null;
-    }
-
-    public function getPlainPassword(): string
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword(?string $plainPassword): static
-    {
-        $this->plainPassword = $plainPassword ?? '';
-
-        return $this;
     }
 
     public function setPassword(string $password): static

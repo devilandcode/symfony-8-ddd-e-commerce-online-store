@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 
 #[ORM\Table(name: 'page')]
+#[ORM\Entity]
 class Page
 {
 
