@@ -12,33 +12,33 @@ use App\Customer\Domain\Repository\UserRepositoryInterface;
 final readonly class CreateUserHandler
 {
     public function __construct(
-        private UserRepositoryInterface $users,
+        private UserRepositoryInterface $userRepository,
         private PasswordHasherInterface $passwordHasher,
     ) {
     }
 
-    public function __invoke(CreateUser $command): void
+    public function __invoke(CreateUserDTO $userDTO): void
     {
-        $email = mb_strtolower(trim($command->email));
+        $email = mb_strtolower(trim($userDTO->email));
 
-        if (null !== $this->users->findByEmail($email)) {
+        if (null !== $this->userRepository->findByEmail($email)) {
             throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
         }
 
-        if (mb_strlen($command->plainPassword) < 8) {
+        if (mb_strlen($userDTO->plainPassword) < 8) {
             throw new \InvalidArgumentException('A password must contain at least 8 characters.');
         }
 
         $user = User::register(
-            $command->name,
-            $command->surname,
+            $userDTO->name,
+            $userDTO->surname,
             $email,
-            $this->passwordHasher->hash($command->plainPassword),
-            $command->role,
-            $command->status,
+            $this->passwordHasher->hash($userDTO->plainPassword),
+            $userDTO->role,
+            $userDTO->status,
             new \DateTime(),
         );
 
-        $this->users->save($user);
+        $this->userRepository->save($user);
     }
 }

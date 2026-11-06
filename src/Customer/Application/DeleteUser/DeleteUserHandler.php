@@ -9,15 +9,15 @@ use App\Customer\Domain\Repository\UserRepositoryInterface;
 
 final readonly class DeleteUserHandler
 {
-    public function __construct(private UserRepositoryInterface $users)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 
     public function __invoke(int $id): void
     {
-        $user = $this->users->findById($id)
+        $user = $this->userRepository->findById($id)
             ?? throw UserNotFound::withId($id);
 
-        $this->users->delete($user);
+        $this->userRepository->delete($user);
     }
 }

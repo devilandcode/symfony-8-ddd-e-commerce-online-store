@@ -1,22 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Customer\Application\UpdateUser;
+namespace App\Customer\Application\CreateUser;
 
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
 
-final readonly class UpdateUser
+final readonly class CreateUserDTO
 {
     public function __construct(
-        public int $id,
         public string $name,
         public ?string $surname,
         public string $email,
-        public ?string $plainPassword,
+        public string $plainPassword,
         public UserRoleEnum $role,
         public ?UserStatusEnum $status,
-    ) {
-    }
+    ) {}
 }

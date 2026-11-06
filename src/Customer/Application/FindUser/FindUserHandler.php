@@ -10,13 +10,13 @@ use App\Customer\Domain\Repository\UserRepositoryInterface;
 
 final readonly class FindUserHandler
 {
-    public function __construct(private UserRepositoryInterface $users)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 
     public function __invoke(int $id): User
     {
-        return $this->users->findById($id)
+        return $this->userRepository->findById($id)
             ?? throw UserNotFound::withId($id);
     }
 }

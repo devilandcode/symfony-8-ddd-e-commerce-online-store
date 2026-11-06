@@ -9,7 +9,7 @@ use App\Customer\Domain\Repository\UserRepositoryInterface;
 
 final readonly class ListUsersHandler
 {
-    public function __construct(private UserRepositoryInterface $users)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 
@@ -18,6 +18,6 @@ final readonly class ListUsersHandler
      */
     public function __invoke(): array
     {
-        return $this->users->findAll();
+        return $this->userRepository->findAll();
     }
 }

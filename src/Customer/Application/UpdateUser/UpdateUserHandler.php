@@ -12,38 +12,38 @@ use App\Customer\Domain\Repository\UserRepositoryInterface;
 final readonly class UpdateUserHandler
 {
     public function __construct(
-        private UserRepositoryInterface $users,
+        private UserRepositoryInterface $userRepository,
         private PasswordHasherInterface $passwordHasher,
     ) {
     }
 
-    public function __invoke(UpdateUser $command): void
+    public function __invoke(UpdateUserDTO $userDTO): void
     {
-        $user = $this->users->findById($command->id)
-            ?? throw UserNotFound::withId($command->id);
-        $email = mb_strtolower(trim($command->email));
-        $existingUser = $this->users->findByEmail($email);
+        $user = $this->userRepository->findById($userDTO->id)
+            ?? throw UserNotFound::withId($userDTO->id);
+        $email = mb_strtolower(trim($userDTO->email));
+        $existingUser = $this->userRepository->findByEmail($email);
 
         if (null !== $existingUser && $existingUser->getId() !== $user->getId()) {
             throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
         }
 
         $passwordHash = null;
-        if (null !== $command->plainPassword && '' !== $command->plainPassword) {
-            if (mb_strlen($command->plainPassword) < 8) {
+        if (null !== $userDTO->plainPassword && '' !== $userDTO->plainPassword) {
+            if (mb_strlen($userDTO->plainPassword) < 8) {
                 throw new \InvalidArgumentException('A password must contain at least 8 characters.');
             }
 
-            $passwordHash = $this->passwordHasher->hash($command->plainPassword);
+            $passwordHash = $this->passwordHasher->hash($userDTO->plainPassword);
         }
 
         $now = new \DateTime();
         $user->updateProfile(
-            $command->name,
-            $command->surname,
+            $userDTO->name,
+            $userDTO->surname,
             $email,
-            $command->role,
-            $command->status,
+            $userDTO->role,
+            $userDTO->status,
             $now,
         );
 
@@ -51,6 +51,6 @@ final readonly class UpdateUserHandler
             $user->changePassword($passwordHash, $now);
         }
 
-        $this->users->save($user);
+        $this->userRepository->save($user);
     }
 }
