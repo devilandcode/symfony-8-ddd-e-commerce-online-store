@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Tests\Customer\Application;
 
-use App\Customer\Application\CreateUser\CreateUser;
+use App\Customer\Application\CreateUser\CreateUserDTO;
 use App\Customer\Application\CreateUser\CreateUserHandler;
 use App\Customer\Application\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\PasswordHasherInterface;
-use App\Customer\Application\UpdateUser\UpdateUser;
+use App\Customer\Application\UpdateUser\UpdateUserDTO;
 use App\Customer\Application\UpdateUser\UpdateUserHandler;
+use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
+use App\Customer\Domain\ValueObject\Email;
+use App\Customer\Domain\ValueObject\HashedPassword;
+use App\Customer\Domain\ValueObject\Name;
+use App\Customer\Domain\ValueObject\Surname;
 use App\Customer\Infrastructure\Security\SymfonyPasswordHasher;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
@@ -27,11 +32,11 @@ final class UserHandlersTest extends TestCase
         $hasher = new RecordingPasswordHasher();
         $handler = new CreateUserHandler($users, $hasher);
 
-        $handler(new CreateUser(
-            '  Alice  ',
-            ' Smith ',
-            'ALICE@example.com',
-            'password123',
+        $handler(new CreateUserDTO(
+            new Name('  Alice  '),
+            new Surname(' Smith '),
+            new Email('ALICE@example.com'),
+            new PlainPassword('password123'),
             UserRoleEnum::USER,
             UserStatusEnum::ACTIVE,
         ));
@@ -50,11 +55,11 @@ final class UserHandlersTest extends TestCase
         $handler = new CreateUserHandler($users, new RecordingPasswordHasher());
 
         $this->expectException(UserEmailAlreadyInUse::class);
-        $handler(new CreateUser(
-            'Alice',
-            null,
-            'TAKEN@example.com',
-            'password123',
+        $handler(new CreateUserDTO(
+            new Name('Alice'),
+            new Surname(),
+            new Email('TAKEN@example.com'),
+            new PlainPassword('password123'),
             UserRoleEnum::USER,
             UserStatusEnum::ACTIVE,
         ));
@@ -68,11 +73,11 @@ final class UserHandlersTest extends TestCase
         $hasher = new RecordingPasswordHasher();
         $handler = new UpdateUserHandler($users, $hasher);
 
-        $handler(new UpdateUser(
+        $handler(new UpdateUserDTO(
             1,
-            'Updated',
-            null,
-            'new@example.com',
+            new Name('Updated'),
+            new Surname(),
+            new Email('new@example.com'),
             null,
             UserRoleEnum::ADMIN,
             UserStatusEnum::BLOCKED,
@@ -85,12 +90,12 @@ final class UserHandlersTest extends TestCase
         self::assertSame('hashed:existing-password', $user->getPassword());
         self::assertSame([], $hasher->plainPasswords);
 
-        $handler(new UpdateUser(
+        $handler(new UpdateUserDTO(
             1,
-            'Updated',
-            null,
-            'new@example.com',
-            'replacement-password',
+            new Name('Updated'),
+            new Surname(),
+            new Email('new@example.com'),
+            new PlainPassword('replacement-password'),
             UserRoleEnum::ADMIN,
             UserStatusEnum::BLOCKED,
         ));
@@ -105,19 +110,19 @@ final class UserHandlersTest extends TestCase
             PasswordAuthenticatedUserInterface::class => ['algorithm' => 'auto'],
         ]);
         $passwordHasher = new SymfonyPasswordHasher($factory);
-        $hash = $passwordHasher->hash('password123');
+        $hash = $passwordHasher->hash(new PlainPassword('password123'));
 
-        self::assertNotSame('password123', $hash);
-        self::assertTrue($factory->getPasswordHasher(User::class)->verify($hash, 'password123'));
+        self::assertNotSame('password123', $hash->getHashedPassword());
+        self::assertTrue($factory->getPasswordHasher(User::class)->verify($hash->getHashedPassword(), 'password123'));
     }
 
     private function user(string $email): User
     {
         return User::register(
-            'Existing',
-            null,
-            $email,
-            'hashed:existing-password',
+            new Name('Existing'),
+            new Surname(),
+            new Email($email),
+            new HashedPassword('hashed:existing-password'),
             UserRoleEnum::USER,
             UserStatusEnum::ACTIVE,
             new \DateTime(),
@@ -130,11 +135,11 @@ final class RecordingPasswordHasher implements PasswordHasherInterface
     /** @var list<string> */
     public array $plainPasswords = [];
 
-    public function hash(string $plainPassword): string
+    public function hash(PlainPassword $plainPassword): HashedPassword
     {
-        $this->plainPasswords[] = $plainPassword;
+        $this->plainPasswords[] = $plainPassword->getPlainPassword();
 
-        return 'hashed:'.$plainPassword;
+        return new HashedPassword('hashed:'.$plainPassword->getPlainPassword());
     }
 }
 

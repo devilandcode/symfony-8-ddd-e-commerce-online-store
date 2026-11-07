@@ -1,25 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Customer\Domain\ValueObject;
 
 final readonly class Surname
 {
-    private ?string $suraname;
+    private ?string $surname;
 
     public function __construct(?string $surname = null)
     {
+        $surname = null === $surname ? null : trim($surname);
         $this->assertSurnameIsValid($surname);
-        $this->suraname = $surname;
+        $this->surname = empty($surname) ? null : $surname;
     }
 
     public function getSurname(): ?string
     {
-        return $this->suraname !== null ? trim($this->suraname) : null;
+        return $this->surname;
     }
 
     private function assertSurnameIsValid(?string $surname): void
     {
-        if ($surname !== null && strlen(trim($surname)) > 255) {
+        if (null !== $surname && mb_strlen($surname) > 255) {
             throw new \InvalidArgumentException('Surname cannot exceed 255 characters.');
         }
     }

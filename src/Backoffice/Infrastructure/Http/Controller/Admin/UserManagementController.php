@@ -53,12 +53,16 @@ final class UserManagementController extends AbstractController
                     new Name($data->name),
                     new Surname($data->surname),
                     new Email($data->email),
-                    new PlainPassword($data->plainPassword),
+                    new PlainPassword($data->plainPassword ?? throw new \LogicException('A password is required to create a user.')),
                     $data->role,
                     $data->status,
                 ));
             } catch (UserEmailAlreadyInUse $exception) {
                 $form->get('email')->addError(new FormError($exception->getMessage()));
+
+                return $this->renderUserForm($form, 'Create user');
+            } catch (\InvalidArgumentException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
 
                 return $this->renderUserForm($form, 'Create user');
             }
@@ -95,12 +99,18 @@ final class UserManagementController extends AbstractController
                     new Name($data->name),
                     new Surname($data->surname),
                     new Email($data->email),
-                    new PlainPassword($data->plainPassword),
+                    null === $data->plainPassword || '' === $data->plainPassword
+                        ? null
+                        : new PlainPassword($data->plainPassword),
                     $data->role,
                     $data->status,
                 ));
             } catch (UserEmailAlreadyInUse $exception) {
                 $form->get('email')->addError(new FormError($exception->getMessage()));
+
+                return $this->renderUserForm($form, 'Edit user');
+            } catch (\InvalidArgumentException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
 
                 return $this->renderUserForm($form, 'Edit user');
             }

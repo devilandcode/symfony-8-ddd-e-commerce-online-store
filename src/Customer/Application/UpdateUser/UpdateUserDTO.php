@@ -18,7 +18,7 @@ final readonly class UpdateUserDTO
         public Name $name,
         public Surname $surname,
         public Email $email,
-        public PlainPassword $plainPassword,
+        public ?PlainPassword $plainPassword,
         public UserRoleEnum $role,
         public ?UserStatusEnum $status,
     ) {

@@ -2,11 +2,15 @@
 
 namespace App\Backoffice\Infrastructure\Console;
 
-use App\Customer\Application\CreateUser\CreateUser;
+use App\Customer\Application\CreateUser\CreateUserDTO;
 use App\Customer\Application\CreateUser\CreateUserHandler;
+use App\Customer\Application\Exception\UserEmailAlreadyInUse;
+use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
-use App\Customer\Application\Exception\UserEmailAlreadyInUse;
+use App\Customer\Domain\ValueObject\Email;
+use App\Customer\Domain\ValueObject\Name;
+use App\Customer\Domain\ValueObject\Surname;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,15 +58,19 @@ class CreateAdminUserCommand extends Command
         }
 
         try {
-            ($this->createUser)(new CreateUser(
-                $name,
-                null,
-                $email,
-                $password,
+            ($this->createUser)(new CreateUserDTO(
+                new Name($name),
+                new Surname(),
+                new Email($email),
+                new PlainPassword($password),
                 UserRoleEnum::ADMIN,
                 UserStatusEnum::ACTIVE,
             ));
         } catch (UserEmailAlreadyInUse $exception) {
+            $io->error($exception->getMessage());
+
+            return Command::FAILURE;
+        } catch (\InvalidArgumentException $exception) {
             $io->error($exception->getMessage());
 
             return Command::FAILURE;

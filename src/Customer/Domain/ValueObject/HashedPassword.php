@@ -9,7 +9,7 @@ final readonly class HashedPassword
     public function __construct(
         private string $password,
     ) {
-        if ('' === $password) {
+        if (empty($password)) {
             throw new \InvalidArgumentException('A password hash cannot be empty.');
         }
     }

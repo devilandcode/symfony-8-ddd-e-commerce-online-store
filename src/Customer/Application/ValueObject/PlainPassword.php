@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Customer\Domain\ValueObject;
+namespace App\Customer\Application\ValueObject;
 
 final readonly class PlainPassword
 {
@@ -12,15 +12,10 @@ final readonly class PlainPassword
         if (mb_strlen($password) < 8) {
             throw new \InvalidArgumentException('A password must contain at least 8 characters.');
         }
-    }    
+    }
 
     public function getPlainPassword(): string
     {
         return $this->password;
-    }
-
-    public function isNotEmpty(): bool
-    {
-        return !empty($this->password);
     }
 }

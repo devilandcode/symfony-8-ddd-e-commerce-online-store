@@ -3,7 +3,6 @@
 namespace App\Customer\Domain\Entity;
 
 
-use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
 use App\Customer\Domain\ValueObject\Email;

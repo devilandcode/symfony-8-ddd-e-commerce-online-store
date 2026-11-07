@@ -38,8 +38,7 @@ final readonly class UpdateUserHandler
             $now,
         );
 
-        if ($userDTO->plainPassword->isNotEmpty()) {
-            
+        if (null !== $userDTO->plainPassword) {
             $passwordHash = $this->passwordHasher->hash($userDTO->plainPassword);
             $user->changePassword($passwordHash, $now);
         }

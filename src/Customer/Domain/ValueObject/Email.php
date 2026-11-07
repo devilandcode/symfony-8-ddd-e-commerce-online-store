@@ -10,28 +10,27 @@ final readonly class Email
 
     public function __construct(string $email)
     {
+        $email = mb_strtolower(trim($email));
         $this->assertEmailIsValid($email);
         $this->email = $email;
     }
 
     public function getEmail(): string
     {
-        return mb_strtolower(trim($this->email));
+        return $this->email;
     }
 
     private function assertEmailIsValid(string $email): void
     {
-       $normalizedEmail = mb_strtolower(trim($email));
-
-        if (empty($normalizedEmail)) {
+        if (empty($email)) {
             throw new \InvalidArgumentException('Email cannot be empty.');
         }
 
-        if (!filter_var($normalizedEmail, FILTER_VALIDATE_EMAIL)) {
+        if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException('Invalid email format.');
         }
 
-        if (strlen($normalizedEmail) > 255) {
+        if (mb_strlen($email) > 255) {
             throw new \InvalidArgumentException('Email cannot exceed 255 characters.');
         }
     }

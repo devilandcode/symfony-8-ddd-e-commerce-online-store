@@ -3,9 +3,9 @@
 namespace App\Customer\Infrastructure\Security;
 
 use App\Customer\Application\PasswordHasherInterface;
+use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\ValueObject\HashedPassword;
-use App\Customer\Domain\ValueObject\PlainPassword;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 final readonly class SymfonyPasswordHasher implements PasswordHasherInterface
