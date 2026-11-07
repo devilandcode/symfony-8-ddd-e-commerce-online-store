@@ -19,7 +19,7 @@ final readonly class CreateUserHandler
 
     public function __invoke(CreateUserDTO $userDTO): void
     {
-        $email = mb_strtolower(trim($userDTO->email));
+        $email = $userDTO->email->getEmail();
 
         if (null !== $this->userRepository->findByEmail($email)) {
             throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
@@ -32,7 +32,7 @@ final readonly class CreateUserHandler
         $user = User::register(
             $userDTO->name,
             $userDTO->surname,
-            $email,
+            $userDTO->email,
             $this->passwordHasher->hash($userDTO->plainPassword),
             $userDTO->role,
             $userDTO->status,

@@ -21,7 +21,7 @@ final readonly class UpdateUserHandler
     {
         $user = $this->userRepository->findById($userDTO->id)
             ?? throw UserNotFound::withId($userDTO->id);
-        $email = mb_strtolower(trim($userDTO->email));
+        $email = $userDTO->email->getEmail();
         $existingUser = $this->userRepository->findByEmail($email);
 
         if (null !== $existingUser && $existingUser->getId() !== $user->getId()) {
@@ -41,7 +41,7 @@ final readonly class UpdateUserHandler
         $user->updateProfile(
             $userDTO->name,
             $userDTO->surname,
-            $email,
+            $userDTO->email,
             $userDTO->role,
             $userDTO->status,
             $now,

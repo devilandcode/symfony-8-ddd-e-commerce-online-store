@@ -6,14 +6,16 @@ namespace App\Customer\Application\UpdateUser;
 
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
+use App\Customer\Domain\ValueObject\Email;
+use App\Customer\Domain\ValueObject\Name;
 
 final readonly class UpdateUserDTO
 {
     public function __construct(
         public int $id,
-        public string $name,
+        public Name $name,
         public ?string $surname,
-        public string $email,
+        public Email $email,
         public ?string $plainPassword,
         public UserRoleEnum $role,
         public ?UserStatusEnum $status,

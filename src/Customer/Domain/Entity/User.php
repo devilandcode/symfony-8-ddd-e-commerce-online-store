@@ -5,6 +5,8 @@ namespace App\Customer\Domain\Entity;
 
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
+use App\Customer\Domain\ValueObject\Email;
+use App\Customer\Domain\ValueObject\Name;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -63,20 +65,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public static function register(
-        string $name,
+        Name $name,
         ?string $surname,
-        string $email,
+        Email $email,
         string $passwordHash,
         UserRoleEnum $role,
         ?UserStatusEnum $status,
         \DateTime $now,
     ): self {
-        self::assertProfileIsValid($name, $email);
-
         $user = new self();
-        $user->name = trim($name);
+        $user->name = $name->getName();
         $user->surname = self::normalizeOptionalText($surname);
-        $user->email = mb_strtolower(trim($email));
+        $user->email = $email->getEmail();
         $user->password = $passwordHash;
         $user->role = $role;
         $user->status = $status;
@@ -87,18 +87,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function updateProfile(
-        string $name,
+        Name $name,
         ?string $surname,
-        string $email,
+        Email $email,
         UserRoleEnum $role,
         ?UserStatusEnum $status,
         \DateTime $updatedAt,
     ): void {
-        self::assertProfileIsValid($name, $email);
-
-        $this->name = trim($name);
+        $this->name = $name->getName();
         $this->surname = self::normalizeOptionalText($surname);
-        $this->email = mb_strtolower(trim($email));
+        $this->email = $email->getEmail();
         $this->role = $role;
         $this->status = $status;
         $this->updated_at = $updatedAt;
@@ -112,24 +110,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         $this->password = $passwordHash;
         $this->updated_at = $updatedAt;
-    }
-
-    private static function assertProfileIsValid(string $name, string $email): void
-    {
-        $name = trim($name);
-        $email = trim($email);
-
-        if ('' === $name) {
-            throw new \InvalidArgumentException('A user name cannot be empty.');
-        }
-
-        if (mb_strlen($name) > 255) {
-            throw new \InvalidArgumentException('A user name cannot exceed 255 characters.');
-        }
-
-        if (mb_strlen($email) > 255 || false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('A valid email address is required.');
-        }
     }
 
     private static function normalizeOptionalText(?string $value): ?string
