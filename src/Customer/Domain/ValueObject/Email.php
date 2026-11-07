@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Customer\Domain\ValueObject;
 
-class Email
+final readonly class Email
 {
     private string $email;
 
@@ -20,7 +22,7 @@ class Email
     private function assertEmailIsValid(string $email): void
     {
        $normalizedEmail = mb_strtolower(trim($email));
-       
+
         if (empty($normalizedEmail)) {
             throw new \InvalidArgumentException('Email cannot be empty.');
         }

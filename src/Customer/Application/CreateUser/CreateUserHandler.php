@@ -25,7 +25,7 @@ final readonly class CreateUserHandler
             throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
         }
 
-        if (mb_strlen($userDTO->plainPassword) < 8) {
+        if (mb_strlen($userDTO->plainPassword->getPlainPassword()) < 8) {
             throw new \InvalidArgumentException('A password must contain at least 8 characters.');
         }
 

@@ -28,15 +28,6 @@ final readonly class UpdateUserHandler
             throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
         }
 
-        $passwordHash = null;
-        if (null !== $userDTO->plainPassword && '' !== $userDTO->plainPassword) {
-            if (mb_strlen($userDTO->plainPassword) < 8) {
-                throw new \InvalidArgumentException('A password must contain at least 8 characters.');
-            }
-
-            $passwordHash = $this->passwordHasher->hash($userDTO->plainPassword);
-        }
-
         $now = new \DateTime();
         $user->updateProfile(
             $userDTO->name,
@@ -47,7 +38,9 @@ final readonly class UpdateUserHandler
             $now,
         );
 
-        if (null !== $passwordHash) {
+        if ($userDTO->plainPassword->isNotEmpty()) {
+            
+            $passwordHash = $this->passwordHasher->hash($userDTO->plainPassword);
             $user->changePassword($passwordHash, $now);
         }
 

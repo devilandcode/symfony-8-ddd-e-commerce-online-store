@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Customer\Domain\ValueObject;
 
-class Name
+final readonly class Name
 {
     private string $name;
 

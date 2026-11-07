@@ -15,8 +15,12 @@ use App\Customer\Application\FindUser\FindUserHandler;
 use App\Customer\Application\ListUsers\ListUsersHandler;
 use App\Customer\Application\UpdateUser\UpdateUserDTO;
 use App\Customer\Application\UpdateUser\UpdateUserHandler;
+use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Enum\UserRoleEnum;
+use App\Customer\Domain\ValueObject\Email;
+use App\Customer\Domain\ValueObject\Name;
+use App\Customer\Domain\ValueObject\Surname;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -46,10 +50,10 @@ final class UserManagementController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $createUser(new CreateUserDTO(
-                    $data->name,
-                    $data->surname,
-                    $data->email,
-                    (string) $data->plainPassword,
+                    new Name($data->name),
+                    new Surname($data->surname),
+                    new Email($data->email),
+                    new PlainPassword($data->plainPassword),
                     $data->role,
                     $data->status,
                 ));
@@ -88,10 +92,10 @@ final class UserManagementController extends AbstractController
             try {
                 $updateUser(new UpdateUserDTO(
                     $id,
-                    $data->name,
-                    $data->surname,
-                    $data->email,
-                    $data->plainPassword,
+                    new Name($data->name),
+                    new Surname($data->surname),
+                    new Email($data->email),
+                    new PlainPassword($data->plainPassword),
                     $data->role,
                     $data->status,
                 ));

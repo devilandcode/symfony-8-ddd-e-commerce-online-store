@@ -3,10 +3,13 @@
 namespace App\Customer\Domain\Entity;
 
 
+use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
 use App\Customer\Domain\ValueObject\Email;
+use App\Customer\Domain\ValueObject\HashedPassword;
 use App\Customer\Domain\ValueObject\Name;
+use App\Customer\Domain\ValueObject\Surname;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -66,18 +69,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public static function register(
         Name $name,
-        ?string $surname,
+        Surname $surname,
         Email $email,
-        string $passwordHash,
+        HashedPassword $passwordHash,
         UserRoleEnum $role,
         ?UserStatusEnum $status,
         \DateTime $now,
     ): self {
         $user = new self();
         $user->name = $name->getName();
-        $user->surname = self::normalizeOptionalText($surname);
+        $user->surname = $surname->getSurname();
         $user->email = $email->getEmail();
-        $user->password = $passwordHash;
+        $user->password = $passwordHash->getHashedPassword();
         $user->role = $role;
         $user->status = $status;
         $user->created_at = $now;
@@ -88,39 +91,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function updateProfile(
         Name $name,
-        ?string $surname,
+        Surname $surname,
         Email $email,
         UserRoleEnum $role,
         ?UserStatusEnum $status,
         \DateTime $updatedAt,
     ): void {
         $this->name = $name->getName();
-        $this->surname = self::normalizeOptionalText($surname);
+        $this->surname = $surname->getSurname();
         $this->email = $email->getEmail();
         $this->role = $role;
         $this->status = $status;
         $this->updated_at = $updatedAt;
     }
 
-    public function changePassword(string $passwordHash, \DateTime $updatedAt): void
+    public function changePassword(HashedPassword $passwordHash, \DateTime $updatedAt): void
     {
-        if ('' === $passwordHash) {
-            throw new \InvalidArgumentException('A password hash cannot be empty.');
+        if ('' === $passwordHash->getHashedPassword()) {
+            throw new \InvalidArgumentException('A password cannot be empty.');
         }
 
-        $this->password = $passwordHash;
+        $this->password = $passwordHash->getHashedPassword();
         $this->updated_at = $updatedAt;
-    }
-
-    private static function normalizeOptionalText(?string $value): ?string
-    {
-        $value = null === $value ? null : trim($value);
-
-        if (null !== $value && mb_strlen($value) > 255) {
-            throw new \InvalidArgumentException('A surname cannot exceed 255 characters.');
-        }
-
-        return '' === $value ? null : $value;
     }
 
     public function getName(): ?string

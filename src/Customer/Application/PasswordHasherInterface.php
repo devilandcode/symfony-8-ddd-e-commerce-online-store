@@ -2,7 +2,10 @@
 
 namespace App\Customer\Application;
 
+use App\Customer\Domain\ValueObject\HashedPassword;
+use App\Customer\Domain\ValueObject\PlainPassword;
+
 interface PasswordHasherInterface
 {
-    public function hash(string $plainPassword): string;
+    public function hash(PlainPassword $plainPassword): HashedPassword;
 }
