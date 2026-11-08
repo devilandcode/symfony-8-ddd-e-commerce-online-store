@@ -22,6 +22,9 @@ services:
     App\Customer\Domain\Repository\UserRepositoryInterface:
         alias: App\Customer\Infrastructure\Persistence\UserRepository
 
+    App\ContentManagement\Domain\Repository\PageRepositoryInterface:
+        alias: App\ContentManagement\Infrastructure\Persistence\DoctrinePageRepository
+
     App\Customer\Application\PasswordHasherInterface:
         alias: App\Customer\Infrastructure\Security\SymfonyPasswordHasher
 

@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\ContentManagement\Application\ListPages;
+
+use App\ContentManagement\Application\PageView;
+use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
+
+final readonly class ListPagesHandler
+{
+    public function __construct(private PageRepositoryInterface $pages)
+    {
+    }
+
+    /**
+     * @return list<PageView>
+     */
+    public function __invoke(): array
+    {
+        return array_map(PageView::fromPage(...), $this->pages->findAll());
+    }
+}

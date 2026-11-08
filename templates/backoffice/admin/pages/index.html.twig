@@ -1,0 +1,46 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Pages{% endblock %}
+
+{% block main %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+    {% endfor %}
+
+    <div class="mb-3">
+        <a class="btn btn-primary" href="{{ path('admin_pages_new') }}">Create page</a>
+    </div>
+
+    <table class="table datagrid">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Slug</th>
+                <th scope="col">Status</th>
+                <th scope="col">Position</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in pages %}
+                <tr>
+                    <td>{{ page.title }}</td>
+                    <td>{{ page.slug }}</td>
+                    <td>{{ page.isActive ? 'Active' : 'Inactive' }}</td>
+                    <td>{{ page.position }}</td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-secondary btn-sm" href="{{ path('admin_pages_edit', {id: page.id}) }}">Edit</a>
+                        <form class="d-inline" method="post" action="{{ path('admin_pages_delete', {id: page.id}) }}" onsubmit="return confirm('Delete this page?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-page-' ~ page.id) }}">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No pages found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

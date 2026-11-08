@@ -29,6 +29,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkTo(SettingsController::class, 'Settings', 'fa fa-cog');
         yield MenuItem::linkTo(UserManagementController::class, 'Users', 'fa fa-users')->setAction('index');
-        yield MenuItem::linkTo(PageCrudController::class, 'Pages', 'fa fa-file');
+        yield MenuItem::linkTo(PageCrudController::class, 'Pages', 'fa fa-file')->setAction('index');
     }
 }
