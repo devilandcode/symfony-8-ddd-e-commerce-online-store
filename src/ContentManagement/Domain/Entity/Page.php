@@ -30,11 +30,17 @@ class Page
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'integer', nullable: false, default: 1000)]
-    private ?int $pos = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $seo_title = null;
 
-    #[ORM\Column(type: 'boolean', nullable: false, default: true)]
-    private ?bool $is_active = null;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $seo_description = null;
+
+    #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
+    private ?int $pos = 1000;
+
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
+    private ?bool $is_active = true;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTime $created_at = null;
@@ -115,6 +121,30 @@ class Page
     public function setPos(?int $pos): static
     {
         $this->pos = $pos;
+
+        return $this;
+    }
+
+    public function getSeoTitle(): ?string
+    {
+        return $this->seo_title;
+    }
+
+    public function setSeoTitle(?string $seo_title): static
+    {
+        $this->seo_title = $seo_title;
+
+        return $this;
+    }
+
+    public function getSeoDescription(): ?string
+    {
+        return $this->seo_description;
+    }
+
+    public function setSeoDescription(?string $seo_description): static
+    {
+        $this->seo_description = $seo_description;
 
         return $this;
     }
