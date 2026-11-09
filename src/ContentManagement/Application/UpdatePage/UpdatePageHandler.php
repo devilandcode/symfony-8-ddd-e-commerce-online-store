@@ -11,14 +11,14 @@ use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class UpdatePageHandler
 {
-    public function __construct(private PageRepositoryInterface $pages)
+    public function __construct(private PageRepositoryInterface $pageRepository)
     {
     }
 
     public function __invoke(int $id, PageData $data): void
     {
-        $page = $this->pages->findById($id) ?? throw PageNotFound::withId($id);
-        $existingPage = $this->pages->findBySlug($data->slug);
+        $page = $this->pageRepository->findById($id) ?? throw PageNotFound::withId($id);
+        $existingPage = $this->pageRepository->findBySlug($data->slug);
 
         if (null !== $existingPage && $existingPage->getId() !== $page->getId()) {
             throw PageSlugAlreadyInUse::withSlug($data->slug->toString());
@@ -37,6 +37,6 @@ final readonly class UpdatePageHandler
             new \DateTime(),
         );
 
-        $this->pages->save($page);
+        $this->pageRepository->save($page);
     }
 }

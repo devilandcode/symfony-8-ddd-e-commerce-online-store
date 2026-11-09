@@ -10,13 +10,13 @@ use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class FindPageHandler
 {
-    public function __construct(private PageRepositoryInterface $pages)
+    public function __construct(private PageRepositoryInterface $pageRepository)
     {
     }
 
     public function __invoke(int $id): PageView
     {
-        $page = $this->pages->findById($id) ?? throw PageNotFound::withId($id);
+        $page = $this->pageRepository->findById($id) ?? throw PageNotFound::withId($id);
 
         return PageView::fromPage($page);
     }

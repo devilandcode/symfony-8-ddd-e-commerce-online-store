@@ -11,14 +11,14 @@ use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class CreatePageHandler
 {
-    public function __construct(private PageRepositoryInterface $pages)
+    public function __construct(private PageRepositoryInterface $pageRepository)
     {
     }
 
     public function __invoke(PageData $data): void
     {
         $slug = $data->slug;
-        if (null !== $this->pages->findBySlug($slug)) {
+        if (null !== $this->pageRepository->findBySlug($slug)) {
             throw PageSlugAlreadyInUse::withSlug($slug->toString());
         }
 
@@ -35,6 +35,6 @@ final readonly class CreatePageHandler
             new \DateTime(),
         );
 
-        $this->pages->save($page);
+        $this->pageRepository->save($page);
     }
 }

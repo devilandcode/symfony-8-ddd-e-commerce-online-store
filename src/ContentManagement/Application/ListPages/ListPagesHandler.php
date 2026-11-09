@@ -9,7 +9,7 @@ use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class ListPagesHandler
 {
-    public function __construct(private PageRepositoryInterface $pages)
+    public function __construct(private PageRepositoryInterface $pageRepository)
     {
     }
 
@@ -18,6 +18,6 @@ final readonly class ListPagesHandler
      */
     public function __invoke(): array
     {
-        return array_map(PageView::fromPage(...), $this->pages->findAll());
+        return array_map(PageView::fromPage(...), $this->pageRepository->findAll());
     }
 }

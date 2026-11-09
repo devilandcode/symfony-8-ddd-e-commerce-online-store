@@ -9,13 +9,13 @@ use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class DeletePageHandler
 {
-    public function __construct(private PageRepositoryInterface $pages)
+    public function __construct(private PageRepositoryInterface $pageRepository)
     {
     }
 
     public function __invoke(int $id): void
     {
-        $page = $this->pages->findById($id) ?? throw PageNotFound::withId($id);
-        $this->pages->delete($page);
+        $page = $this->pageRepository->findById($id) ?? throw PageNotFound::withId($id);
+        $this->pageRepository->delete($page);
     }
 }
