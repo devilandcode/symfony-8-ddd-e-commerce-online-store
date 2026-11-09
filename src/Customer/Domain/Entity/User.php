@@ -23,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $surname = null;
@@ -35,10 +35,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTime $email_verified_at = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    private ?string $password = null;
+    private string $password;
 
     #[ORM\Column(type: 'string', enumType: UserRoleEnum::class, length: 255, nullable: false)]
-    private ?UserRoleEnum $role = UserRoleEnum::USER;
+    private UserRoleEnum $role = UserRoleEnum::USER;
 
     #[ORM\Column(type: 'string', enumType: UserStatusEnum::class, length: 255, nullable: true)]
     private ?UserStatusEnum $status = null;
@@ -56,10 +56,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $remember_token = null;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
-    private ?\DateTime $created_at = null;
+    private \DateTime $created_at;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
-    private ?\DateTime $updated_at = null;
+    private \DateTime $updated_at;
 
     public function getId(): ?int
     {
@@ -114,7 +114,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updated_at = $updatedAt;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -124,7 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->surname;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -141,7 +141,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -214,12 +214,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime 
+    public function getCreatedAt(): \DateTime 
     {
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updated_at;
     }

@@ -17,10 +17,10 @@ class Page
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: false, unique: true)]
-    private ?string $slugValue = null;
+    private string $slugValue;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $h1 = null;
@@ -38,16 +38,16 @@ class Page
     private ?string $seo_description = null;
 
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
-    private ?int $pos = 0;
+    private int $pos = 0;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
-    private ?bool $is_active = true;
+    private bool $is_active = true;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
-    private ?\DateTime $created_at = null;
+    private \DateTime $created_at;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
-    private ?\DateTime $updated_at = null;
+    private \DateTime $updated_at;
 
     private function __construct()
     {
@@ -117,12 +117,12 @@ class Page
         return $this->id;
     }
 
-    public function getSlug(): ?Slug
+    public function getSlug(): Slug
     {
         return null === $this->slugValue ? null : new Slug($this->slugValue);
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -137,12 +137,12 @@ class Page
         return $this->desc;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
 
-    public function getPos(): ?int
+    public function getPos(): int
     {
         return $this->pos;
     }
@@ -157,17 +157,17 @@ class Page
         return $this->seo_description;
     }
 
-    public function getIsActive(): ?bool
+    public function getIsActive(): bool
     {
         return $this->is_active;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updated_at;
     }
