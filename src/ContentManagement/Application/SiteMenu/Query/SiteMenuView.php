@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\ContentManagement\Application\SiteMenu\Query;
+
+use App\ContentManagement\Domain\Entity\SiteMenu;
+
+final readonly class SiteMenuView
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public string $slug,
+        public bool $header,
+        public bool $footer,
+        public int $pos,
+        public bool $isActive,
+    ) {
+    }
+
+    public static function fromSiteMenu(SiteMenu $siteMenu): self
+    {
+        return new self(
+            $siteMenu->getId() ?? throw new \LogicException('A persisted site menu must have an ID.'),
+            $siteMenu->getTitle(),
+            (string) ($siteMenu->getSlug()),
+            $siteMenu->getIsHeader(),
+            $siteMenu->getIsFooter(),
+            $siteMenu->getPos(),
+            $siteMenu->getIsActive(),
+        );
+    }
+}

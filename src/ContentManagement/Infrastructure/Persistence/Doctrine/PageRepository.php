@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Infrastructure\Persistence;
+namespace App\ContentManagement\Infrastructure\Persistence\Doctrine;
 
 use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
@@ -11,7 +11,7 @@ use App\Shared\Domain\ValueObject\Slug;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
-final readonly class DoctrinePageRepository implements PageRepositoryInterface
+final readonly class PageRepository implements PageRepositoryInterface
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {

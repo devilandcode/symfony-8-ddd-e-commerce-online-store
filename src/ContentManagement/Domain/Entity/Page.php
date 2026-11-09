@@ -119,7 +119,7 @@ class Page
 
     public function getSlug(): Slug
     {
-        return null === $this->slugValue ? null : new Slug($this->slugValue);
+        return new Slug($this->slugValue);
     }
 
     public function getTitle(): string

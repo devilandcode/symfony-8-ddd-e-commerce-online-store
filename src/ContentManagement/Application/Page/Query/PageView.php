@@ -26,15 +26,15 @@ final readonly class PageView
     {
         return new self(
             $page->getId() ?? throw new \LogicException('A persisted page must have an ID.'),
-            $page->getTitle() ?? throw new \LogicException('A page must have a title.'),
-            (string) ($page->getSlug() ?? throw new \LogicException('A page must have a slug.')),
+            $page->getTitle(),
+            (string) ($page->getSlug()),
             $page->getH1(),
             $page->getDesc(),
             $page->getContent(),
             $page->getSeoTitle(),
             $page->getSeoDescription(),
-            $page->getPos() ?? 0,
-            $page->getIsActive() ?? false,
+            $page->getPos(),
+            $page->getIsActive(),
         );
     }
 }
