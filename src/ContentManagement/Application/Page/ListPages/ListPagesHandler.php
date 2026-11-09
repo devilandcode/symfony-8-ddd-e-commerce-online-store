@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\ListPages;
+namespace App\ContentManagement\Application\Page\ListPages;
 
-use App\ContentManagement\Application\PageView;
+use App\ContentManagement\Application\Page\Query\PageView;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class ListPagesHandler

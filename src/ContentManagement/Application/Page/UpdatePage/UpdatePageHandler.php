@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\UpdatePage;
+namespace App\ContentManagement\Application\Page\UpdatePage;
 
-use App\ContentManagement\Application\Exception\PageNotFound;
-use App\ContentManagement\Application\Exception\PageSlugAlreadyInUse;
-use App\ContentManagement\Application\PageData;
+use App\ContentManagement\Application\Page\Command\PageData;
+use App\ContentManagement\Application\Page\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class UpdatePageHandler

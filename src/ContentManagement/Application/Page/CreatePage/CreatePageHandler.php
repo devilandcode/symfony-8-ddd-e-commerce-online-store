@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\CreatePage;
+namespace App\ContentManagement\Application\Page\CreatePage;
 
-use App\ContentManagement\Application\Exception\PageSlugAlreadyInUse;
-use App\ContentManagement\Application\PageData;
+use App\ContentManagement\Application\Page\Command\PageData;
+use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 

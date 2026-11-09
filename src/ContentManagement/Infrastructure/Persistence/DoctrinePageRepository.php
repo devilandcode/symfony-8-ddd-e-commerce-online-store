@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Infrastructure\Persistence;
 
-use App\ContentManagement\Application\Exception\PageSlugAlreadyInUse;
+use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Domain\ValueObject\Slug;

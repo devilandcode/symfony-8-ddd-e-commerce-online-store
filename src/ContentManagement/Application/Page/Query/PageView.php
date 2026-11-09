@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application;
+namespace App\ContentManagement\Application\Page\Query;
 
 use App\ContentManagement\Domain\Entity\Page;
 

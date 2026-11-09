@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\DeletePage;
+namespace App\ContentManagement\Application\Page\DeletePage;
 
-use App\ContentManagement\Application\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\Exception\PageNotFound;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class DeletePageHandler

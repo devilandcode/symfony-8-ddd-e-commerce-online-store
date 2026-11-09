@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\Exception;
+namespace App\ContentManagement\Application\Page\Exception;
 
 final class PageNotFound extends \RuntimeException
 {

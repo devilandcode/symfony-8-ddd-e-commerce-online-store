@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\FindPage;
+namespace App\ContentManagement\Application\Page\FindPage;
 
-use App\ContentManagement\Application\Exception\PageNotFound;
-use App\ContentManagement\Application\PageView;
+use App\ContentManagement\Application\Page\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\Query\PageView;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class FindPageHandler

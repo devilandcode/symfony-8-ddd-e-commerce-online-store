@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\ContentManagement\Application;
 
-use App\ContentManagement\Application\CreatePage\CreatePageHandler;
-use App\ContentManagement\Application\Exception\PageSlugAlreadyInUse;
-use App\ContentManagement\Application\PageData;
+use App\ContentManagement\Application\Page\Command\PageData;
+use App\ContentManagement\Application\Page\CreatePage\CreatePageHandler;
+use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Domain\ValueObject\Slug;

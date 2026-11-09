@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application;
+namespace App\ContentManagement\Application\Page\Command;
 
 use App\Shared\Domain\ValueObject\Slug;
 
