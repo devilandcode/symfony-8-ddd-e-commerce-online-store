@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Customer\Infrastructure\Persistence;
+namespace App\Customer\Infrastructure\Persistence\Doctrine;
 
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Repository\UserRepositoryInterface;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\SiteMenu\Query;
+namespace App\ContentManagement\Application\SiteMenu\Output;
 
 use App\ContentManagement\Domain\Entity\SiteMenu;
 
-final readonly class SiteMenuView
+final readonly class SiteMenuViewDTO
 {
     public function __construct(
         public int $id,

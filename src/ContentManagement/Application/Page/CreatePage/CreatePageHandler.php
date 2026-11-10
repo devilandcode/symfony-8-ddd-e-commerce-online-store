@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\CreatePage;
 
-use App\ContentManagement\Application\Page\Command\PageData;
+use App\ContentManagement\Application\Page\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
@@ -15,7 +15,7 @@ final readonly class CreatePageHandler
     {
     }
 
-    public function __invoke(PageData $data): void
+    public function __invoke(PageDataDTO $data): void
     {
         $slug = $data->slug;
         if (null !== $this->pageRepository->findBySlug($slug)) {

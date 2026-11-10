@@ -20,7 +20,7 @@ services:
         resource: '../src/'
 
     App\Customer\Domain\Repository\UserRepositoryInterface:
-        alias: App\Customer\Infrastructure\Persistence\UserRepository
+        alias: App\Customer\Infrastructure\Persistence\Doctrine\UserRepository
 
     App\ContentManagement\Domain\Repository\PageRepositoryInterface:
         alias: App\ContentManagement\Infrastructure\Persistence\Doctrine\PageRepository

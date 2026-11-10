@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\ListPages;
 
-use App\ContentManagement\Application\Page\Query\PageView;
+use App\ContentManagement\Application\Page\Output\PageViewDTO;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 
 final readonly class ListPagesHandler
@@ -14,10 +14,10 @@ final readonly class ListPagesHandler
     }
 
     /**
-     * @return list<PageView>
+     * @return list<PageViewDTO>
      */
     public function __invoke(): array
     {
-        return array_map(PageView::fromPage(...), $this->pageRepository->findAll());
+        return array_map(PageViewDTO::fromPage(...), $this->pageRepository->findAll());
     }
 }

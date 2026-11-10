@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\Page\Query;
+namespace App\ContentManagement\Application\Page\Output;
 
 use App\ContentManagement\Domain\Entity\Page;
 
-final readonly class PageView
+final readonly class PageViewDTO
 {
     public function __construct(
         public int $id,

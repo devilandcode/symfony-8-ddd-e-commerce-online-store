@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\ContentManagement\Application;
 
-use App\ContentManagement\Application\Page\Command\PageData;
+use App\ContentManagement\Application\Page\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\CreatePage\CreatePageHandler;
 use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
@@ -40,7 +40,7 @@ final class CreatePageHandlerTest extends TestCase
 
         $this->expectException(PageSlugAlreadyInUse::class);
 
-        (new CreatePageHandler($repository))(new PageData(
+        (new CreatePageHandler($repository))(new PageDataDTO(
             'Another page',
             $slug,
             null,

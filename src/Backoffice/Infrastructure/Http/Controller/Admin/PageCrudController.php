@@ -6,14 +6,14 @@ namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
 use App\Backoffice\Infrastructure\Http\Form\PageFormData;
 use App\Backoffice\Infrastructure\Http\Form\PageType;
-use App\ContentManagement\Application\Page\Command\PageData;
+use App\ContentManagement\Application\Page\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\CreatePage\CreatePageHandler;
 use App\ContentManagement\Application\Page\DeletePage\DeletePageHandler;
 use App\ContentManagement\Application\Page\Exception\PageNotFound;
 use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Application\Page\FindPage\FindPageHandler;
 use App\ContentManagement\Application\Page\ListPages\ListPagesHandler;
-use App\ContentManagement\Application\Page\Query\PageView;
+use App\ContentManagement\Application\Page\Output\PageViewDTO;
 use App\ContentManagement\Application\Page\UpdatePage\UpdatePageHandler;
 use App\Shared\Domain\ValueObject\Slug;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
@@ -130,9 +130,9 @@ final class PageCrudController extends AbstractController
         ]);
     }
 
-    private function pageDataFromForm(PageFormData $data): PageData
+    private function pageDataFromForm(PageFormData $data): PageDataDTO
     {
-        return new PageData(
+        return new PageDataDTO(
             trim($data->title),
             new Slug($data->slug),
             $this->nullableTrimmed($data->h1),
@@ -145,7 +145,7 @@ final class PageCrudController extends AbstractController
         );
     }
 
-    private function formDataFromPage(PageView $page): PageFormData
+    private function formDataFromPage(PageViewDTO $page): PageFormData
     {
         $data = new PageFormData();
         $data->title = $page->title;

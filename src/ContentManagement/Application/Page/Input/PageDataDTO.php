@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\Page\Command;
+namespace App\ContentManagement\Application\Page\Input;
 
 use App\Shared\Domain\ValueObject\Slug;
 
-final readonly class PageData
+final readonly class PageDataDTO
 {
     public function __construct(
         public string $title,
