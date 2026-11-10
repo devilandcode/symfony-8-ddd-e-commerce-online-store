@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Customer\Domain\ValueObject;
 
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Embeddable]
 final readonly class Email
 {
+    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false, unique: true)]
     private string $email;
 
     public function __construct(string $email)

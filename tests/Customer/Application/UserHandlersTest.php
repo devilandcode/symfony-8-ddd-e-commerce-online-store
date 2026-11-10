@@ -19,10 +19,11 @@ use App\Customer\Domain\ValueObject\Email;
 use App\Customer\Domain\ValueObject\HashedPassword;
 use App\Customer\Domain\ValueObject\Name;
 use App\Customer\Domain\ValueObject\Surname;
+use App\Customer\Infrastructure\Security\SecurityUser;
 use App\Customer\Infrastructure\Security\SymfonyPasswordHasher;
+use App\Shared\Application\Flusher;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 final class UserHandlersTest extends TestCase
 {
@@ -30,7 +31,8 @@ final class UserHandlersTest extends TestCase
     {
         $users = new InMemoryUserRepository();
         $hasher = new RecordingPasswordHasher();
-        $handler = new CreateUserHandler($users, $hasher);
+        $flusher = new RecordingFlusher();
+        $handler = new CreateUserHandler($users, $hasher, $flusher);
 
         $handler(new CreateUserDTO(
             new Name('  Alice  '),
@@ -41,18 +43,20 @@ final class UserHandlersTest extends TestCase
             UserStatusEnum::ACTIVE,
         ));
 
-        self::assertSame('Alice', $users->saved[0]->getName());
-        self::assertSame('Smith', $users->saved[0]->getSurname());
-        self::assertSame('alice@example.com', $users->saved[0]->getEmail());
-        self::assertSame('hashed:password123', $users->saved[0]->getPassword());
+        self::assertSame('Alice', $users->saved[0]->getName()->getName());
+        self::assertSame('Smith', $users->saved[0]->getSurname()->getSurname());
+        self::assertSame('alice@example.com', $users->saved[0]->getEmail()->getEmail());
+        self::assertSame('hashed:password123', $users->saved[0]->getPassword()->getHashedPassword());
+        self::assertSame(UserStatusEnum::ACTIVE, $users->saved[0]->getStatus());
         self::assertSame(['password123'], $hasher->plainPasswords);
+        self::assertSame(1, $flusher->commits);
     }
 
     public function testCreateHandlerRejectsAnEmailAlreadyInUse(): void
     {
         $users = new InMemoryUserRepository();
         $users->save($this->user('taken@example.com'));
-        $handler = new CreateUserHandler($users, new RecordingPasswordHasher());
+        $handler = new CreateUserHandler($users, new RecordingPasswordHasher(), new RecordingFlusher());
 
         $this->expectException(UserEmailAlreadyInUse::class);
         $handler(new CreateUserDTO(
@@ -71,7 +75,8 @@ final class UserHandlersTest extends TestCase
         $user = $this->user('old@example.com');
         $users->save($user);
         $hasher = new RecordingPasswordHasher();
-        $handler = new UpdateUserHandler($users, $hasher);
+        $flusher = new RecordingFlusher();
+        $handler = new UpdateUserHandler($users, $hasher, $flusher);
 
         $handler(new UpdateUserDTO(
             1,
@@ -83,11 +88,11 @@ final class UserHandlersTest extends TestCase
             UserStatusEnum::BLOCKED,
         ));
 
-        self::assertSame('Updated', $user->getName());
-        self::assertSame('new@example.com', $user->getEmail());
+        self::assertSame('Updated', $user->getName()->getName());
+        self::assertSame('new@example.com', $user->getEmail()->getEmail());
         self::assertSame(UserRoleEnum::ADMIN, $user->getRole());
         self::assertSame(UserStatusEnum::BLOCKED, $user->getStatus());
-        self::assertSame('hashed:existing-password', $user->getPassword());
+        self::assertSame('hashed:existing-password', $user->getPassword()->getHashedPassword());
         self::assertSame([], $hasher->plainPasswords);
 
         $handler(new UpdateUserDTO(
@@ -100,20 +105,21 @@ final class UserHandlersTest extends TestCase
             UserStatusEnum::BLOCKED,
         ));
 
-        self::assertSame('hashed:replacement-password', $user->getPassword());
+        self::assertSame('hashed:replacement-password', $user->getPassword()->getHashedPassword());
+        self::assertSame(2, $flusher->commits);
         self::assertSame(['replacement-password'], $hasher->plainPasswords);
     }
 
     public function testSymfonyPasswordHasherUsesTheConfiguredUserHasherWithoutAnEntityInstance(): void
     {
         $factory = new PasswordHasherFactory([
-            PasswordAuthenticatedUserInterface::class => ['algorithm' => 'auto'],
+            SecurityUser::class => ['algorithm' => 'auto'],
         ]);
         $passwordHasher = new SymfonyPasswordHasher($factory);
         $hash = $passwordHasher->hash(new PlainPassword('password123'));
 
         self::assertNotSame('password123', $hash->getHashedPassword());
-        self::assertTrue($factory->getPasswordHasher(User::class)->verify($hash->getHashedPassword(), 'password123'));
+        self::assertTrue($factory->getPasswordHasher(SecurityUser::class)->verify($hash->getHashedPassword(), 'password123'));
     }
 
     private function user(string $email): User
@@ -127,6 +133,16 @@ final class UserHandlersTest extends TestCase
             UserStatusEnum::ACTIVE,
             new \DateTime(),
         );
+    }
+}
+
+final class RecordingFlusher implements Flusher
+{
+    public int $commits = 0;
+
+    public function commit(): void
+    {
+        ++$this->commits;
     }
 }
 
@@ -153,10 +169,10 @@ final class InMemoryUserRepository implements UserRepositoryInterface
         return $this->saved;
     }
 
-    public function findByEmail(string $email): ?User
+    public function findByEmail(Email $email): ?User
     {
         foreach ($this->saved as $user) {
-            if ($user->getEmail() === $email) {
+            if ($user->getEmail()->getEmail() === $email->getEmail()) {
                 return $user;
             }
         }

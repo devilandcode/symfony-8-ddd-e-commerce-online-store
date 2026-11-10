@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Customer\Application\FindUser;
 
 use App\Customer\Application\Exception\UserNotFound;
-use App\Customer\Domain\Entity\User;
+use App\Customer\Application\Output\UserViewDTO;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
 
 final readonly class FindUserHandler
@@ -14,9 +14,11 @@ final readonly class FindUserHandler
     {
     }
 
-    public function __invoke(int $id): User
+    public function __invoke(int $id): UserViewDTO
     {
-        return $this->userRepository->findById($id)
+        $user = $this->userRepository->findById($id)
             ?? throw UserNotFound::withId($id);
+
+        return UserViewDTO::fromUser($user);
     }
 }

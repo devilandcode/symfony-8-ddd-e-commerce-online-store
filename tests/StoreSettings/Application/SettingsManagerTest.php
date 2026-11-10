@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\StoreSettings\Application;
 
+use App\Shared\Application\Flusher;
 use App\StoreSettings\Application\SettingsDataFactory;
 use App\StoreSettings\Application\SettingsManager;
 use App\StoreSettings\Domain\Entity\SettingSection;
@@ -16,7 +17,7 @@ final class SettingsManagerTest extends TestCase
 {
     public function testMissingSettingsReturnAnEmptySection(): void
     {
-        $manager = new SettingsManager(new InMemorySettingSectionRepository(), new SettingsDataFactory());
+        $manager = new SettingsManager(new InMemorySettingSectionRepository(), new SettingsDataFactory(), new NullFlusher());
 
         self::assertSame(
             (new ContentSettings())->toArray(),
@@ -27,14 +28,21 @@ final class SettingsManagerTest extends TestCase
     public function testUpdateCreatesOrReplacesTheRequestedSection(): void
     {
         $repository = new InMemorySettingSectionRepository();
-        $manager = new SettingsManager($repository, new SettingsDataFactory());
-        $settings = new ContentSettings('/privacy', '12', '6', '4');
+        $manager = new SettingsManager($repository, new SettingsDataFactory(), new NullFlusher());
+        $settings = new ContentSettings(privacy: '/privacy', productsCount: '12', brandsCount: '6', newsCount: '4');
 
         $manager->update($settings);
-        $manager->update(new ContentSettings('/privacy-v2', '15', '8', '5'));
+        $manager->update(new ContentSettings(privacy: '/privacy-v2', productsCount: '15', brandsCount: '8', newsCount: '5'));
 
         self::assertSame('/privacy-v2', $manager->get(SettingSectionKey::CONTENT)->toArray()['privacy']);
         self::assertCount(1, $repository->sections);
+    }
+}
+
+final class NullFlusher implements Flusher
+{
+    public function commit(): void
+    {
     }
 }
 

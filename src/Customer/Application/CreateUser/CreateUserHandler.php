@@ -8,21 +8,22 @@ use App\Customer\Application\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\PasswordHasherInterface;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
+use App\Shared\Application\Flusher;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final readonly class CreateUserHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private PasswordHasherInterface $passwordHasher,
+        private Flusher $flusher,
     ) {
     }
 
     public function __invoke(CreateUserDTO $userDTO): void
     {
-        $email = $userDTO->email->getEmail();
-
-        if (null !== $this->userRepository->findByEmail($email)) {
-            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
+        if (null !== $this->userRepository->findByEmail($userDTO->email)) {
+            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()));
         }
 
         $user = User::register(
@@ -36,5 +37,11 @@ final readonly class CreateUserHandler
         );
 
         $this->userRepository->save($user);
+
+        try {
+            $this->flusher->commit();
+        } catch (UniqueConstraintViolationException $exception) {
+            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()), previous: $exception);
+        }
     }
 }

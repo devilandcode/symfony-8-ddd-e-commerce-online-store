@@ -1,6 +1,8 @@
 <?php
 
-namespace App\ContentManagement\Application\Page\Exception;
+declare(strict_types=1);
+
+namespace App\ContentManagement\Application\SiteMenu\Exception;
 
 final class MenuSlugAlreadyInUse extends \RuntimeException
 {

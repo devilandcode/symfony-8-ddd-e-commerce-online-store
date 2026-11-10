@@ -19,8 +19,8 @@ class Page
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: false, unique: true)]
-    private string $slugValue;
+    #[ORM\Embedded(class: Slug::class, columnPrefix: false)]
+    private Slug $slug;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $h1 = null;
@@ -101,7 +101,7 @@ class Page
         }
 
         $this->title = $title;
-        $this->slugValue = $slug->toString();
+        $this->slug = $slug;
         $this->h1 = $h1;
         $this->desc = $description;
         $this->content = $content;
@@ -119,7 +119,7 @@ class Page
 
     public function getSlug(): Slug
     {
-        return new Slug($this->slugValue);
+        return $this->slug;
     }
 
     public function getTitle(): string
@@ -137,7 +137,7 @@ class Page
         return $this->desc;
     }
 
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }

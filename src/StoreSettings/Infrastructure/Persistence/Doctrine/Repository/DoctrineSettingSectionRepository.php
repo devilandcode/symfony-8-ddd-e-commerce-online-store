@@ -29,6 +29,5 @@ final readonly class DoctrineSettingSectionRepository implements SettingSectionR
     public function save(SettingSection $section): void
     {
         $this->entityManager->persist($section);
-        $this->entityManager->flush();
     }
 }

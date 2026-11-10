@@ -3,6 +3,7 @@
 namespace App\Customer\Domain\Repository;
 
 use App\Customer\Domain\Entity\User;
+use App\Customer\Domain\ValueObject\Email;
 
 interface UserRepositoryInterface
 {
@@ -11,7 +12,7 @@ interface UserRepositoryInterface
      */
     public function findAll(): array;
 
-    public function findByEmail(string $email): ?User;
+    public function findByEmail(Email $email): ?User;
 
     public function findById(int $id): ?User;
 

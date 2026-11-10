@@ -20,4 +20,13 @@ class LoginController extends AbstractController
     {
         throw new \LogicException('The logout route is handled by the security firewall.');
     }
+
+    private function renderLoginForm(AuthenticationUtils $authenticationUtils, string $loginRoute): Response
+    {
+        return $this->render('backoffice/auth/login.html.twig', [
+            'last_username' => $authenticationUtils->getLastUsername(),
+            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'login_route' => $loginRoute,
+        ]);
+    }
 }

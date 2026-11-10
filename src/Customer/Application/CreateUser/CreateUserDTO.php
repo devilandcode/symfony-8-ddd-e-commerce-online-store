@@ -19,6 +19,6 @@ final readonly class CreateUserDTO
         public Email $email,
         public PlainPassword $plainPassword,
         public UserRoleEnum $role,
-        public ?UserStatusEnum $status,
+        public UserStatusEnum $status,
     ) {}
 }

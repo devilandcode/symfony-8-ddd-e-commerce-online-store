@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\StoreSettings\Application;
 
+use App\Shared\Application\Flusher;
 use App\StoreSettings\Domain\Entity\SettingSection;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;
 use App\StoreSettings\Domain\Repository\SettingSectionRepositoryInterface;
@@ -14,6 +15,7 @@ final readonly class SettingsManager
     public function __construct(
         private SettingSectionRepositoryInterface $settings,
         private SettingsDataFactory $dataFactory,
+        private Flusher $flusher,
     ) {
     }
 
@@ -34,5 +36,6 @@ final readonly class SettingsManager
         }
 
         $this->settings->save($section);
+        $this->flusher->commit();
     }
 }

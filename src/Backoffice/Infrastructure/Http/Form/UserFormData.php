@@ -28,5 +28,6 @@ final class UserFormData
 
     public UserRoleEnum $role = UserRoleEnum::USER;
 
-    public ?UserStatusEnum $status = null;
+    #[Assert\NotNull]
+    public ?UserStatusEnum $status = UserStatusEnum::ACTIVE;
 }

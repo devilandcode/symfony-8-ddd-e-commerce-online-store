@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Customer\Application\ListUsers;
 
-use App\Customer\Domain\Entity\User;
+use App\Customer\Application\Output\UserViewDTO;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
 
 final readonly class ListUsersHandler
@@ -14,10 +14,10 @@ final readonly class ListUsersHandler
     }
 
     /**
-     * @return list<User>
+     * @return list<UserViewDTO>
      */
     public function __invoke(): array
     {
-        return $this->userRepository->findAll();
+        return array_map(UserViewDTO::fromUser(...), $this->userRepository->findAll());
     }
 }

@@ -13,14 +13,15 @@ use App\Customer\Application\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\Exception\UserNotFound;
 use App\Customer\Application\FindUser\FindUserHandler;
 use App\Customer\Application\ListUsers\ListUsersHandler;
+use App\Customer\Application\Output\UserViewDTO;
 use App\Customer\Application\UpdateUser\UpdateUserDTO;
 use App\Customer\Application\UpdateUser\UpdateUserHandler;
 use App\Customer\Application\ValueObject\PlainPassword;
-use App\Customer\Domain\Entity\User;
-use App\Customer\Domain\Enum\UserRoleEnum;
+use App\Customer\Domain\Enum\UserStatusEnum;
 use App\Customer\Domain\ValueObject\Email;
 use App\Customer\Domain\ValueObject\Name;
 use App\Customer\Domain\ValueObject\Surname;
+use App\Customer\Infrastructure\Security\SecurityUser;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -55,7 +56,7 @@ final class UserManagementController extends AbstractController
                     new Email($data->email),
                     new PlainPassword($data->plainPassword ?? throw new \LogicException('A password is required to create a user.')),
                     $data->role,
-                    $data->status,
+                    $this->requireStatus($data->status),
                 ));
             } catch (UserEmailAlreadyInUse $exception) {
                 $form->get('email')->addError(new FormError($exception->getMessage()));
@@ -103,7 +104,7 @@ final class UserManagementController extends AbstractController
                         ? null
                         : new PlainPassword($data->plainPassword),
                     $data->role,
-                    $data->status,
+                    $this->requireStatus($data->status),
                 ));
             } catch (UserEmailAlreadyInUse $exception) {
                 $form->get('email')->addError(new FormError($exception->getMessage()));
@@ -131,7 +132,7 @@ final class UserManagementController extends AbstractController
         }
 
         $currentUser = $this->getUser();
-        if ($currentUser instanceof User && $currentUser->getId() === $id) {
+        if ($currentUser instanceof SecurityUser && $currentUser->getId() === $id) {
             throw $this->createAccessDeniedException('You cannot delete your own account.');
         }
 
@@ -154,15 +155,24 @@ final class UserManagementController extends AbstractController
         ]);
     }
 
-    private function formDataFromUser(User $user): UserFormData
+    private function formDataFromUser(UserViewDTO $user): UserFormData
     {
         $data = new UserFormData();
-        $data->name = (string) $user->getName();
-        $data->surname = $user->getSurname();
-        $data->email = (string) $user->getEmail();
-        $data->role = $user->getRole() ?? UserRoleEnum::USER;
-        $data->status = $user->getStatus();
+        $data->name = $user->name;
+        $data->surname = $user->surname;
+        $data->email = $user->email;
+        $data->role = $user->role;
+        $data->status = $user->status;
 
         return $data;
+    }
+
+    private function requireStatus(?UserStatusEnum $status): UserStatusEnum
+    {
+        if (null === $status) {
+            throw new \InvalidArgumentException('A user status is required.');
+        }
+
+        return $status;
     }
 }

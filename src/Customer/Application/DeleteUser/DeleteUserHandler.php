@@ -6,11 +6,14 @@ namespace App\Customer\Application\DeleteUser;
 
 use App\Customer\Application\Exception\UserNotFound;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
+use App\Shared\Application\Flusher;
 
 final readonly class DeleteUserHandler
 {
-    public function __construct(private UserRepositoryInterface $userRepository)
-    {
+    public function __construct(
+        private UserRepositoryInterface $userRepository,
+        private Flusher $flusher,
+    ) {
     }
 
     public function __invoke(int $id): void
@@ -19,5 +22,6 @@ final readonly class DeleteUserHandler
             ?? throw UserNotFound::withId($id);
 
         $this->userRepository->delete($user);
+        $this->flusher->commit();
     }
 }

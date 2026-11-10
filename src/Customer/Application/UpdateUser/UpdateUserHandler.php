@@ -8,12 +8,15 @@ use App\Customer\Application\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\Exception\UserNotFound;
 use App\Customer\Application\PasswordHasherInterface;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
+use App\Shared\Application\Flusher;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final readonly class UpdateUserHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private PasswordHasherInterface $passwordHasher,
+        private Flusher $flusher,
     ) {
     }
 
@@ -21,11 +24,10 @@ final readonly class UpdateUserHandler
     {
         $user = $this->userRepository->findById($userDTO->id)
             ?? throw UserNotFound::withId($userDTO->id);
-        $email = $userDTO->email->getEmail();
-        $existingUser = $this->userRepository->findByEmail($email);
+        $existingUser = $this->userRepository->findByEmail($userDTO->email);
 
         if (null !== $existingUser && $existingUser->getId() !== $user->getId()) {
-            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $email));
+            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()));
         }
 
         $now = new \DateTime();
@@ -44,5 +46,11 @@ final readonly class UpdateUserHandler
         }
 
         $this->userRepository->save($user);
+
+        try {
+            $this->flusher->commit();
+        } catch (UniqueConstraintViolationException $exception) {
+            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()), previous: $exception);
+        }
     }
 }

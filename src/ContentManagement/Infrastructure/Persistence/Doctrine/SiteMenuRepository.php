@@ -30,7 +30,7 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
 
     public function findBySlug(Slug $slug): ?SiteMenu
     {
-        $siteMenu = $this->entityManager->getRepository(SiteMenu::class)->findOneBy(['slugValue' => $slug->toString()]);
+        $siteMenu = $this->entityManager->getRepository(SiteMenu::class)->findOneBy(['slug.value' => $slug->toString()]);
 
         if (null !== $siteMenu && !$siteMenu instanceof SiteMenu) {
             throw new \LogicException('The site menu repository returned an unexpected entity.');
@@ -42,12 +42,10 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
     public function save(SiteMenu $siteMenu): void
     {
         $this->entityManager->persist($siteMenu);
-        $this->entityManager->flush();
     }
 
     public function delete(SiteMenu $siteMenu): void
     {
         $this->entityManager->remove($siteMenu);
-        $this->entityManager->flush();
     }
 }

@@ -31,5 +31,8 @@ services:
     App\Customer\Application\PasswordHasherInterface:
         alias: App\Customer\Infrastructure\Security\SymfonyPasswordHasher
 
+    App\Shared\Application\Flusher:
+        alias: App\Shared\Infrastructure\Persistence\DoctrineFlusher
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

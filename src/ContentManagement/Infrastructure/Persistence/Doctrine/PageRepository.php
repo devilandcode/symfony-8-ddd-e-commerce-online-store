@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Infrastructure\Persistence\Doctrine;
 
-use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Domain\ValueObject\Slug;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class PageRepository implements PageRepositoryInterface
@@ -38,7 +36,7 @@ final readonly class PageRepository implements PageRepositoryInterface
 
     public function findBySlug(Slug $slug): ?Page
     {
-        $page = $this->entityManager->getRepository(Page::class)->findOneBy(['slugValue' => $slug->toString()]);
+        $page = $this->entityManager->getRepository(Page::class)->findOneBy(['slug.value' => $slug->toString()]);
 
         if (null !== $page && !$page instanceof Page) {
             throw new \LogicException('The page repository returned an unexpected entity.');
@@ -50,22 +48,10 @@ final readonly class PageRepository implements PageRepositoryInterface
     public function save(Page $page): void
     {
         $this->entityManager->persist($page);
-
-        try {
-            $this->entityManager->flush();
-        } catch (UniqueConstraintViolationException $exception) {
-            $slug = $page->getSlug();
-            if (null === $slug) {
-                throw $exception;
-            }
-
-            throw PageSlugAlreadyInUse::withSlug($slug->toString(), $exception);
-        }
     }
 
     public function delete(Page $page): void
     {
         $this->entityManager->remove($page);
-        $this->entityManager->flush();
     }
 }

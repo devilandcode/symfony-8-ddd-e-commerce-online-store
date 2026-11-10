@@ -40,8 +40,6 @@ final class UserType extends AbstractType
             ->add('status', EnumType::class, [
                 'class' => UserStatusEnum::class,
                 'choice_label' => static fn (UserStatusEnum $status): string => ucfirst($status->value),
-                'required' => false,
-                'placeholder' => 'Choose a status',
             ]);
     }
 

@@ -20,7 +20,7 @@ final readonly class UpdateUserDTO
         public Email $email,
         public ?PlainPassword $plainPassword,
         public UserRoleEnum $role,
-        public ?UserStatusEnum $status,
+        public UserStatusEnum $status,
     ) {
     }
 }

@@ -9,6 +9,7 @@ use App\ContentManagement\Application\Page\CreatePage\CreatePageHandler;
 use App\ContentManagement\Application\Page\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
+use App\Shared\Application\Flusher;
 use App\Shared\Domain\ValueObject\Slug;
 use PHPUnit\Framework\TestCase;
 
@@ -37,10 +38,12 @@ final class CreatePageHandlerTest extends TestCase
             ->with($slug)
             ->willReturn($existingPage);
         $repository->expects(self::never())->method('save');
+        $flusher = $this->createMock(Flusher::class);
+        $flusher->expects(self::never())->method('commit');
 
         $this->expectException(PageSlugAlreadyInUse::class);
 
-        (new CreatePageHandler($repository))(new PageDataDTO(
+        (new CreatePageHandler($repository, $flusher))(new PageDataDTO(
             'Another page',
             $slug,
             null,

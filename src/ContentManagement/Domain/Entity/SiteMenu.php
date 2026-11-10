@@ -17,8 +17,8 @@ class SiteMenu
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: false, unique: true)]
-    private string $slugValue;
+    #[ORM\Embedded(class: Slug::class, columnPrefix: false)]
+    private Slug $slug;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
     private bool $header = true;
@@ -52,7 +52,7 @@ class SiteMenu
     ): self {
         $menu = new self();
         $menu->title = $title;
-        $menu->slugValue = $slug->toString();
+        $menu->slug = $slug;
         $menu->header = $header;
         $menu->footer = $footer;
         $menu->pos = $position;
@@ -70,7 +70,7 @@ class SiteMenu
 
     public function getSlug(): Slug
     {
-        return new Slug($this->slugValue);
+        return $this->slug;
     }
 
     public function getTitle(): string

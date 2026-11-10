@@ -4,8 +4,7 @@ namespace App\Customer\Infrastructure\Persistence\Doctrine;
 
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
-use App\Customer\Application\Exception\UserEmailAlreadyInUse;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use App\Customer\Domain\ValueObject\Email;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserRepository implements UserRepositoryInterface
@@ -15,9 +14,11 @@ final class UserRepository implements UserRepositoryInterface
     ) {
     }
 
-    public function findByEmail(string $email): ?User
+    public function findByEmail(Email $email): ?User
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([
+            'email.email' => $email->getEmail(),
+        ]);
 
         if (null !== $user && !$user instanceof User) {
             throw new \LogicException('The user repository returned an unexpected entity.');
@@ -48,17 +49,10 @@ final class UserRepository implements UserRepositoryInterface
     public function save(User $user): void
     {
         $this->entityManager->persist($user);
-
-        try {
-            $this->entityManager->flush();
-        } catch (UniqueConstraintViolationException $exception) {
-            throw new UserEmailAlreadyInUse('A user with this email address already exists.', previous: $exception);
-        }
     }
 
     public function delete(User $user): void
     {
         $this->entityManager->remove($user);
-        $this->entityManager->flush();
     }
 }
