@@ -25,7 +25,7 @@ final readonly class PageViewDTO
     public static function fromPage(Page $page): self
     {
         return new self(
-            $page->getId() ?? throw new \LogicException('A persisted page must have an ID.'),
+            $page->getId(),
             $page->getTitle(),
             (string) ($page->getSlug()),
             $page->getH1(),

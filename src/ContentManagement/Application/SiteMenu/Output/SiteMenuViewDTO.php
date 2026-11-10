@@ -22,7 +22,7 @@ final readonly class SiteMenuViewDTO
     public static function fromSiteMenu(SiteMenu $siteMenu): self
     {
         return new self(
-            $siteMenu->getId() ?? throw new \LogicException('A persisted site menu must have an ID.'),
+            $siteMenu->getId(),
             $siteMenu->getTitle(),
             (string) ($siteMenu->getSlug()),
             $siteMenu->getIsHeader(),

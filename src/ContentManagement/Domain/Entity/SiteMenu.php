@@ -38,6 +38,31 @@ class SiteMenu
     #[ORM\Column(type: 'datetime', nullable: false)]
     private \DateTime $updated_at;
 
+    private function __construct()
+    {}
+
+    public static function create(
+        string $title,
+        Slug $slug,
+        bool $header,
+        bool $footer,
+        int $position,
+        bool $isActive,
+        \DateTime $now,
+    ): self {
+        $menu = new self();
+        $menu->title = $title;
+        $menu->slugValue = $slug->toString();
+        $menu->header = $header;
+        $menu->footer = $footer;
+        $menu->pos = $position;
+        $menu->is_active = $isActive;
+        $menu->created_at = $now;
+        $menu->updated_at = $now;
+
+        return $menu;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

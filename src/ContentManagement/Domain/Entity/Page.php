@@ -50,8 +50,7 @@ class Page
     private \DateTime $updated_at;
 
     private function __construct()
-    {
-    }
+    {}
 
     public static function create(
         string $title,
@@ -79,6 +78,7 @@ class Page
             $now,
         );
         $page->created_at = $now;
+        $page->updated_at = $now;
 
         return $page;
     }

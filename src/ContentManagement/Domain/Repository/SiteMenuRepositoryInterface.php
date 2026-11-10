@@ -3,6 +3,7 @@
 namespace App\ContentManagement\Domain\Repository;
 
 use App\ContentManagement\Domain\Entity\SiteMenu;
+use App\Shared\Domain\ValueObject\Slug;
 
 interface SiteMenuRepositoryInterface
 {
@@ -13,7 +14,7 @@ interface SiteMenuRepositoryInterface
 
     public function findById(int $id): ?SiteMenu;
 
-    public function findBySlug(string $slug): ?SiteMenu;
+    public function findBySlug(Slug $slug): ?SiteMenu;
 
     public function save(SiteMenu $siteMenu): void;
 

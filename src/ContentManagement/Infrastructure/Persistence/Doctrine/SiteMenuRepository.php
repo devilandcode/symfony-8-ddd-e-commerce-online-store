@@ -4,6 +4,7 @@ namespace App\ContentManagement\Infrastructure\Persistence\Doctrine;
 
 use App\ContentManagement\Domain\Entity\SiteMenu;
 use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
+use App\Shared\Domain\ValueObject\Slug;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SiteMenuRepository implements SiteMenuRepositoryInterface 
@@ -27,9 +28,9 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
         return $siteMenu;
     }
 
-    public function findBySlug(string $slug): ?SiteMenu
+    public function findBySlug(Slug $slug): ?SiteMenu
     {
-        $siteMenu = $this->entityManager->getRepository(SiteMenu::class)->findOneBy(['slugValue' => $slug]);
+        $siteMenu = $this->entityManager->getRepository(SiteMenu::class)->findOneBy(['slugValue' => $slug->toString()]);
 
         if (null !== $siteMenu && !$siteMenu instanceof SiteMenu) {
             throw new \LogicException('The site menu repository returned an unexpected entity.');
