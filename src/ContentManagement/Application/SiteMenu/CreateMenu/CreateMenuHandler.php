@@ -19,20 +19,19 @@ final readonly class CreateMenuHandler
     ) {
     }
 
-    public function __invoke(SiteMenuDataDTO $date): void
+    public function __invoke(SiteMenuDataDTO $data): void
     {
-        $slug = $date->slug;
-        if (null !== $this->siteMenuRepository->findBySlug($slug)) {
-            throw MenuSlugAlreadyInUse::withSlug($slug->toString());
+        if (null !== $this->siteMenuRepository->findBySlug($data->slug)) {
+            throw MenuSlugAlreadyInUse::withSlug($data->slug->toString());
         }
 
         $siteMenu = SiteMenu::create(
-            $date->title,
-            $slug,
-            $date->header,
-            $date->footer,
-            $date->position,
-            $date->isActive,
+            $data->title,
+            $data->slug,
+            $data->header,
+            $data->footer,
+            $data->position,
+            $data->isActive,
             new \DateTime(),
         );
 
@@ -41,7 +40,7 @@ final readonly class CreateMenuHandler
         try {
             $this->flusher->commit();
         } catch (UniqueConstraintViolationException $exception) {
-            throw MenuSlugAlreadyInUse::withSlug($slug->toString(), $exception);
+            throw MenuSlugAlreadyInUse::withSlug($data->slug->toString(), $exception);
         }
     }
 }
