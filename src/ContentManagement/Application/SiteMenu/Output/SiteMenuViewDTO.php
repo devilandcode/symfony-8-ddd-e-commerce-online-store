@@ -14,7 +14,7 @@ final readonly class SiteMenuViewDTO
         public string $slug,
         public bool $header,
         public bool $footer,
-        public int $pos,
+        public int $position,
         public bool $isActive,
     ) {
     }

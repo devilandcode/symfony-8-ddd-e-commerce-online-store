@@ -1,6 +1,6 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block content_title %}Pages{% endblock %}
+{% block content_title %}Site menus{% endblock %}
 
 {% block main %}
     {% for message in app.flashes('success') %}
@@ -19,25 +19,28 @@
                 <th scope="col">Is header</th>
                 <th scope="col">Is footer</th>
                 <th scope="col">Position</th>
+                <th scope="col">Status</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for page in pages %}
+            {% for menu in site_menus %}
                 <tr>
-                    <td>{{ page.title }}</td>
-                    <td>{{ page.slug }}</td>
-                    <td>{{ page.isHeader ? 'Yes' : 'No' }}</td>
-                    <td>{{ page.isFooter ? 'Yes' : 'No' }}</td>
-                    <td>{{ page.position }}</td>
+                    <td>{{ menu.title }}</td>
+                    <td>{{ menu.slug }}</td>
+                    <td>{{ menu.header ? 'Yes' : 'No' }}</td>
+                    <td>{{ menu.footer ? 'Yes' : 'No' }}</td>
+                    <td>{{ menu.position}}</td>
+                    <td>{{ menu.isActive ? 'Active' : 'Inactive' }}</td>
 
-                    <td class="text-nowrap">
+
+                    {# <td class="text-nowrap">
                         <a class="btn btn-secondary btn-sm" href="{{ path('admin_site_menus_edit', {id: page.id}) }}">Edit</a>
                         <form class="d-inline" method="post" action="{{ path('admin_site_menus_delete', {id: page.id}) }}" onsubmit="return confirm('Delete this site menu?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete-site-menu-' ~ page.id) }}">
                             <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                         </form>
-                    </td>
+                    </td> #}
                 </tr>
             {% else %}
                 <tr>
