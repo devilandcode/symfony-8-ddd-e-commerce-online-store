@@ -49,7 +49,7 @@ class SiteMenuCrudController extends AbstractController
 
                 return $this->renderMenuForm($form, 'Create menu');
             } catch (\InvalidArgumentException $exception) {
-                $form->get('slug')->addError(new FormError($exception->getMessage()));
+                $this->addDomainError($form, $exception);
 
                 return $this->renderMenuForm($form, 'Create menu');
             }
@@ -76,7 +76,9 @@ class SiteMenuCrudController extends AbstractController
         }
 
         $data = $this->formDataFromMenu($menu);
-        $form = $this->createForm(MenuType::class, $data);
+        $form = $this->createForm(MenuType::class, $data, [
+            'exclude_menu_id' => $id,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -87,7 +89,7 @@ class SiteMenuCrudController extends AbstractController
 
                 return $this->renderMenuForm($form, 'Edit menu');
             } catch (\InvalidArgumentException $exception) {
-                $form->get('slug')->addError(new FormError($exception->getMessage()));
+                $this->addDomainError($form, $exception);
 
                 return $this->renderMenuForm($form, 'Edit menu');
             } catch (MenuNotFound) {
@@ -124,12 +126,18 @@ class SiteMenuCrudController extends AbstractController
     {
         return new SiteMenuDataDTO(
             trim($data->title),
+            $data->parent,
+            $data->hasSlug,
             new Slug($data->slug),
-            $data->header,
-            $data->footer,
             $data->position,
             $data->isActive,
         );
+    }
+
+    private function addDomainError(FormInterface $form, \InvalidArgumentException $exception): void
+    {
+        $field = str_contains(strtolower($exception->getMessage()), 'parent') ? 'parent' : 'slug';
+        $form->get($field)->addError(new FormError($exception->getMessage()));
     }
 
     private function renderMenuForm(FormInterface $form, string $title): Response
@@ -145,8 +153,8 @@ class SiteMenuCrudController extends AbstractController
         $data = new MenuFormData();
         $data->title = $menu->title;
         $data->slug = $menu->slug;
-        $data->header = $menu->header;
-        $data->footer = $menu->footer;
+        $data->parent = $menu->parentId;
+        $data->hasSlug = $menu->hasSlug;
         $data->position = $menu->position;
         $data->isActive = $menu->isActive;
 

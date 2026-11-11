@@ -10,9 +10,9 @@ final readonly class SiteMenuDataDTO
 {
     public function __construct(
         public string $title,
+        public ?int $parentId,
+        public bool $hasSlug,
         public Slug $slug,
-        public bool $header,
-        public bool $footer,
         public int $position,
         public bool $isActive,
     ) {

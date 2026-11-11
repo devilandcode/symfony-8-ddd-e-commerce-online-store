@@ -12,8 +12,9 @@ final readonly class SiteMenuViewDTO
         public int $id,
         public string $title,
         public string $slug,
-        public bool $header,
-        public bool $footer,
+        public ?int $parentId,
+        public ?string $parentTitle,
+        public bool $hasSlug,
         public int $position,
         public bool $isActive,
     ) {
@@ -21,12 +22,19 @@ final readonly class SiteMenuViewDTO
 
     public static function fromSiteMenu(SiteMenu $siteMenu): self
     {
+        $parent = $siteMenu->getParent();
+        $id = $siteMenu->getId();
+        if (null === $id) {
+            throw new \LogicException('Persisted site menu is missing an id.');
+        }
+
         return new self(
-            $siteMenu->getId(),
+            $id,
             $siteMenu->getTitle(),
-            (string) ($siteMenu->getSlug()),
-            $siteMenu->getIsHeader(),
-            $siteMenu->getIsFooter(),
+            $siteMenu->getSlug()->toString(),
+            $parent?->getId(),
+            $parent?->getTitle(),
+            $siteMenu->hasSlug(),
             $siteMenu->getPos(),
             $siteMenu->getIsActive(),
         );

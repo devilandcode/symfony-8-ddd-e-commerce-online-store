@@ -14,7 +14,14 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
 
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(SiteMenu::class)->findBy([], ['pos' => 'ASC', 'id' => 'ASC']);
+        return $this->entityManager->createQueryBuilder()
+            ->select('siteMenu', 'parent')
+            ->from(SiteMenu::class, 'siteMenu')
+            ->leftJoin('siteMenu.parent', 'parent')
+            ->orderBy('siteMenu.pos', 'ASC')
+            ->addOrderBy('siteMenu.id', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findById(int $id): ?SiteMenu

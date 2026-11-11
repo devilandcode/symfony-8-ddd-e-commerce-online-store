@@ -6,6 +6,7 @@ use App\Shared\Domain\ValueObject\Slug;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'site_menu')]
+#[ORM\Index(name: 'idx_site_menu_parent', columns: ['parent_id'])]
 #[ORM\Entity]
 class SiteMenu
 {
@@ -17,14 +18,15 @@ class SiteMenu
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $title;
 
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL', foreignKeyName: 'fk_site_menu_parent')]
+    private ?self $parent = null;
+
+    #[ORM\Column(name: 'has_slug', type: 'boolean', nullable: false, options: ['default' => true])]
+    private bool $has_slug = true;
+
     #[ORM\Embedded(class: Slug::class, columnPrefix: false)]
     private Slug $slug;
-
-    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
-    private bool $header = true;
-
-    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
-    private bool $footer = false;
 
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     private int $pos = 0;
@@ -43,9 +45,9 @@ class SiteMenu
 
     public static function create(
         string $title,
+        ?self $parent,
+        bool $hasSlug,
         Slug $slug,
-        bool $header,
-        bool $footer,
         int $position,
         bool $isActive,
         \DateTime $now,
@@ -53,9 +55,9 @@ class SiteMenu
         $menu = new self();
         $menu->update(
             $title,
+            $parent,
+            $hasSlug,
             $slug,
-            $header,
-            $footer,
             $position,
             $isActive,
             $now,
@@ -68,9 +70,9 @@ class SiteMenu
 
     public function update(
         string $title,
+        ?self $parent,
+        bool $hasSlug,
         Slug $slug,
-        bool $header,
-        bool $footer,
         int $position,
         bool $isActive,
         \DateTime $updatedAt,
@@ -80,10 +82,14 @@ class SiteMenu
             throw new \InvalidArgumentException('SiteMenu title cannot be empty.');
         }
 
+        if (null !== $parent && ($parent === $this || (null !== $this->id && $parent->getId() === $this->id))) {
+            throw new \InvalidArgumentException('A site menu item cannot be its own parent.');
+        }
+
         $this->title = $title;
+        $this->parent = $parent;
+        $this->has_slug = $hasSlug;
         $this->slug = $slug;
-        $this->header = $header;
-        $this->footer = $footer;
         $this->pos = $position;
         $this->is_active = $isActive;
         $this->updated_at = $updatedAt;
@@ -94,6 +100,16 @@ class SiteMenu
         return $this->id;
     }
 
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function hasSlug(): bool
+    {
+        return $this->has_slug;
+    }
+
     public function getSlug(): Slug
     {
         return $this->slug;
@@ -102,16 +118,6 @@ class SiteMenu
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    public function getIsHeader(): bool
-    {
-        return $this->header;
-    }
-
-    public function getIsFooter(): bool
-    {
-        return $this->footer;
     }
 
     public function getPos(): int

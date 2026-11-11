@@ -16,8 +16,8 @@
             <tr>
                 <th scope="col">Title</th>
                 <th scope="col">Slug</th>
-                <th scope="col">Is header</th>
-                <th scope="col">Is footer</th>
+                <th scope="col">Parent</th>
+                <th scope="col">Link</th>
                 <th scope="col">Position</th>
                 <th scope="col">Status</th>
                 <th scope="col">Actions</th>
@@ -28,9 +28,9 @@
                 <tr>
                     <td>{{ menu.title }}</td>
                     <td>{{ menu.slug }}</td>
-                    <td>{{ menu.header ? 'Yes' : 'No' }}</td>
-                    <td>{{ menu.footer ? 'Yes' : 'No' }}</td>
-                    <td>{{ menu.position}}</td>
+                    <td>{{ menu.parentTitle ?? '—' }}</td>
+                    <td>{{ menu.hasSlug ? 'Yes' : 'No' }}</td>
+                    <td>{{ menu.position }}</td>
                     <td>{{ menu.isActive ? 'Active' : 'Inactive' }}</td>
 
 
@@ -44,7 +44,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">No site menu found.</td>
+                    <td colspan="7">No site menu found.</td>
                 </tr>
             {% endfor %}
         </tbody>

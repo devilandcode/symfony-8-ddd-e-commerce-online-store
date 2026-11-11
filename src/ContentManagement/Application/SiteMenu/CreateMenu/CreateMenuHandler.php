@@ -21,15 +21,17 @@ final readonly class CreateMenuHandler
 
     public function __invoke(SiteMenuDataDTO $data): void
     {
+        $parent = $this->parentFromId($data->parentId);
+
         if (null !== $this->siteMenuRepository->findBySlug($data->slug)) {
             throw MenuSlugAlreadyInUse::withSlug($data->slug->toString());
         }
 
         $siteMenu = SiteMenu::create(
             $data->title,
+            $parent,
+            $data->hasSlug,
             $data->slug,
-            $data->header,
-            $data->footer,
             $data->position,
             $data->isActive,
             new \DateTime(),
@@ -42,5 +44,15 @@ final readonly class CreateMenuHandler
         } catch (UniqueConstraintViolationException $exception) {
             throw MenuSlugAlreadyInUse::withSlug($data->slug->toString(), $exception);
         }
+    }
+
+    private function parentFromId(?int $parentId): ?SiteMenu
+    {
+        if (null === $parentId) {
+            return null;
+        }
+
+        return $this->siteMenuRepository->findById($parentId)
+            ?? throw new \InvalidArgumentException(sprintf('Parent site menu with ID %d was not found.', $parentId));
     }
 }
