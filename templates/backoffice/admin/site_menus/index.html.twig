@@ -34,13 +34,13 @@
                     <td>{{ menu.isActive ? 'Active' : 'Inactive' }}</td>
 
 
-                    {# <td class="text-nowrap">
-                        <a class="btn btn-secondary btn-sm" href="{{ path('admin_site_menus_edit', {id: page.id}) }}">Edit</a>
-                        <form class="d-inline" method="post" action="{{ path('admin_site_menus_delete', {id: page.id}) }}" onsubmit="return confirm('Delete this site menu?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete-site-menu-' ~ page.id) }}">
+                    <td class="text-nowrap">
+                        <a class="btn btn-secondary btn-sm" href="{{ path('admin_site_menus_edit', {id: menu.id}) }}">Edit</a>
+                        <form class="d-inline" method="post" action="{{ path('admin_site_menus_delete', {id: menu.id}) }}" onsubmit="return confirm('Delete this site menu?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-site-menu-' ~ menu.id) }}">
                             <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                         </form>
-                    </td> #}
+                    </td>
                 </tr>
             {% else %}
                 <tr>

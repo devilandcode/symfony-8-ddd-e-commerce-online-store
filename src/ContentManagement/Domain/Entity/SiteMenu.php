@@ -51,16 +51,42 @@ class SiteMenu
         \DateTime $now,
     ): self {
         $menu = new self();
-        $menu->title = $title;
-        $menu->slug = $slug;
-        $menu->header = $header;
-        $menu->footer = $footer;
-        $menu->pos = $position;
-        $menu->is_active = $isActive;
+        $menu->update(
+            $title,
+            $slug,
+            $header,
+            $footer,
+            $position,
+            $isActive,
+            $now,
+        );
+
         $menu->created_at = $now;
-        $menu->updated_at = $now;
 
         return $menu;
+    }
+
+    public function update(
+        string $title,
+        Slug $slug,
+        bool $header,
+        bool $footer,
+        int $position,
+        bool $isActive,
+        \DateTime $updatedAt,
+    ): void {
+        $title = trim($title);
+        if ('' === $title) {
+            throw new \InvalidArgumentException('SiteMenu title cannot be empty.');
+        }
+
+        $this->title = $title;
+        $this->slug = $slug;
+        $this->header = $header;
+        $this->footer = $footer;
+        $this->pos = $position;
+        $this->is_active = $isActive;
+        $this->updated_at = $updatedAt;
     }
 
     public function getId(): ?int

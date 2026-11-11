@@ -78,7 +78,6 @@ class Page
             $now,
         );
         $page->created_at = $now;
-        $page->updated_at = $now;
 
         return $page;
     }

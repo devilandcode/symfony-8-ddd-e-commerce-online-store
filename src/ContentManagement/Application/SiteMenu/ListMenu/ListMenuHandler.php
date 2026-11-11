@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\ContentManagement\Application\SiteMenu\ListSiteMenus;
+namespace App\ContentManagement\Application\SiteMenu\ListMenu;
 
 use App\ContentManagement\Application\SiteMenu\Output\SiteMenuViewDTO;
 use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
 
-final readonly class ListSiteMenuHandler
+final readonly class ListMenuHandler
 {
     public function __construct(private SiteMenuRepositoryInterface $siteMenuRepository)
     {
