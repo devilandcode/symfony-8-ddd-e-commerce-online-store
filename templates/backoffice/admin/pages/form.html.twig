@@ -6,8 +6,32 @@
 
 {% block main %}
     {{ form_start(form) }}
-        {{ form_widget(form) }}
+    {{ form_errors(form) }}
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#page-main" role="tab">Main</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#page-seo" role="tab">SEO</button>
+            </li>
+        </ul>
+        <div class="tab-content pt-3">
+            <div class="tab-pane fade show active" id="page-main" role="tabpanel">
+                {{ form_row(form.title) }}
+                {{ form_row(form.slug) }}
+                {{ form_row(form.h1) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.content) }}
+                {{ form_row(form.position) }}
+                {{ form_row(form.isActive) }}
+            </div>
+            <div class="tab-pane fade" id="page-seo" role="tabpanel">
+                {{ form_row(form.seoTitle) }}
+                {{ form_row(form.seoDescription) }}
+            </div>
+        </div>
         <button class="btn btn-primary" type="submit">Save</button>
         <a class="btn btn-secondary" href="{{ path('admin_pages_index') }}">Cancel</a>
+    {{ form_rest(form) }}
     {{ form_end(form) }}
 {% endblock %}
