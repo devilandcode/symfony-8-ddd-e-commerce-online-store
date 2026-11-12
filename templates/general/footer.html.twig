@@ -8,7 +8,7 @@
                             <div class="row align-items-center justify-content-sm-start justify-content-center no-gutters">
                                 <div class="col-auto col">
                                     <a href="" class="logo__link block__link">
-                                        <img src="assets/i/header-logo_w.svg" alt="" class="block">
+                                        <img src="{{ asset('i/header-logo_w.svg') }}" alt="logo" class="block">
                                     </a>
                                 </div>
                             </div>
@@ -33,23 +33,18 @@
                 </div>
                 <div class="col-xl-5 offset-xl-1 col-lg-8 col-md-8 col-12 order-xl-2 order-1 col">
                     <div class="row row-footer-top justify-content-between">
-                        <div class="col-lg-6 col-md-5 col-xxs-6 col-12 col md-pb-50 pb-20">
-                            <div class="_h5 fontCor mb-15">Компания</div>
-                            <ul class="ul-footer-nav">
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">О нас</span></a></li>
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">Политика конфиденциальности</span></a></li>
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">Дисконтная карта</span></a></li>
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">Новости</span></a></li>
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">Travel retail</span></a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-6 col-md-5 col-xxs-6 col-12 col md-pb-50 pb-20">
-                            <div class="_h5 fontCor mb-15">Контакты</div>
-                            <ul class="ul-footer-nav">
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">Вопрос ответ</span></a></li>
-                                <li class="li mb-10"><a href="" class="__link color-white nul"><span class="dashed dash">Контакты</span></a></li>
-                            </ul>
-                        </div>
+                        {% for menu in site_menus() %}
+                            <div class="col-lg-6 col-md-5 col-xxs-6 col-12 col md-pb-50 pb-20">
+                                <div class="_h5 fontCor mb-15">{{ menu.title }} </div>
+                                {% if menu.children is not empty %}
+                                    <ul class="ul-footer-nav">
+                                        {% for child in menu.children %}
+                                            <li class="li mb-10"><a {% if child.hasSlug is true %} href="{{ child.slug }}" {% endif %} class="__link color-white nul"><span class="dashed dash">{{ child.title }}</span></a></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-12 order-xl-3 order-2 col md-pb-50 pb-30">
@@ -94,13 +89,7 @@
                     <div class="row justify-content-lg-end justify-content-center">
                         <div class="col-auto">
                             <div class="developer pt-20">
-                                <div class="w-icon-left">
-                                    Разработка сайта <a href="https://zmitroc.by" target="_blank">ZmitroC.by</a>&trade; 
-                                    <!-- Developed by <a href="https://zmitroc.dev" target="_blank">ZmitroC.dev</a>&trade; -->
-                                    <div class="icon fcm">
-                                        <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H10V2H8V4H6V2H2V4H0V0Z"/><path d="M4 6V4H6V6H4Z"/><path d="M4 8V6H2V8H0V10H10V6H8V8H4Z"/></svg>
-                                        <!-- <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M1 0H0V1H1V0Z"/><path d="M12 0H11V1H12V0Z"/><path d="M3 1H1V2H3V1Z"/><path d="M11 1H9V2H11V1Z"/><path d="M10.9584 5.46361V4.30908H9.91676V3.15453H8.87513V2H7.83352V3.15453H4.16346V2H3.12182V3.15453H2.08022V4.30908H1.04163V5.46361H0V11H1.04163V7.53977H2.08324V11H3.12487V7.53977H4.16651V8.69429H5.20811V9.84885H7.00509V8.69429H7.83654V7.53977H8.87818V11H9.91981V7.53977H10.9614V11H12V5.46361H10.9584ZM8.87818 4.30908V5.46361H7.07513V4.30908H8.87818ZM3.12182 4.30908H4.92487V5.46361H3.12182V4.30908Z"/><path d="M5 11H3V12H5V11Z"/><path d="M9 11H7V12H9V11Z"/></svg> -->
-                                    </div>
+                                <div class="w-icon-left">                                   
                                 </div>
                             </div>
                         </div>
