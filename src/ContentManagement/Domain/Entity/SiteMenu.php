@@ -3,6 +3,8 @@
 namespace App\ContentManagement\Domain\Entity;
 
 use App\Shared\Domain\ValueObject\Slug;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'site_menu')]
@@ -18,9 +20,16 @@ class SiteMenu
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL', foreignKeyName: 'fk_site_menu_parent')]
     private ?self $parent = null;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[ORM\OrderBy(['pos' => 'ASC', 'id' => 'ASC'])]
+    private Collection $children;
 
     #[ORM\Column(name: 'has_slug', type: 'boolean', nullable: false, options: ['default' => true])]
     private bool $has_slug = true;
@@ -41,7 +50,9 @@ class SiteMenu
     private \DateTime $updated_at;
 
     private function __construct()
-    {}
+    {
+        $this->children = new ArrayCollection();
+    }
 
     public static function create(
         string $title,
@@ -103,6 +114,14 @@ class SiteMenu
     public function getParent(): ?self
     {
         return $this->parent;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
     }
 
     public function hasSlug(): bool

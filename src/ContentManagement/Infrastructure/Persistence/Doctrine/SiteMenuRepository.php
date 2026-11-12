@@ -24,6 +24,23 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
             ->getResult();
     }
 
+    public function findActiveRoots(): array
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->select('siteMenu', 'children')
+            ->distinct()
+            ->from(SiteMenu::class, 'siteMenu')
+            ->leftJoin('siteMenu.children', 'children', 'WITH', 'children.is_active = true')
+            ->where('siteMenu.parent IS NULL')
+            ->andWhere('siteMenu.is_active = true')
+            ->orderBy('siteMenu.pos', 'ASC')
+            ->addOrderBy('siteMenu.id', 'ASC')
+            ->addOrderBy('children.pos', 'ASC')
+            ->addOrderBy('children.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findById(int $id): ?SiteMenu
     {
         $siteMenu = $this->entityManager->getRepository(SiteMenu::class)->find($id);

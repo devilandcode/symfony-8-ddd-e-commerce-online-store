@@ -12,6 +12,11 @@ interface SiteMenuRepositoryInterface
      */
     public function findAll(): array;
 
+    /**
+     * @return list<SiteMenu>
+     */
+    public function findActiveRoots(): array;
+
     public function findById(int $id): ?SiteMenu;
 
     public function findBySlug(Slug $slug): ?SiteMenu;
