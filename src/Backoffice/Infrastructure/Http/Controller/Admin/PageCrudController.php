@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
-use App\Backoffice\Infrastructure\Http\Form\PageFormData;
-use App\Backoffice\Infrastructure\Http\Form\PageType;
+use App\Backoffice\Infrastructure\Http\Form\Page\PageFormData;
+use App\Backoffice\Infrastructure\Http\Form\Page\PageType;
 use App\ContentManagement\Application\Page\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\CreatePage\CreatePageHandler;
 use App\ContentManagement\Application\Page\DeletePage\DeletePageHandler;

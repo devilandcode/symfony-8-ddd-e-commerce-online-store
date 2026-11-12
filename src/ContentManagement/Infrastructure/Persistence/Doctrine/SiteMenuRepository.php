@@ -18,8 +18,8 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
             ->select('siteMenu', 'parent')
             ->from(SiteMenu::class, 'siteMenu')
             ->leftJoin('siteMenu.parent', 'parent')
-            ->orderBy('siteMenu.pos', 'ASC')
-            ->addOrderBy('siteMenu.id', 'ASC')
+            ->orderBy('siteMenu.pos', \SortDirection::Ascending)
+            ->addOrderBy('siteMenu.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -33,10 +33,8 @@ class SiteMenuRepository implements SiteMenuRepositoryInterface
             ->leftJoin('siteMenu.children', 'children', 'WITH', 'children.is_active = true')
             ->where('siteMenu.parent IS NULL')
             ->andWhere('siteMenu.is_active = true')
-            ->orderBy('siteMenu.pos', 'ASC')
-            ->addOrderBy('siteMenu.id', 'ASC')
-            ->addOrderBy('children.pos', 'ASC')
-            ->addOrderBy('children.id', 'ASC')
+            ->orderBy('siteMenu.pos', \SortDirection::Ascending)
+            ->addOrderBy('siteMenu.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

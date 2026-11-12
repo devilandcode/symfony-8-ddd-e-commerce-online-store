@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Backoffice\Infrastructure\Http\Form;
+namespace App\Backoffice\Infrastructure\Http\Form\SiteMenu;
 
 final class MenuFormData
 {

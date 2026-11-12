@@ -38,6 +38,11 @@ class SettingSection
         return $this->key;
     }
 
+    public function getPayload(): array
+    {
+        return $this->payload;
+    }
+
     public function settings(): SettingsData
     {
         return match ($this->key) {

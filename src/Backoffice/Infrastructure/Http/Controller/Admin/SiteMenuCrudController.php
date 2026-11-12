@@ -2,8 +2,8 @@
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
-use App\Backoffice\Infrastructure\Http\Form\MenuFormData;
-use App\Backoffice\Infrastructure\Http\Form\MenuType;
+use App\Backoffice\Infrastructure\Http\Form\SiteMenu\MenuFormData;
+use App\Backoffice\Infrastructure\Http\Form\SiteMenu\MenuType;
 use App\ContentManagement\Application\SiteMenu\CreateMenu\CreateMenuHandler;
 use App\ContentManagement\Application\SiteMenu\DeleteMenu\DeleteMenuHandler;
 use App\ContentManagement\Application\SiteMenu\Exception\MenuNotFound;

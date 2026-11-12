@@ -28,7 +28,7 @@ class SiteMenu
      * @var Collection<int, self>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    #[ORM\OrderBy(['pos' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['pos' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $children;
 
     #[ORM\Column(name: 'has_slug', type: 'boolean', nullable: false, options: ['default' => true])]

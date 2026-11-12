@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Backoffice\Infrastructure\Http\Form;
+namespace App\Backoffice\Infrastructure\Http\Form\User;
 
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;

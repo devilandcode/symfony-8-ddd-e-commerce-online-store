@@ -12,4 +12,8 @@ interface SettingSectionRepositoryInterface
     public function findByKey(SettingSectionKey $key): ?SettingSection;
 
     public function save(SettingSection $section): void;
+
+    public function getContactSetting(): array;
+
+    public function getContentSetting(): array;
 }

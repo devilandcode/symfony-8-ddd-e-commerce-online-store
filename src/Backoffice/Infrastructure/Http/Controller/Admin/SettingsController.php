@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
-use App\Backoffice\Infrastructure\Http\Form\ContactsSettingsType;
-use App\Backoffice\Infrastructure\Http\Form\ContentSettingsType;
-use App\Backoffice\Infrastructure\Http\Form\MetricsSettingsType;
+use App\Backoffice\Infrastructure\Http\Form\Setting\ContactsSettingsType;
+use App\Backoffice\Infrastructure\Http\Form\Setting\ContentSettingsType;
+use App\Backoffice\Infrastructure\Http\Form\Setting\MetricsSettingsType;
 use App\StoreSettings\Application\SettingsDataFactory;
 use App\StoreSettings\Application\SettingsManager;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;

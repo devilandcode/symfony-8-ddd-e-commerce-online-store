@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
-use App\Backoffice\Infrastructure\Http\Form\UserFormData;
-use App\Backoffice\Infrastructure\Http\Form\UserType;
+use App\Backoffice\Infrastructure\Http\Form\User\UserFormData;
+use App\Backoffice\Infrastructure\Http\Form\User\UserType;
 use App\Customer\Application\CreateUser\CreateUserDTO;
 use App\Customer\Application\CreateUser\CreateUserHandler;
 use App\Customer\Application\DeleteUser\DeleteUserHandler;
