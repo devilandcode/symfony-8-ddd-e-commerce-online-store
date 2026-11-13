@@ -6,16 +6,16 @@
 	<meta name="theme-color" content="#fff">
     <meta name="csrf-token" content="{{ csrf_token('app') }}">
 
-{% if seo is defined %}
-    <meta property="og:title" content="{{ seo.title }}"/>
-    <meta property="og:description" content="{{ seo.description }}"/>    
+{% if page is defined %}
+    <meta property="og:title" content="{{ page.seo_title }}"/>
+    <meta property="og:description" content="{{ page.seo_description}}"/>    
     <meta property="og:type" content="article"/>
     <meta property="og:site_name" content="{{ app.request.server.get('APP_NAME')|default('HV-store') }}"/>
     <meta property="og:url" content="{{ app.request.uri }}" />
 
-    <title>{{ seo.title }}</title>
-    <meta name="description" content="{{ seo.description }}"/>
-    <meta name="title" content="{{ seo.title }}">
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ page.seo_description }}"/>
+    <meta name="title" content="{{ page.seo_title }}">
 {% endif %}
 
 {% if app.request.query.get('page') %}
