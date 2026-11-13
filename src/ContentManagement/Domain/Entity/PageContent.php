@@ -20,7 +20,7 @@ class PageContent
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Page::class)]
-    #[ORM\JoinColumn(name: 'page_id', referencedColumnName: 'id', unique: false, nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'page_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Page $page;
 
     /** @var array<string, mixed> */
