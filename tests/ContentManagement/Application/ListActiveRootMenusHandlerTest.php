@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\ContentManagement\Application;
 
-use App\ContentManagement\Application\SiteMenu\ListActiveRootMenus\ListActiveRootMenusHandler;
+use App\ContentManagement\Application\SiteMenu\FrontUseCases\ListActiveRootMenus\ListActiveRootMenusHandler;
 use App\ContentManagement\Domain\Entity\SiteMenu;
 use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
 use App\Shared\Domain\ValueObject\Slug;

@@ -8,7 +8,7 @@ use App\Backoffice\Infrastructure\Http\Form\Setting\ContactsSettingsType;
 use App\Backoffice\Infrastructure\Http\Form\Setting\ContentSettingsType;
 use App\Backoffice\Infrastructure\Http\Form\Setting\MetricsSettingsType;
 use App\StoreSettings\Application\SettingsDataFactory;
-use App\StoreSettings\Application\SettingsManager;
+use App\StoreSettings\Application\AdminUseCases\SettingsManager\SettingsManager;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

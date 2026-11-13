@@ -6,7 +6,7 @@ namespace App\Tests\StoreSettings\Application;
 
 use App\Shared\Application\Flusher;
 use App\StoreSettings\Application\SettingsDataFactory;
-use App\StoreSettings\Application\SettingsManager;
+use App\StoreSettings\Application\AdminUseCases\SettingsManager\SettingsManager;
 use App\StoreSettings\Domain\Entity\SettingSection;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;
 use App\StoreSettings\Domain\Repository\SettingSectionRepositoryInterface;

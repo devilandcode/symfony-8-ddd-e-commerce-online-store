@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Customer\Application;
 
-use App\Customer\Application\CreateUser\CreateUserDTO;
-use App\Customer\Application\CreateUser\CreateUserHandler;
-use App\Customer\Application\Exception\UserEmailAlreadyInUse;
+use App\Customer\Application\AdminUseCases\CreateUser\CreateUserDTO;
+use App\Customer\Application\AdminUseCases\CreateUser\CreateUserHandler;
+use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\PasswordHasherInterface;
-use App\Customer\Application\UpdateUser\UpdateUserDTO;
-use App\Customer\Application\UpdateUser\UpdateUserHandler;
+use App\Customer\Application\AdminUseCases\UpdateUser\UpdateUserDTO;
+use App\Customer\Application\AdminUseCases\UpdateUser\UpdateUserHandler;
 use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Enum\UserRoleEnum;

@@ -2,10 +2,10 @@
 
 namespace App\Storefront\Infrastructure\Twig;
 
-use App\ContentManagement\Application\SiteMenu\ListActiveRootMenus\ListActiveRootMenusHandler;
+use App\ContentManagement\Application\SiteMenu\FrontUseCases\ListActiveRootMenus\ListActiveRootMenusHandler;
 use App\ContentManagement\Domain\Entity\SiteMenu;
-use App\StoreSettings\Application\ListContactSettingsHandler;
-use App\StoreSettings\Application\ListContentSettingHandler;
+use App\StoreSettings\Application\FrontUseCases\ListContactSettings\ListContactSettingsHandler;
+use App\StoreSettings\Application\FrontUseCases\ListContentSetting\ListContentSettingHandler;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
