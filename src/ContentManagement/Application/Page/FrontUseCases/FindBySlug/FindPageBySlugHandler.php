@@ -6,12 +6,12 @@ namespace App\ContentManagement\Application\Page\FrontUseCases\FindBySlug;
 
 use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFound;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\ViewPageDTO;
-use App\ContentManagement\Infrastructure\Persistence\Doctrine\PageRepository;
+use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Domain\ValueObject\Slug;
 
 final readonly class FindPageBySlugHandler
 {
-    public function __construct(private PageRepository $pageRepository)
+    public function __construct(private PageRepositoryInterface $pageRepository)
     {}
 
 
