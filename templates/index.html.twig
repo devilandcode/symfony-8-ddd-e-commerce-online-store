@@ -1,85 +1,60 @@
 {% extends 'layouts/main.html.twig' %}
 
 {% block content %}
-    <section class="s-line s-index-slider">
-        <div class="owl-carousel owl-index-slider">				
-            <div class="slide mobile" style="background-image: url('https://place-hold.it/575x978/ececec/fff');">
-                <div class="slide desktop" style="background-image: url('https://place-hold.it/1920x680/ececec/fff');">
-                    <div class="overlay"></div>
-                    <div class="container color-black align-sm-left align-center">
-                        <div class="row row-slide-content align-items-sm-center align-items-end">
-                            <div class="col-12 col sm-pb-0 pb-40">
-                                <div class="image">
-                                    <div class="row justify-content-sm-start justify-content-center">
-                                        <div class="col-xl-4 col-lg-5 col-md-7 col-sm-9 col-12">
-                                            <img src="https://place-hold.it/575x120/345aca" alt="" class="img block">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="description _h3 mt-20">
-                                    <div class="row">
-                                        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">
-                                            Описание 1
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="description _h4 mt-20">
-                                    <div class="row">
-                                        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">
-                                            Описание 2
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-button mt-30">
-                                    <div class="row justify-content-sm-start  justify-content-center">
-                                        <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-5 col-sm-6 col-xs-8 col-9">
-                                            <a href="" class="button custom-color block">В каталог</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="slide mobile" style="background-image: url({{ asset('content/index-slide001-m.png') }});">
-                <div class="slide desktop" style="background-image: url({{ asset('content/index-slide001-d.png') }});">
-                    <div class="overlay"></div>
-                    <div class="container">
-                        <div class="row row-slide-content align-items-center">
-                            <div class="col-12 col">
-                                <div class="image">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-5 col-md-7 col-sm-9 col-12">
-                                            <img src="{{ asset('content/index-slide-logo.svg') }}" alt="" class="img block">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="description _h6 mt-30">
-                                    <div class="row">
-                                        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">
-                                            Estoy encantada con este serum. Tengo la piel más hidratada, tersa, suave y con una luz preciosa. Me gusta mucho su olor y textura. Es fluido, por lo que se necesita utilizar poco producto. Seguiré repitiendo con ella, muy recomendable.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-button mt-50">
-                                    <div class="row justify-content-sm-start  justify-content-center">
-                                        <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-5 col-sm-6 col-xs-8 col-9">
-                                            <a href="" class="button transparent white block">В каталог</a>
-                                        </div>
+    {% set pageContent = page.pageContent %}
+    {% set sections = pageContent.sections|default({}) %}
+    {% set newArrivals = sections.new_arrivals|default({}) %}
+    {% set popularBrands = sections.popular_brands|default({}) %}
+    {% set priceHits = sections.price_hits|default({}) %}
+    {% set heroSlides = pageContent.slides|default([])|filter(slide => slide.isActive|default(false) and slide.desktopImage|default('') is not empty) %}
+    {% if pageContent is empty %}
+        {% include 'general/home-hero-fallback.html.twig' %}
+    {% elseif heroSlides is not empty %}
+        <section class="s-line s-index-slider">
+            <div class="owl-carousel owl-index-slider">
+                {% for slide in heroSlides %}
+                    <div class="slide mobile" style="background-image: url('{{ asset(slide.mobileImage ?? slide.desktopImage) }}');">
+                        <div class="slide desktop" style="background-image: url('{{ asset(slide.desktopImage) }}');">
+                            <div class="overlay"></div>
+                            <div class="container">
+                                <div class="row row-slide-content align-items-center">
+                                    <div class="col-12 col">
+                                        {% if slide.heading is not empty %}
+                                            <div class="description _h3 mt-20">
+                                                <div class="row">
+                                                    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">{{ slide.heading }}</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if slide.description is not empty %}
+                                            <div class="description _h6 mt-30">
+                                                <div class="row">
+                                                    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">{{ slide.description }}</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if slide.buttonLabel is not empty and slide.buttonUrl is not empty %}
+                                            <div class="w-button mt-50">
+                                                <div class="row justify-content-sm-start justify-content-center">
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-5 col-sm-6 col-xs-8 col-9">
+                                                        <a href="{{ slide.buttonUrl }}" class="button transparent white block">{{ slide.buttonLabel }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
             </div>
-        </div>
-    </section>
+        </section>
+    {% endif %}
     <section class="s-line s-items-slider">
         <div class="container pt-60 pb-60">
             <div class="_h2 upper fontCor semibold color-dblue align-center xl-mb-45 md-mb-30 mb-20">
-                НОВЫЕ ПОСТУПЛЕНИЯ
+                {{ newArrivals.heading|default('') }}
             </div>
             <div class="owl-carousel owl-products-more-slider">
                 <div class="slide">
@@ -617,7 +592,9 @@
 
             <div class="row justify-content-center mt-40">
                 <div class="col-sm-auto col-10">
-                    <a href="" class="button transparent blue block">СМОТРЕТЬ БОЛЬШЕ</a>
+                    {% if newArrivals.buttonLabel|default('') is not empty and newArrivals.buttonUrl|default('') is not empty %}
+                        <a href="{{ newArrivals.buttonUrl }}" class="button transparent blue block">{{ newArrivals.buttonLabel }}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -661,7 +638,7 @@
     <section class="s-line s-items-slider">
         <div class="container pt-60 pb-60">
             <div class="_h2 upper fontCor semibold color-dblue align-center xl-mb-45 md-mb-30 mb-20">
-                популярные бренды
+                {{ popularBrands.heading|default('') }}
             </div>
             <div class="owl-carousel owl-brands-slider">
                 <div class="slide">
@@ -745,7 +722,9 @@
 
             <div class="row justify-content-center mt-40">
                 <div class="col-sm-auto col-10">
-                    <a href="" class="button transparent blue block" style="min-width: 227px;">Все бренды</a>
+                    {% if popularBrands.buttonLabel|default('') is not empty and popularBrands.buttonUrl|default('') is not empty %}
+                        <a href="{{ popularBrands.buttonUrl }}" class="button transparent blue block" style="min-width: 227px;">{{ popularBrands.buttonLabel }}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -754,7 +733,7 @@
     <section class="s-line s-items-slider">
         <div class="container pt-60 pb-10">
             <div class="_h2 upper fontCor semibold color-dblue align-center xl-mb-45 md-mb-30 mb-20">
-                ПРАЙС ХИТЫ
+                {{ priceHits.heading|default('') }}
             </div>
             <!--
             <div class="row row-catalog-list xl-lg-gutters md-md-gutters sm-gutters">
@@ -1522,7 +1501,9 @@
 
             <div class="row justify-content-center mt-40">
                 <div class="col-sm-auto col-10">
-                    <a href="" class="button transparent blue block">СМОТРЕТЬ БОЛЬШЕ</a>
+                    {% if priceHits.buttonLabel|default('') is not empty and priceHits.buttonUrl|default('') is not empty %}
+                        <a href="{{ priceHits.buttonUrl }}" class="button transparent blue block">{{ priceHits.buttonLabel }}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

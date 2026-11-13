@@ -30,6 +30,9 @@
                     <td>{{ page.position }}</td>
                     <td class="text-nowrap">
                         <a class="btn btn-secondary btn-sm" href="{{ path('admin_pages_edit', {id: page.id}) }}">Edit</a>
+                        {% if page.slug in pageContentFormSlugs|default([]) %}
+                            <a class="btn btn-info btn-sm" href="{{ path('admin_page_content_edit', {pageId: page.id}) }}">Edit content</a>
+                        {% endif %}
                         <form class="d-inline" method="post" action="{{ path('admin_pages_delete', {id: page.id}) }}" onsubmit="return confirm('Delete this page?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete-page-' ~ page.id) }}">
                             <button class="btn btn-danger btn-sm" type="submit">Delete</button>

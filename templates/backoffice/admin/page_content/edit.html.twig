@@ -1,0 +1,27 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% form_theme form with [_self, '@EasyAdmin/crud/form_theme.html.twig', 'backoffice/admin/page_content/_collection_theme.html.twig'] only %}
+
+{% block file_widget %}
+    {% if stored_path is defined and stored_path %}
+        <div class="mb-2">
+            <img src="{{ asset(stored_path) }}" alt="" style="max-width: 420px; max-height: 180px;">
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content_title %}Page content: {{ pageTitle }}{% endblock %}
+
+{% block main %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+    {% endfor %}
+
+    <p><a href="{{ path('admin_pages_index') }}">Back to pages</a></p>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary" type="submit">Save page content</button>
+    {{ form_end(form) }}
+{% endblock %}

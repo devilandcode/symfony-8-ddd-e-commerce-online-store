@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ContentManagement\Application\Page\FrontUseCases\Output;
 
 final readonly class ViewPageDTO
@@ -11,6 +13,7 @@ final readonly class ViewPageDTO
         public ?string $content,
         public ?string $seo_title,
         public ?string $seo_description,
+        public PageContentView $pageContent,
     ) {
     }
 }

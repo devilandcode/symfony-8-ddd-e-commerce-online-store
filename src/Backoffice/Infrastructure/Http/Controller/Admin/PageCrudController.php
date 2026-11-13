@@ -6,6 +6,7 @@ namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
 use App\Backoffice\Infrastructure\Http\Form\Page\PageFormData;
 use App\Backoffice\Infrastructure\Http\Form\Page\PageType;
+use App\Backoffice\Infrastructure\Http\Form\PageContent\PageContentFormRegistry;
 use App\ContentManagement\Application\Page\AdminUseCases\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\AdminUseCases\CreatePage\CreatePageHandler;
 use App\ContentManagement\Application\Page\AdminUseCases\DeletePage\DeletePageHandler;
@@ -29,10 +30,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class PageCrudController extends AbstractController
 {
     #[AdminRoute('/', name: 'index', options: ['methods' => ['GET']])]
-    public function index(ListPagesHandler $listPages): Response
+    public function index(ListPagesHandler $listPages, PageContentFormRegistry $formRegistry): Response
     {
+        $pages = $listPages();
+        $pageContentFormSlugs = [];
+        foreach ($pages as $page) {
+            if ($formRegistry->has($page->slug)) {
+                $pageContentFormSlugs[] = $page->slug;
+            }
+        }
+
         return $this->render('backoffice/admin/pages/index.html.twig', [
-            'pages' => $listPages(),
+            'pages' => $pages,
+            'pageContentFormSlugs' => $pageContentFormSlugs,
         ]);
     }
 

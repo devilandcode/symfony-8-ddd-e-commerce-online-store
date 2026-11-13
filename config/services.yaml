@@ -25,6 +25,9 @@ services:
     App\ContentManagement\Domain\Repository\PageRepositoryInterface:
         alias: App\ContentManagement\Infrastructure\Persistence\Doctrine\PageRepository
 
+    App\ContentManagement\Domain\Repository\PageContentRepositoryInterface:
+        alias: App\ContentManagement\Infrastructure\Persistence\Doctrine\PageContentRepository
+
     App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface:
         alias: App\ContentManagement\Infrastructure\Persistence\Doctrine\SiteMenuRepository
 

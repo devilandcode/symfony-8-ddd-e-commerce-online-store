@@ -2,6 +2,7 @@
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
+use App\Backoffice\Infrastructure\Http\Controller\Admin\PageContentController;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;

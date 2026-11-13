@@ -60,4 +60,14 @@ final class InMemorySettingSectionRepository implements SettingSectionRepository
     {
         $this->sections[$section->getKey()->value] = $section;
     }
+
+    public function getContactSetting(): array
+    {
+        return [];
+    }
+
+    public function getContentSetting(): array
+    {
+        return [];
+    }
 }

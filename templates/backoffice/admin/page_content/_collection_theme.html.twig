@@ -1,0 +1,113 @@
+{# Same empty state as EasyAdmin. ea() is only present inside an admin request. #}
+{% block empty_collection %}
+    <div class="empty collection-empty">
+        {% if ea() %}
+            {{ include(ea().templatePath('label/empty')) }}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block collection_entry_row %}
+    {% set parent_form = form_parent(form) %}
+    {% set ea_field = parent_form.vars.ea_vars.field|default(null) %}
+    {% set is_array_field = ea_field and ('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == ea_field.fieldFqcn) %}
+    {% set is_complex = ea_field ? (ea_field.customOptions.get('entryIsComplex') ?? false) : false %}
+    {% set allows_deleting_items = parent_form.vars.allow_delete|default(false) %}
+    {% set render_expanded = (not form.vars.valid) or (ea_field ? (ea_field.customOptions.get('renderExpanded') ?? false) : false) %}
+    {% set delete_item_button %}
+        <button type="button" class="btn btn-link btn-link-danger field-collection-delete-button"
+                title="{{ 'action.remove_item'|trans({}, 'EasyAdminBundle') }}">
+            <twig:ea:Icon name="internal:delete" />
+        </button>
+    {% endset %}
+
+    <div class="field-collection-item {{ is_complex ? 'field-collection-item-complex' }} {{ not form.vars.valid ? 'is-invalid' }}">
+        {% if is_array_field %}
+            {{ form_label(form) }}
+            {{ form_widget(form) }}
+            {% if allows_deleting_items and not disabled %}
+                {{ delete_item_button }}
+            {% endif %}
+        {% else %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button {{ render_expanded ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#{{ id }}-contents">
+                        <twig:ea:Icon name="internal:chevron-right" class="form-collection-item-collapse-marker" />
+                        {% if collection_entry_prototype|default(false) %}
+                            <span class="page-content-entry-title" data-entry-prefix="{{ collection_entry_title_prefix|e('html_attr') }}" data-entry-index="{{ collection_entry_index_placeholder|e('html_attr') }}"{% if collection_entry_heading|default('') != '' %} data-entry-heading="{{ collection_entry_heading|e('html_attr') }}"{% endif %}>{{ collection_entry_title_prefix }}</span>
+                        {% else %}
+                            <span class="page-content-entry-title">{{ collection_entry_title|default(name|humanize) }}</span>
+                        {% endif %}
+                    </button>
+
+                    {% if allows_deleting_items and not disabled %}
+                        {{ delete_item_button }}
+                    {% endif %}
+                </h2>
+                <div id="{{ id }}-contents" class="accordion-collapse collapse {{ render_expanded ? 'show' }}">
+                    <div class="accordion-body">
+                        <div class="row">
+                            {{ form_widget(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block collection_widget %}
+    {% set isEmptyCollection = value is null or (value is iterable and value is empty) %}
+    {% set ea_field = form.vars.ea_vars.field|default(null) %}
+    {% set is_array_field = ea_field and ('EasyCorp\\Bundle\\EasyAdminBundle\\Field\\ArrayField' == ea_field.fieldFqcn) %}
+
+    <div class="ea-form-collection-items">
+        {% if isEmptyCollection %}
+            {{ block('empty_collection') }}
+        {% elseif is_array_field %}
+            {{ block('form_widget') }}
+        {% else %}
+            <div class="accordion">
+                {{ block('form_widget') }}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if isEmptyCollection or prototype is defined %}
+        {% set attr = attr|merge({'data-empty-collection': block('empty_collection')}) %}
+    {% endif %}
+
+    {% if allow_add|default(false) and not disabled %}
+        <button type="button" class="btn btn-link field-collection-add-button">
+            <twig:ea:Icon name="internal:plus" class="pr-1" />
+            {{ 'action.add_new_item'|trans({}, 'EasyAdminBundle') }}
+        </button>
+    {% endif %}
+    <script>
+        if (!window.pageContentCollectionEntryTitles) {
+            window.pageContentCollectionEntryTitles = true;
+            document.addEventListener('ea.collection.item-added', function (event) {
+                var item = event.detail && event.detail.newElement;
+                if (!item) {
+                    return;
+                }
+                var title = item.querySelector('[data-entry-index]');
+                if (!title || title.getAttribute('data-entry-title-ready') === '1') {
+                    return;
+                }
+                var index = parseInt(title.getAttribute('data-entry-index'), 10);
+                if (Number.isNaN(index)) {
+                    return;
+                }
+                title.setAttribute('data-entry-title-ready', '1');
+                var prefix = title.getAttribute('data-entry-prefix') || 'Item';
+                var heading = title.getAttribute('data-entry-heading') || '';
+                var text = prefix + ' ' + (index + 1);
+                if (heading !== '') {
+                    text += ' \u2014 ' + heading;
+                }
+                title.textContent = text;
+            });
+        }
+    </script>
+{% endblock %}
