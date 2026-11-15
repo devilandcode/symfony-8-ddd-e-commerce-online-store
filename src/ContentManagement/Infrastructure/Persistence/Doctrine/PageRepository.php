@@ -12,8 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 final readonly class PageRepository implements PageRepositoryInterface
 {
     public function __construct(private EntityManagerInterface $entityManager)
-    {
-    }
+    {}
 
     public function findAll(): array
     {
