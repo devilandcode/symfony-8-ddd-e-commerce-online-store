@@ -28,6 +28,17 @@ final readonly class CategoryRepository implements CategoryRepositoryInterface
             ->getResult();
     }
 
+    public function findById(int $id): ?Category
+    {
+        $category = $this->entityManager->getRepository(Category::class)->find($id);
+
+        if (null !== $category && !$category instanceof Category) {
+            throw new \LogicException('The category repository returned an unexpected entity.');
+        }
+
+        return $category;
+    }
+
     public function findBySlug(Slug $slug): ?Category
     {
         $category = $this->entityManager->getRepository(Category::class)->findOneBy(['slug.value' => $slug->toString()]);

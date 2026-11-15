@@ -10,6 +10,8 @@ interface CategoryRepositoryInterface
     /** @return list<Category> */
     public function getRootCategories(): array;
 
+    public function findById(int $id): ?Category;
+
     public function findBySlug(Slug $slug): ?Category;
 
     public function save(Category $category): void;
