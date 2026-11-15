@@ -13,7 +13,7 @@ final readonly class SiteMenuViewDTO
         public string $title,
         public string $slug,
         public ?int $parentId,
-        public ?string $parentTitle,
+        public ?string $h1,
         public bool $hasSlug,
         public int $position,
         public bool $isActive,

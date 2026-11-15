@@ -14,6 +14,11 @@ final readonly class CategoryRepository implements CategoryRepositoryInterface
     public function __construct(private EntityManagerInterface $entityManager)
     {}
 
+    public function findAll(): array
+    {
+        return $this->entityManager->getRepository(Category::class)->findAll();
+    }
+
     public function getRootCategories(): array
     {
         return $this->entityManager->createQueryBuilder()

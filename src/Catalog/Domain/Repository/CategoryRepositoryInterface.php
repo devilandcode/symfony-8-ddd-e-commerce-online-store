@@ -7,6 +7,8 @@ use App\Shared\Domain\ValueObject\Slug;
 
 interface CategoryRepositoryInterface
 {
+    public function findAll(): array;
+    
     /** @return list<Category> */
     public function getRootCategories(): array;
 
