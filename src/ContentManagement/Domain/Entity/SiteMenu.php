@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'site_menu')]
 #[ORM\Index(name: 'idx_site_menu_parent', columns: ['parent_id'])]
+#[ORM\UniqueConstraint(name: 'uniq_site_menu_slug', columns: ['slug'])]
 #[ORM\Entity]
 class SiteMenu
 {

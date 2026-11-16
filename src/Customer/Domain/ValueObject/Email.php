@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Embeddable]
 final readonly class Email
 {
-    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false, unique: true)]
+    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false)]
     private string $email;
 
     public function __construct(string $email)

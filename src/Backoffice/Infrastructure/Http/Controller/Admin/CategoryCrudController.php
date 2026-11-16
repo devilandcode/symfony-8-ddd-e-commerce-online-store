@@ -79,7 +79,7 @@ final class CategoryCrudController extends AbstractController
 
         $data = $this->formDataFromCategory($category);
         $form = $this->createForm(CategoryType::class, $data, [
-            'exclude_menu_id' => $id,
+            'exclude_category_id' => $id,
         ]);
         $form->handleRequest($request);
 
@@ -132,7 +132,7 @@ final class CategoryCrudController extends AbstractController
             $data->h1,
             $data->parent,
             $data->level,
-            $data->desc,
+            $data->description,
             $data->content,
             $data->seoTitle,
             $data->seoDescription,
@@ -163,7 +163,7 @@ final class CategoryCrudController extends AbstractController
         $data->h1 = $category->h1;
         $data->parent = $category->parentId;
         $data->level = $category->level;
-        $data->desc = $category->description;
+        $data->description = $category->description;
         $data->content = $category->content;
         $data->seoTitle = $category->seoTitle;
         $data->seoDescription = $category->seoDescription;

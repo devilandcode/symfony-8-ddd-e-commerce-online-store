@@ -8,10 +8,7 @@ use App\ContentManagement\Domain\ValueObject\PageContentData;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(
-    name: 'page_content',
-    uniqueConstraints: [new ORM\UniqueConstraint(name: 'UNIQ_PAGE_CONTENT_PAGE_ID', columns: ['page_id'])],
-)]
+#[ORM\UniqueConstraint(name: 'uniq_page_content_page_id', columns: ['page_id'])]
 class PageContent
 {
     #[ORM\Id]

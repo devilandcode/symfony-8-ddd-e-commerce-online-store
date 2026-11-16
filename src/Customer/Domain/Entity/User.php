@@ -12,8 +12,9 @@ use App\Customer\Domain\ValueObject\Name;
 use App\Customer\Domain\ValueObject\Surname;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(name: '`user`')]
 #[ORM\Entity]
+#[ORM\Table(name: '`user`')]
+#[ORM\UniqueConstraint(name: 'uniq_user_email', columns: ['email'])]
 class User
 {
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]

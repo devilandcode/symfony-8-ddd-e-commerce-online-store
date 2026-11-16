@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Embeddable]
 final readonly class Slug implements \Stringable
 {
-    #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: false, unique: true)]
+    #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: false)]
     private string $value;
 
     public function __construct(string $value)

@@ -16,7 +16,7 @@ final class CategoryFormData
 
     public int $level = 0;
 
-    public ?string $desc = null;
+    public ?string $description = null;
 
     public ?string $content = null;
 

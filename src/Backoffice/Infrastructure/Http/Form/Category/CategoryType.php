@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Backoffice\Infrastructure\Http\Form\Category;
 
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -15,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-final class CategoryType
+final class CategoryType extends AbstractType
 {
     public function __construct(private CategoryRepositoryInterface $categoryRepository)
     {}

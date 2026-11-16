@@ -7,11 +7,12 @@ namespace App\ContentManagement\Domain\Entity;
 use App\Shared\Domain\ValueObject\Slug;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(name: 'page')]
 #[ORM\Entity]
+#[ORM\Table(name: 'page')]
+#[ORM\UniqueConstraint(name: 'uniq_page_slug', columns: ['slug'])]
 class Page
 {
-    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
+    #[ORM\Column(name: 'id', type: 'bigint')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
