@@ -8,14 +8,14 @@ use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuSlugA
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\Input\SiteMenuDataDTO;
 use App\ContentManagement\Domain\Entity\SiteMenu;
 use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final readonly class CreateMenuHandler
 {
     public function __construct(
         private SiteMenuRepositoryInterface $siteMenuRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

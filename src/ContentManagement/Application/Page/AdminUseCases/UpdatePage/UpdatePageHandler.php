@@ -8,14 +8,14 @@ use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFound;
 use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUse;
 use App\ContentManagement\Application\Page\AdminUseCases\Input\PageDataDTO;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final readonly class UpdatePageHandler
 {
     public function __construct(
         private PageRepositoryInterface $pageRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

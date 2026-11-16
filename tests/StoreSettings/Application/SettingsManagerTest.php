@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\StoreSettings\Application;
 
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use App\StoreSettings\Application\SettingsDataFactory;
 use App\StoreSettings\Application\AdminUseCases\SettingsManager\SettingsManager;
 use App\StoreSettings\Domain\Entity\SettingSection;
@@ -39,7 +39,7 @@ final class SettingsManagerTest extends TestCase
     }
 }
 
-final class NullFlusher implements Flusher
+final class NullFlusher implements FlusherInterface
 {
     public function commit(): void
     {

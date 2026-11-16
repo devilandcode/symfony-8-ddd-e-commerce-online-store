@@ -8,14 +8,14 @@ use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlready
 use App\Catalog\Application\Category\AdminUseCases\Input\CategoryDataDTO;
 use App\Catalog\Domain\Entity\Category;
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final readonly class CreateCategoryHandler
 {
     public function __construct(
         private CategoryRepositoryInterface $categoryRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

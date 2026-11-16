@@ -9,14 +9,14 @@ use App\ContentManagement\Domain\Entity\PageContent;
 use App\ContentManagement\Domain\Repository\PageContentRepositoryInterface;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\ContentManagement\Domain\ValueObject\PageContentData;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 
 final readonly class SavePageContentHandler
 {
     public function __construct(
         private PageRepositoryInterface $pageRepository,
         private PageContentRepositoryInterface $pageContentRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

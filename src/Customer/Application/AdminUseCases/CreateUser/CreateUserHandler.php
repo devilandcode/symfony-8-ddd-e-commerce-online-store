@@ -8,7 +8,7 @@ use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUse;
 use App\Customer\Application\PasswordHasherInterface;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final readonly class CreateUserHandler
@@ -16,7 +16,7 @@ final readonly class CreateUserHandler
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private PasswordHasherInterface $passwordHasher,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

@@ -21,7 +21,7 @@ use App\Customer\Domain\ValueObject\Name;
 use App\Customer\Domain\ValueObject\Surname;
 use App\Customer\Infrastructure\Security\SecurityUser;
 use App\Customer\Infrastructure\Security\SymfonyPasswordHasher;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 
@@ -136,7 +136,7 @@ final class UserHandlersTest extends TestCase
     }
 }
 
-final class RecordingFlusher implements Flusher
+final class RecordingFlusher implements FlusherInterface
 {
     public int $commits = 0;
 

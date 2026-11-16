@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\ContentManagement\Application\SiteMenu\AdminUseCases\DeleteMenu;
 
 use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 
 final readonly class DeleteMenuHandler
 {
     public function __construct(
         private SiteMenuRepositoryInterface $siteMenuRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

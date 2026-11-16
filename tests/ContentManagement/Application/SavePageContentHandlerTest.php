@@ -7,7 +7,7 @@ namespace App\Tests\ContentManagement\Application;
 use App\ContentManagement\Application\Page\AdminUseCases\SavePageContent\SavePageContentHandler;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\ValueObject\PageContentData;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use App\Shared\Domain\ValueObject\Slug;
 use App\Tests\ContentManagement\Double\InMemoryPageContentRepository;
 use App\Tests\ContentManagement\Double\InMemoryPageRepository;
@@ -56,7 +56,7 @@ final class SavePageContentHandlerTest extends TestCase
     }
 }
 
-final class RecordingFlusher implements Flusher
+final class RecordingFlusher implements FlusherInterface
 {
     public int $commits = 0;
 

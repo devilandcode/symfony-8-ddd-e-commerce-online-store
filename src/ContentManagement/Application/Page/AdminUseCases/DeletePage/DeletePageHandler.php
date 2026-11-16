@@ -6,13 +6,13 @@ namespace App\ContentManagement\Application\Page\AdminUseCases\DeletePage;
 
 use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFound;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 
 final readonly class DeletePageHandler
 {
     public function __construct(
         private PageRepositoryInterface $pageRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Application;
 
-interface Flusher
+interface FlusherInterface
 {
     public function commit(): void;
 }

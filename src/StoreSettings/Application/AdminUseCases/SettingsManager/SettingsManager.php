@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\StoreSettings\Application\AdminUseCases\SettingsManager;
 
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 use App\StoreSettings\Application\SettingsDataFactory;
 use App\StoreSettings\Domain\Entity\SettingSection;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;
@@ -16,7 +16,7 @@ final readonly class SettingsManager
     public function __construct(
         private SettingSectionRepositoryInterface $settings,
         private SettingsDataFactory $dataFactory,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 

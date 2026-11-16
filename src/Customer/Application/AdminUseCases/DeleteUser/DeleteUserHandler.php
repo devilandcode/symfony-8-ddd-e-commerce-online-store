@@ -6,13 +6,13 @@ namespace App\Customer\Application\AdminUseCases\DeleteUser;
 
 use App\Customer\Application\AdminUseCases\Exception\UserNotFound;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
-use App\Shared\Application\Flusher;
+use App\Shared\Application\FlusherInterface;
 
 final readonly class DeleteUserHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
-        private Flusher $flusher,
+        private FlusherInterface $flusher,
     ) {
     }
 
