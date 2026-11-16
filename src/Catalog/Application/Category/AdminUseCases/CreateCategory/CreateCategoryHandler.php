@@ -32,6 +32,7 @@ final readonly class CreateCategoryHandler
             $data->slug,
             $data->h1,
             $parent,
+            $data->level,
             $data->desc,
             $data->content,
             $data->seoTitle,

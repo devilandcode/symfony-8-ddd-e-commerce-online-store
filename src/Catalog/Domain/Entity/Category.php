@@ -35,6 +35,9 @@ class Category
     #[ORM\OrderBy(['pos' => \SortDirection::Ascending])]
     private Collection $children;
 
+    #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
+    private int $level = 0;
+
     #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     private ?string $desc = null;
 
@@ -69,6 +72,7 @@ class Category
         Slug $slug,
         ?string $h1,
         ?self $parent,
+        int $level,
         ?string $description,
         ?string $content,
         ?string $seoTitle,
@@ -83,6 +87,7 @@ class Category
             $slug,
             $h1,
             $parent,
+            $level,
             $description,
             $content,
             $seoTitle,
@@ -101,6 +106,7 @@ class Category
         Slug $slug,
         ?string $h1,
         ?self $parent,
+        int $level,
         ?string $description,
         ?string $content,
         ?string $seoTitle,
@@ -118,6 +124,7 @@ class Category
         $this->slug = $slug;
         $this->h1 = $h1;
         $this->parent = $parent;
+        $this->level = $level;
         $this->desc = $description;
         $this->content = $content;
         $this->seo_title = $seoTitle;
@@ -150,6 +157,11 @@ class Category
     public function getParent(): ?self
     {
         return $this->parent;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
     }
 
     public function getChildren(): Collection

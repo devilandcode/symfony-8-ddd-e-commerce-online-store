@@ -1,0 +1,50 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Categories{% endblock %}
+
+{% block main %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+    {% endfor %}
+
+    <div class="mb-3">
+        <a class="btn btn-primary" href="{{ path('admin_categories_new') }}">Create category</a>
+    </div>
+
+    <table class="table datagrid">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Slug</th>
+                <th scope="col">Parent</th>
+                <th scope="col">Position</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td>{{ category.title }}</td>
+                    <td>{{ category.slug }}</td>
+                    <td>{{ category.parentTitle ?? '—' }}</td>
+                    <td>{{ category.position }}</td>
+                    <td>{{ category.isActive ? 'Active' : 'Inactive' }}</td>
+
+
+                    <td class="text-nowrap">
+                        <a class="btn btn-secondary btn-sm" href="{{ path('admin_categories_edit', {id: category.id}) }}">Edit</a>
+                        <form class="d-inline" method="post" action="{{ path('admin_categories_delete', {id: category.id}) }}" onsubmit="return confirm('Delete this category?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-category-' ~ category.id) }}">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">No category found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

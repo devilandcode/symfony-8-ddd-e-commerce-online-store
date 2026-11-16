@@ -13,6 +13,7 @@ final readonly class CategoryDataDTO
         public Slug $slug,
         public ?string $h1,
         public ?int $parentId,
+        public int $level,
         public ?string $desc,
         public ?string $content,
         public ?string $seoTitle,

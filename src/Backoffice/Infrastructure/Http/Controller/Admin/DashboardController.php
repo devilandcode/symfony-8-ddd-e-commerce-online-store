@@ -2,6 +2,7 @@
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
+use App\Backoffice\Infrastructure\Http\Controller\Admin\CategoryCrudController;
 use App\Backoffice\Infrastructure\Http\Controller\Admin\PageContentController;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -28,9 +29,12 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkTo(SettingsController::class, 'Settings', 'fa fa-cog');
-        yield MenuItem::linkTo(UserManagementController::class, 'Users', 'fa fa-users')->setAction('index');
+        yield MenuItem::section('Content');
+        yield MenuItem::linkTo(CategoryCrudController::class, 'Categories', 'fa fa-folder')->setAction('index');
         yield MenuItem::linkTo(PageCrudController::class, 'Pages', 'fa fa-file')->setAction('index');
+        yield MenuItem::section('Administration');
+        yield MenuItem::linkTo(SettingsController::class, 'Settings', 'fa fa-cog');
         yield MenuItem::linkTo(SiteMenuCrudController::class, 'Site Menus', 'fa fa-bars')->setAction('index');
+        yield MenuItem::linkTo(UserManagementController::class, 'Users', 'fa fa-users')->setAction('index');
     }
 }
