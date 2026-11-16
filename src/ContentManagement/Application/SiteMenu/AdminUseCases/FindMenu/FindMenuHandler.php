@@ -11,8 +11,7 @@ use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
 final readonly class FindMenuHandler
 {
     public function __construct(private SiteMenuRepositoryInterface $siteMenuRepository)
-    {
-    }
+    {}
 
     public function __invoke(int $id): SiteMenuViewDTO
     {
