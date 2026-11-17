@@ -4,19 +4,7 @@
     <section class="s-line s-breadcrumbs">
         <div class="container md-pt-20 md-pb-20 pt-5">
             <div class="w-breadcrumbs-mobile-scroll-shadow">
-                <div class="w-breadcrumbs pt-10 pb-10">
-                    <a href="{{ path('index') }}" class="__link">Главная</a>
-                    <span class="hr"></span>
-                    {% if app.request.attributes.get('_route') != 'catalog' %}
-                        <a href="{{ path('catalog') }}" class="__link">Каталог</a>
-                        <span class="hr"></span>
-                    {% endif %}
-                    {% if page.parentSlug is defined and page.parentSlug is not null %}
-                        <a href="{{ path('level1', {slug: page.parentSlug}) }}" class="__link">{{ page.parentTitle }}</a>
-                        <span class="hr"></span>
-                    {% endif %}
-                    <span class="page-name">{{ page.title }}</span>
-                </div>
+                {% include 'general/breadcrumbs.html.twig' %}
             </div>
         </div>
     </section>

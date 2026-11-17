@@ -1,0 +1,13 @@
+<div class="w-breadcrumbs pt-10 pb-10">
+<a href="{{ path('index') }}" class="__link">Home</a>
+    <span class="hr"></span>
+    {% if app.request.attributes.get('_route') != 'catalog' %}
+        <a href="{{ path('catalog') }}" class="__link">Catalog</a>
+        <span class="hr"></span>
+    {% endif %}
+    {% if page.parentSlug is defined and page.parentSlug is not null %}
+        <a href="{{ path('level1', {slug: page.parentSlug}) }}" class="__link">{{ page.parentTitle }}</a>
+        <span class="hr"></span>
+    {% endif %}
+    <span class="page-name">{{ page.title }}</span>
+</div>
