@@ -38,4 +38,12 @@ final class CategoryController extends AbstractController
 
         dd($page);
     }
+
+    #[Route('/catalog/{parent_slug}/{slug}', name: 'level2', options: ['methods' => ['GET']])]
+    public function getLevel2(string $parent_slug, string $slug)
+    {
+        $page = ($this->findCategoryBySlug)(new Slug($slug));
+
+        dd($parent_slug,$page);
+    }
 }

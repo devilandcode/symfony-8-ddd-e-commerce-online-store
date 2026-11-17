@@ -216,7 +216,7 @@
                     <ul class="main-menu row">
                         {% for menuCategory in menu_categories() %}
                             <li class="col-auto li-dropper wide">
-                                <a href="" class="__link">
+                                <a href="{{ path('level1', { slug: menuCategory.slug.toString() }) }}" class="__link">
                                     <span class="text dashed dash">{{ menuCategory.title }}</span>
                                     <div class="b-dropper"></div>
                                 </a>
@@ -227,33 +227,16 @@
                                                 <div class="row">
                                                     <div class="col-xxl-20 col-2 col">
                                                         <ul class="ul-inset">
-                                                            <li class="li-inset"><a href="" class="__link">Духи</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Парфюмерная вода</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Туалетная вода</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Одеколон</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Для волос</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Для тела</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Для дома</a></li>
+                                                            {% for childCategory in  menuCategory.children %}
+                                                                <li class="li-inset"><a href="{{ path('level2', { parent_slug: menuCategory.slug.toString(), slug: childCategory.slug.toString() }) }}" class="__link">{{ childCategory.title }}</a></li> 
+                                                            {% endfor %}
                                                         </ul>
-                                                    </div>
+                                                    </div>                                             
                                                     <div class="col-xxl-20 col-2 col">
                                                         <ul class="ul-inset">
-                                                            <li class="li-inset"><a href="" class="__link">Для женщин</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Для мужчин</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Унисекс</a></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-xxl-20 col-2 col">
-                                                        <ul class="ul-inset">
-                                                            <li class="li-inset"><a href="" class="__link">Наборы</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Тревел-формат</a></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-xxl-20 col-2 col">
-                                                        <ul class="ul-inset">
-                                                            <li class="li-inset"><a href="" class="__link">Хит продаж</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Новинка</a></li>
-                                                            <li class="li-inset"><a href="" class="__link">Акции</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Best seller</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">New arrivals</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Sales</a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
