@@ -10,8 +10,7 @@ use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
 final readonly class ListActiveRootMenusHandler
 {
     public function __construct(private SiteMenuRepositoryInterface $siteMenuRepository)
-    {
-    }
+    {}
 
     /**
      * @return list<SiteMenu>

@@ -209,169 +209,64 @@
     <div class="header-bottom col-lg-hide">
         <div class="container">
             <div class="row row-header-bottom align-items-center justify-content-between">
-                <div class="col-side col-auto col xxl-pb-20 pb-10">
-                    <ul class="main-menu row">
-                        <li class="li col-auto"><a href="" class="__link color-red"><span class="dashed dash">TRAVEL RETAIL</span></a></li>
-                    </ul>
+                <div class="col-side col-auto col xxl-pb-20 pb-10">                  
                 </div>
                 <div class="col-center col-auto col xxl-pb-20 pb-10">
+                {% if menu_categories() is not empty %}
                     <ul class="main-menu row">
-                        <li class="col-auto li-dropper wide">
-                            <a href="" class="__link">
-                                <span class="text dashed dash">ПАРФЮМЕрИЯ</span>
-                                <div class="b-dropper"></div>
-                            </a>
-                            <div class="inset">
-                                <div class="frame pt-20 pb-20">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Духи</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Парфюмерная вода</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Туалетная вода</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Одеколон</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Для волос</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Для тела</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Для дома</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Для женщин</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Для мужчин</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Унисекс</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Наборы</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Тревел-формат</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Хит продаж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Новинка</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Акции</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-auto li-dropper wide">
-                            <a href="" class="__link">
-                                <span class="text dashed dash">МАКИЯЖ</span>
-                                <div class="b-dropper"></div>
-                            </a>
-                            <div class="inset">
-                                <div class="frame pt-20 pb-20">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Макияж</a></li>
-                                                </ul>
+                        {% for menuCategory in menu_categories() %}
+                            <li class="col-auto li-dropper wide">
+                                <a href="" class="__link">
+                                    <span class="text dashed dash">{{ menuCategory.title }}</span>
+                                    <div class="b-dropper"></div>
+                                </a>
+                                {% if menuCategory.children is not empty %}
+                                    <div class="inset">
+                                        <div class="frame pt-20 pb-20">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-xxl-20 col-2 col">
+                                                        <ul class="ul-inset">
+                                                            <li class="li-inset"><a href="" class="__link">Духи</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Парфюмерная вода</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Туалетная вода</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Одеколон</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Для волос</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Для тела</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Для дома</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-xxl-20 col-2 col">
+                                                        <ul class="ul-inset">
+                                                            <li class="li-inset"><a href="" class="__link">Для женщин</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Для мужчин</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Унисекс</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-xxl-20 col-2 col">
+                                                        <ul class="ul-inset">
+                                                            <li class="li-inset"><a href="" class="__link">Наборы</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Тревел-формат</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-xxl-20 col-2 col">
+                                                        <ul class="ul-inset">
+                                                            <li class="li-inset"><a href="" class="__link">Хит продаж</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Новинка</a></li>
+                                                            <li class="li-inset"><a href="" class="__link">Акции</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-auto li-dropper wide">
-                            <a href="" class="__link">
-                                <span class="text dashed dash">УХОД</span>
-                                <div class="b-dropper"></div>
-                            </a>
-                            <div class="inset">
-                                <div class="frame pt-20 pb-20">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Уход</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-auto li-dropper wide">
-                            <a href="" class="__link">
-                                <span class="text dashed dash">АКСЕССУАРЫ</span>
-                                <div class="b-dropper"></div>
-                            </a>
-                            <div class="inset">
-                                <div class="frame pt-20 pb-20">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xxl-20 col-2 col">
-                                                <ul class="ul-inset">
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                    <li class="li-inset"><a href="" class="__link">Аксессуары</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
                     </ul>
+                {% endif %}
                 </div>
-                <div class="col-side col-auto col xxl-pb-20 pb-10">
-                    <ul class="main-menu row">
-                        <li class="li col-auto"><a href="" class="__link color-red"><span class="dashed dash">Прайс ХИТ</span></a></li>
-                    </ul>
+                <div class="col-side col-auto col xxl-pb-20 pb-10">    
                 </div>
             </div>
         </div>

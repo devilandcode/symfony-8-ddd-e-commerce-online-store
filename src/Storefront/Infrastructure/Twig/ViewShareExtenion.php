@@ -2,6 +2,9 @@
 
 namespace App\Storefront\Infrastructure\Twig;
 
+
+
+use App\Catalog\Application\Category\FrontUseCases\ListCategory\ListActiveRootCategoryHandler;
 use App\ContentManagement\Application\SiteMenu\FrontUseCases\ListActiveRootMenus\ListActiveRootMenusHandler;
 use App\ContentManagement\Domain\Entity\SiteMenu;
 use App\StoreSettings\Application\FrontUseCases\ListContactSettings\ListContactSettingsHandler;
@@ -16,10 +19,14 @@ class ViewShareExtenion extends AbstractExtension
 
     private ?array $settings = null;
 
+    /** @var list<Category>|null */
+    private ?array $menuCategories = null;
+
     public function __construct(
         private ListActiveRootMenusHandler $listActiveRootMenus,
         private ListContactSettingsHandler $listContactSettings,
-        private ListContentSettingHandler $listContentSetting
+        private ListContentSettingHandler $listContentSetting,
+        private ListActiveRootCategoryHandler $listActiveRootCategories,
     ){}
 
     public function getFunctions(): array
@@ -40,8 +47,16 @@ class ViewShareExtenion extends AbstractExtension
                         'content' => ($this->listContentSetting)(),
                     ];
                 }
-                
+
                 return $this->settings;
+            }),
+
+            new TwigFunction('menu_categories', function() {
+                if (null === $this->menuCategories) {
+                    $this->menuCategories = ($this->listActiveRootCategories)();
+                }
+            
+                return $this->menuCategories;
             }),
         ];
     }
