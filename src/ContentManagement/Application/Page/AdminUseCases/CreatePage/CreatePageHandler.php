@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\AdminUseCases\CreatePage;
 
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUse;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUseException;
 use App\ContentManagement\Application\Page\AdminUseCases\Input\PageDataDTO;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
@@ -23,7 +23,7 @@ final readonly class CreatePageHandler
     {
         $slug = $data->slug;
         if (null !== $this->pageRepository->findBySlug($slug)) {
-            throw PageSlugAlreadyInUse::withSlug($slug->toString());
+            throw PageSlugAlreadyInUseException::withSlug($slug->toString());
         }
 
         $page = Page::create(
@@ -44,7 +44,7 @@ final readonly class CreatePageHandler
         try {
             $this->flusher->commit();
         } catch (UniqueConstraintViolationException $exception) {
-            throw PageSlugAlreadyInUse::withSlug($slug->toString(), $exception);
+            throw PageSlugAlreadyInUseException::withSlug($slug->toString(), $exception);
         }
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\AdminUseCases\SavePageContent;
 
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Domain\Entity\PageContent;
 use App\ContentManagement\Domain\Repository\PageContentRepositoryInterface;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
@@ -22,7 +22,7 @@ final readonly class SavePageContentHandler
 
     public function __invoke(int $pageId, PageContentData $payload): void
     {
-        $page = $this->pageRepository->findById($pageId) ?? throw PageNotFound::withId($pageId);
+        $page = $this->pageRepository->findById($pageId) ?? throw PageNotFoundException::withId($pageId);
         $pageContent = $this->pageContentRepository->findByPageId($pageId);
 
         if (null === $pageContent) {

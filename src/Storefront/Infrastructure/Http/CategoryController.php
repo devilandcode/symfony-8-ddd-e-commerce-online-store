@@ -7,7 +7,7 @@ namespace App\Storefront\Infrastructure\Http;
 use App\Catalog\Application\Category\FrontUseCases\Exception\CategoryNotFoundException;
 use App\Catalog\Application\Category\FrontUseCases\FindBySlug\FindCategoryBySlugHandler;
 use App\Catalog\Application\Category\FrontUseCases\FindChild\FindChildCategoryHandler;
-use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\Shared\Domain\ValueObject\Slug;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +28,7 @@ final class CategoryController extends AbstractController
     {
         try {
             $page = ($this->findPageBySlug)(new Slug('catalog'));
-        } catch (PageNotFound) {
+        } catch (PageNotFoundException) {
             throw $this->createNotFoundException('Page not found.');
         }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Catalog\Application\Category\AdminUseCases\CreateCategory;
 
-use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUse;
+use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUseException;
 use App\Catalog\Application\Category\AdminUseCases\Input\CategoryDataDTO;
 use App\Catalog\Domain\Entity\Category;
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
@@ -24,7 +24,7 @@ final readonly class CreateCategoryHandler
         $parent = $this->parentFromId($data->parentId);
 
         if (null !== $this->categoryRepository->findBySlug($data->slug)) {
-            throw CategorySlugAlreadyInUse::withSlug($data->slug->toString());
+            throw CategorySlugAlreadyInUseException::withSlug($data->slug->toString());
         }
 
         $category = Category::create(
@@ -47,7 +47,7 @@ final readonly class CreateCategoryHandler
         try {
             $this->flusher->commit();
         } catch (UniqueConstraintViolationException $exception) {
-            throw CategorySlugAlreadyInUse::withSlug($data->slug->toString(), $exception);
+            throw CategorySlugAlreadyInUseException::withSlug($data->slug->toString(), $exception);
         }
     }
 

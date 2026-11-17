@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace App\Customer\Application\AdminUseCases\Exception;
 
-final class UserEmailAlreadyInUse extends \DomainException
+final class UserEmailAlreadyInUseException extends \DomainException
 {
 }

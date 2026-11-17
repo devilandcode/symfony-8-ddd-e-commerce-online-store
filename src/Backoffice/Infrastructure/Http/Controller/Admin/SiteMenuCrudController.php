@@ -6,8 +6,8 @@ use App\Backoffice\Infrastructure\Http\Form\SiteMenu\MenuFormData;
 use App\Backoffice\Infrastructure\Http\Form\SiteMenu\MenuType;
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\CreateMenu\CreateMenuHandler;
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\DeleteMenu\DeleteMenuHandler;
-use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuNotFound;
-use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuSlugAlreadyInUse;
+use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuNotFoundException;
+use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuSlugAlreadyInUseException;
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\FindMenu\FindMenuHandler;
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\Input\SiteMenuDataDTO;
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\ListMenu\ListMenuHandler;
@@ -44,7 +44,7 @@ class SiteMenuCrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $createMenu($this->menuDataFromForm($data));
-            } catch (MenuSlugAlreadyInUse $exception) {
+            } catch (MenuSlugAlreadyInUseException $exception) {
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderMenuForm($form, 'Create menu');
@@ -71,7 +71,7 @@ class SiteMenuCrudController extends AbstractController
     ): Response {
         try {
             $menu = $findMenu($id);     
-        } catch (MenuNotFound) {
+        } catch (MenuNotFoundException) {
             throw $this->createNotFoundException();
         }
 
@@ -84,7 +84,7 @@ class SiteMenuCrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $updateMenu($id, $this->menuDataFromForm($data));
-            } catch (MenuSlugAlreadyInUse $exception) {
+            } catch (MenuSlugAlreadyInUseException $exception) {
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderMenuForm($form, 'Edit menu');
@@ -92,7 +92,7 @@ class SiteMenuCrudController extends AbstractController
                 $this->addDomainError($form, $exception);
 
                 return $this->renderMenuForm($form, 'Edit menu');
-            } catch (MenuNotFound) {
+            } catch (MenuNotFoundException) {
                 throw $this->createNotFoundException();
             }
 
@@ -113,7 +113,7 @@ class SiteMenuCrudController extends AbstractController
 
         try {
             $deleteMenu($id);
-        } catch (MenuNotFound) {
+        } catch (MenuNotFoundException) {
             throw $this->createNotFoundException();
         }
 

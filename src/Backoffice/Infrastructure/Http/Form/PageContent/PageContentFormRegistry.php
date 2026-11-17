@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Backoffice\Infrastructure\Http\Form\PageContent;
 
-use App\Backoffice\Infrastructure\Http\Form\PageContent\Exception\PageContentFormNotRegistered;
+use App\Backoffice\Infrastructure\Http\Form\PageContent\Exception\PageContentFormNotRegisteredException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class PageContentFormRegistry
@@ -43,7 +43,7 @@ final readonly class PageContentFormRegistry
      */
     public function typeFor(string $slug): string
     {
-        return $this->typesBySlug[$slug] ?? throw PageContentFormNotRegistered::forSlug($slug);
+        return $this->typesBySlug[$slug] ?? throw PageContentFormNotRegisteredException::forSlug($slug);
     }
 
     /**

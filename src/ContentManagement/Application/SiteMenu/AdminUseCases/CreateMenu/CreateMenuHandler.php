@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\SiteMenu\AdminUseCases\CreateMenu;
 
-use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuSlugAlreadyInUse;
+use App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception\MenuSlugAlreadyInUseException;
 use App\ContentManagement\Application\SiteMenu\AdminUseCases\Input\SiteMenuDataDTO;
 use App\ContentManagement\Domain\Entity\SiteMenu;
 use App\ContentManagement\Domain\Repository\SiteMenuRepositoryInterface;
@@ -24,7 +24,7 @@ final readonly class CreateMenuHandler
         $parent = $this->parentFromId($data->parentId);
 
         if (null !== $this->siteMenuRepository->findBySlug($data->slug)) {
-            throw MenuSlugAlreadyInUse::withSlug($data->slug->toString());
+            throw MenuSlugAlreadyInUseException::withSlug($data->slug->toString());
         }
 
         $siteMenu = SiteMenu::create(
@@ -42,7 +42,7 @@ final readonly class CreateMenuHandler
         try {
             $this->flusher->commit();
         } catch (UniqueConstraintViolationException $exception) {
-            throw MenuSlugAlreadyInUse::withSlug($data->slug->toString(), $exception);
+            throw MenuSlugAlreadyInUseException::withSlug($data->slug->toString(), $exception);
         }
     }
 

@@ -6,7 +6,7 @@ namespace App\Tests\Customer\Application;
 
 use App\Customer\Application\AdminUseCases\CreateUser\CreateUserDTO;
 use App\Customer\Application\AdminUseCases\CreateUser\CreateUserHandler;
-use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUse;
+use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUseException;
 use App\Customer\Application\PasswordHasherInterface;
 use App\Customer\Application\AdminUseCases\UpdateUser\UpdateUserDTO;
 use App\Customer\Application\AdminUseCases\UpdateUser\UpdateUserHandler;
@@ -58,7 +58,7 @@ final class UserHandlersTest extends TestCase
         $users->save($this->user('taken@example.com'));
         $handler = new CreateUserHandler($users, new RecordingPasswordHasher(), new RecordingFlusher());
 
-        $this->expectException(UserEmailAlreadyInUse::class);
+        $this->expectException(UserEmailAlreadyInUseException::class);
         $handler(new CreateUserDTO(
             new Name('Alice'),
             new Surname(),

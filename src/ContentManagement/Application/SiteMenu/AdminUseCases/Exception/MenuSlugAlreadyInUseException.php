@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\SiteMenu\AdminUseCases\Exception;
 
-final class MenuSlugAlreadyInUse extends \RuntimeException
+final class MenuSlugAlreadyInUseException extends \RuntimeException
 {
     public static function withSlug(string $slug, ?\Throwable $previous = null): self
     {

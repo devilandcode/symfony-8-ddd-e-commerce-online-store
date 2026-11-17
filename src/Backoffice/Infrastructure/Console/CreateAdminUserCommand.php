@@ -4,7 +4,7 @@ namespace App\Backoffice\Infrastructure\Console;
 
 use App\Customer\Application\AdminUseCases\CreateUser\CreateUserDTO;
 use App\Customer\Application\AdminUseCases\CreateUser\CreateUserHandler;
-use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUse;
+use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUseException;
 use App\Customer\Application\ValueObject\PlainPassword;
 use App\Customer\Domain\Enum\UserRoleEnum;
 use App\Customer\Domain\Enum\UserStatusEnum;
@@ -66,7 +66,7 @@ class CreateAdminUserCommand extends Command
                 UserRoleEnum::ADMIN,
                 UserStatusEnum::ACTIVE,
             ));
-        } catch (UserEmailAlreadyInUse $exception) {
+        } catch (UserEmailAlreadyInUseException $exception) {
             $io->error($exception->getMessage());
 
             return Command::FAILURE;

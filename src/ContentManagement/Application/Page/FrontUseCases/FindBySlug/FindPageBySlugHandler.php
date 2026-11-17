@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\FrontUseCases\FindBySlug;
 
-use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\PageContentView;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\ViewPageDTO;
 use App\ContentManagement\Domain\Repository\PageContentRepositoryInterface;
@@ -24,7 +24,7 @@ final readonly class FindPageBySlugHandler
         $page = $this->pageRepository->findBySlug($slug);
 
         if (null === $page) {
-            throw PageNotFound::withSlug($slug->toString());
+            throw PageNotFoundException::withSlug($slug->toString());
         }
 
         $pageId = $page->getId();

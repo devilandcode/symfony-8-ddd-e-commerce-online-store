@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Storefront\Infrastructure\Http;
 
-use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\Shared\Domain\ValueObject\Slug;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +22,7 @@ final class HomeController extends AbstractController
     {
         try {
             $page = ($this->findPageBySlugHandler)(new Slug('home'));
-        }catch (PageNotFound) {
+        }catch (PageNotFoundException) {
             throw $this->createNotFoundException('Page not found.');
         }
 

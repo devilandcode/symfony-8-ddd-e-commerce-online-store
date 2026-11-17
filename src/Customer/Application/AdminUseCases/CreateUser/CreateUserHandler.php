@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Customer\Application\AdminUseCases\CreateUser;
 
-use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUse;
+use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUseException;
 use App\Customer\Application\PasswordHasherInterface;
 use App\Customer\Domain\Entity\User;
 use App\Customer\Domain\Repository\UserRepositoryInterface;
@@ -23,7 +23,7 @@ final readonly class CreateUserHandler
     public function __invoke(CreateUserDTO $userDTO): void
     {
         if (null !== $this->userRepository->findByEmail($userDTO->email)) {
-            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()));
+            throw new UserEmailAlreadyInUseException(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()));
         }
 
         $user = User::register(
@@ -41,7 +41,7 @@ final readonly class CreateUserHandler
         try {
             $this->flusher->commit();
         } catch (UniqueConstraintViolationException $exception) {
-            throw new UserEmailAlreadyInUse(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()), previous: $exception);
+            throw new UserEmailAlreadyInUseException(sprintf('A user with email "%s" already exists.', $userDTO->email->getEmail()), previous: $exception);
         }
     }
 }

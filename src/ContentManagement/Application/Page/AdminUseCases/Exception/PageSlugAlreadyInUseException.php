@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\AdminUseCases\Exception;
 
-final class PageSlugAlreadyInUse extends \RuntimeException
+final class PageSlugAlreadyInUseException extends \RuntimeException
 {
     public static function withSlug(string $slug, ?\Throwable $previous = null): self
     {

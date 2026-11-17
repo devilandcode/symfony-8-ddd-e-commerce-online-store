@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Catalog\Application\Category\AdminUseCases\UpdateCategory;
 
-use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUse;
+use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUseException;
 use App\Catalog\Application\Category\AdminUseCases\Input\CategoryDataDTO;
 use App\Catalog\Domain\Entity\Category;
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
@@ -31,7 +31,7 @@ final readonly class UpdateCategoryHandler
 
         $existing = $this->categoryRepository->findBySlug($data->slug);
         if (null !== $existing && $existing->getId() !== $category->getId()) {
-            throw CategorySlugAlreadyInUse::withSlug($data->slug->toString());
+            throw CategorySlugAlreadyInUseException::withSlug($data->slug->toString());
         }
 
         $category->update(
@@ -54,7 +54,7 @@ final readonly class UpdateCategoryHandler
         try {
             $this->flusher->commit();
         } catch (UniqueConstraintViolationException $exception) {
-            throw CategorySlugAlreadyInUse::withSlug($data->slug->toString(), $exception);
+            throw CategorySlugAlreadyInUseException::withSlug($data->slug->toString(), $exception);
         }
     }
 

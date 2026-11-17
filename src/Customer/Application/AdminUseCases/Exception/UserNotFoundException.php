@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Customer\Application\AdminUseCases\Exception;
 
-final class UserNotFound extends \RuntimeException
+final class UserNotFoundException extends \RuntimeException
 {
     public static function withId(int $id): self
     {

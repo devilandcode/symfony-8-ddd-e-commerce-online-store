@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Backoffice;
 
-use App\Backoffice\Infrastructure\Http\Form\PageContent\Exception\PageContentFormNotRegistered;
+use App\Backoffice\Infrastructure\Http\Form\PageContent\Exception\PageContentFormNotRegisteredException;
 use App\Backoffice\Infrastructure\Http\Form\PageContent\HomePageContentType;
 use App\Backoffice\Infrastructure\Http\Form\PageContent\PageContentFormRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -37,7 +37,7 @@ final class PageContentFormRegistryTest extends KernelTestCase
 
         $registry = static::getContainer()->get(PageContentFormRegistry::class);
 
-        $this->expectException(PageContentFormNotRegistered::class);
+        $this->expectException(PageContentFormNotRegisteredException::class);
         $this->expectExceptionMessage('No page content form is registered for the page slug "contacts".');
 
         $registry->typeFor('contacts');

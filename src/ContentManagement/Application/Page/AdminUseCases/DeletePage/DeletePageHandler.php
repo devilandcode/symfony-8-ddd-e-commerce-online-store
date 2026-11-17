@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ContentManagement\Application\Page\AdminUseCases\DeletePage;
 
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Application\FlusherInterface;
 
@@ -18,7 +18,7 @@ final readonly class DeletePageHandler
 
     public function __invoke(int $id): void
     {
-        $page = $this->pageRepository->findById($id) ?? throw PageNotFound::withId($id);
+        $page = $this->pageRepository->findById($id) ?? throw PageNotFoundException::withId($id);
         $this->pageRepository->delete($page);
         $this->flusher->commit();
     }

@@ -9,8 +9,8 @@ use App\Backoffice\Infrastructure\Http\Form\User\UserType;
 use App\Customer\Application\AdminUseCases\CreateUser\CreateUserDTO;
 use App\Customer\Application\AdminUseCases\CreateUser\CreateUserHandler;
 use App\Customer\Application\AdminUseCases\DeleteUser\DeleteUserHandler;
-use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUse;
-use App\Customer\Application\AdminUseCases\Exception\UserNotFound;
+use App\Customer\Application\AdminUseCases\Exception\UserEmailAlreadyInUseException;
+use App\Customer\Application\AdminUseCases\Exception\UserNotFoundException;
 use App\Customer\Application\AdminUseCases\FindUser\FindUserHandler;
 use App\Customer\Application\AdminUseCases\ListUsers\ListUsersHandler;
 use App\Customer\Application\AdminUseCases\Output\UserViewDTO;
@@ -58,7 +58,7 @@ final class UserManagementController extends AbstractController
                     $data->role,
                     $this->requireStatus($data->status),
                 ));
-            } catch (UserEmailAlreadyInUse $exception) {
+            } catch (UserEmailAlreadyInUseException $exception) {
                 $form->get('email')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderUserForm($form, 'Create user');
@@ -85,7 +85,7 @@ final class UserManagementController extends AbstractController
     ): Response {
         try {
             $user = $findUser($id);
-        } catch (UserNotFound) {
+        } catch (UserNotFoundException) {
             throw $this->createNotFoundException();
         }
 
@@ -106,7 +106,7 @@ final class UserManagementController extends AbstractController
                     $data->role,
                     $this->requireStatus($data->status),
                 ));
-            } catch (UserEmailAlreadyInUse $exception) {
+            } catch (UserEmailAlreadyInUseException $exception) {
                 $form->get('email')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderUserForm($form, 'Edit user');
@@ -138,7 +138,7 @@ final class UserManagementController extends AbstractController
 
         try {
             $deleteUser($id);
-        } catch (UserNotFound) {
+        } catch (UserNotFoundException) {
             throw $this->createNotFoundException();
         }
 

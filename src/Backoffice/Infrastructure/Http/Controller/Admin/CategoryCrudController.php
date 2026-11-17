@@ -8,8 +8,8 @@ use App\Backoffice\Infrastructure\Http\Form\Category\CategoryFormData;
 use App\Backoffice\Infrastructure\Http\Form\Category\CategoryType;
 use App\Catalog\Application\Category\AdminUseCases\CreateCategory\CreateCategoryHandler;
 use App\Catalog\Application\Category\AdminUseCases\DeleteCategory\DeleteCategoryHandler;
-use App\Catalog\Application\Category\AdminUseCases\Exception\CategoryNotFound;
-use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUse;
+use App\Catalog\Application\Category\AdminUseCases\Exception\CategoryNotFoundException;
+use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUseException;
 use App\Catalog\Application\Category\AdminUseCases\FindCategory\FindCategoryHandler;
 use App\Catalog\Application\Category\AdminUseCases\Input\CategoryDataDTO;
 use App\Catalog\Application\Category\AdminUseCases\ListCategory\ListCategoryHandler;
@@ -46,7 +46,7 @@ final class CategoryCrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $createCategory($this->categoryDataFromForm($data));
-            } catch (CategorySlugAlreadyInUse $exception) {
+            } catch (CategorySlugAlreadyInUseException $exception) {
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderCategoryForm($form, 'Create category');
@@ -73,7 +73,7 @@ final class CategoryCrudController extends AbstractController
     ): Response {
         try {
             $category = $findCategory($id);     
-        } catch (CategoryNotFound) {
+        } catch (CategoryNotFoundException) {
             throw $this->createNotFoundException();
         }
 
@@ -86,7 +86,7 @@ final class CategoryCrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $updateCategory($id, $this->categoryDataFromForm($data));
-            } catch (CategorySlugAlreadyInUse $exception) {
+            } catch (CategorySlugAlreadyInUseException $exception) {
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderCategoryForm($form, 'Edit categoryu');
@@ -94,7 +94,7 @@ final class CategoryCrudController extends AbstractController
                 $this->addDomainError($form, $exception);
 
                 return $this->renderCategoryForm($form, 'Edit category');
-            } catch (CategoryNotFound) {
+            } catch (CategoryNotFoundException) {
                 throw $this->createNotFoundException();
             }
 
@@ -115,7 +115,7 @@ final class CategoryCrudController extends AbstractController
 
         try {
             $deleteCategory($id);
-        } catch (CategoryNotFound) {
+        } catch (CategoryNotFoundException) {
             throw $this->createNotFoundException();
         }
 

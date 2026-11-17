@@ -2,7 +2,7 @@
 
 namespace App\ContentManagement\Application\Page\FrontUseCases\Exception;
 
-final class PageNotFound extends \RuntimeException
+final class PageNotFoundException extends \RuntimeException
 {
     public static function withSlug(string $slug): self
     {

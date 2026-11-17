@@ -6,7 +6,7 @@ namespace App\Tests\ContentManagement\Application;
 
 use App\ContentManagement\Application\Page\AdminUseCases\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\AdminUseCases\CreatePage\CreatePageHandler;
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUse;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUseException;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Application\FlusherInterface;
@@ -41,7 +41,7 @@ final class CreatePageHandlerTest extends TestCase
         $flusher = $this->createMock(FlusherInterface::class);
         $flusher->expects(self::never())->method('commit');
 
-        $this->expectException(PageSlugAlreadyInUse::class);
+        $this->expectException(PageSlugAlreadyInUseException::class);
 
         (new CreatePageHandler($repository, $flusher))(new PageDataDTO(
             'Another page',

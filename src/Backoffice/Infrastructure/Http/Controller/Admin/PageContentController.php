@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
-use App\Backoffice\Infrastructure\Http\Form\PageContent\Exception\PageContentFormNotRegistered;
+use App\Backoffice\Infrastructure\Http\Form\PageContent\Exception\PageContentFormNotRegisteredException;
 use App\Backoffice\Infrastructure\Http\Form\PageContent\PageContentFormRegistry;
 use App\Backoffice\Infrastructure\Storage\PageContentPayloadNormalizer;
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFound;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Application\Page\AdminUseCases\FindPageContent\FindPageContentHandler;
 use App\ContentManagement\Application\Page\AdminUseCases\SavePageContent\SavePageContentHandler;
 use App\ContentManagement\Domain\ValueObject\PageContentData;
@@ -32,13 +32,13 @@ final class PageContentController extends AbstractController
     ): Response {
         try {
             $editor = $findPageContent($pageId);
-        } catch (PageNotFound) {
+        } catch (PageNotFoundException) {
             throw $this->createNotFoundException('Page not found.');
         }
 
         try {
             $formType = $formRegistry->typeFor($editor->pageSlug);
-        } catch (PageContentFormNotRegistered $exception) {
+        } catch (PageContentFormNotRegisteredException $exception) {
             throw $this->createNotFoundException($exception->getMessage(), $exception);
         }
 

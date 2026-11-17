@@ -10,8 +10,8 @@ use App\Backoffice\Infrastructure\Http\Form\PageContent\PageContentFormRegistry;
 use App\ContentManagement\Application\Page\AdminUseCases\Input\PageDataDTO;
 use App\ContentManagement\Application\Page\AdminUseCases\CreatePage\CreatePageHandler;
 use App\ContentManagement\Application\Page\AdminUseCases\DeletePage\DeletePageHandler;
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFound;
-use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUse;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageNotFoundException;
+use App\ContentManagement\Application\Page\AdminUseCases\Exception\PageSlugAlreadyInUseException;
 use App\ContentManagement\Application\Page\AdminUseCases\FindPage\FindPageHandler;
 use App\ContentManagement\Application\Page\AdminUseCases\ListPages\ListPagesHandler;
 use App\ContentManagement\Application\Page\AdminUseCases\Output\PageViewDTO;
@@ -56,7 +56,7 @@ final class PageCrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $createPage($this->pageDataFromForm($data));
-            } catch (PageSlugAlreadyInUse $exception) {
+            } catch (PageSlugAlreadyInUseException $exception) {
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderPageForm($form, 'Create page');
@@ -83,7 +83,7 @@ final class PageCrudController extends AbstractController
     ): Response {
         try {
             $page = $findPage($id);
-        } catch (PageNotFound) {
+        } catch (PageNotFoundException) {
             throw $this->createNotFoundException();
         }
 
@@ -94,7 +94,7 @@ final class PageCrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $updatePage($id, $this->pageDataFromForm($data));
-            } catch (PageSlugAlreadyInUse $exception) {
+            } catch (PageSlugAlreadyInUseException $exception) {
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderPageForm($form, 'Edit page');
@@ -102,7 +102,7 @@ final class PageCrudController extends AbstractController
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderPageForm($form, 'Edit page');
-            } catch (PageNotFound) {
+            } catch (PageNotFoundException) {
                 throw $this->createNotFoundException();
             }
 
@@ -123,7 +123,7 @@ final class PageCrudController extends AbstractController
 
         try {
             $deletePage($id);
-        } catch (PageNotFound) {
+        } catch (PageNotFoundException) {
             throw $this->createNotFoundException();
         }
 
