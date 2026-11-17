@@ -1,0 +1,30 @@
+{% extends 'layouts/main.html.twig' %}
+
+{% block content %}
+    <section class="s-line">
+        <div class="container mb-80">
+            <div class="w-404 color-dblue align-center">
+                <div class="row align-items-center no-gutters">
+                    <div class="col-12 pt-40 pb-40">
+                        <div class="row justify-content-center">
+                            <div class="col-xxl-auto col-lg-6 col-sm-7 col-auto">
+                                <img src="{{ asset('assets/i/404.svg') }}" alt="" class="img block">
+                            </div>
+                        </div>
+                        <div class="_h3 fontCor upper semibold mt-30">
+                            Error! <span class="nowrap">Something&nbsp;wrong...</span> Page&nbsp;not&nbsp;found
+                        </div>
+                        <div class="_h5 mt-10">
+                            Try&nbsp;later&nbsp;or&nbsp;go back&nbsp;
+                        </div>
+                        <div class="row justify-content-center align-items-center no-gutters mt-30">
+                            <div class="col-xxl-2 col-xl-3 col-lg-4 col-sm-auto col-10">
+                                <a href="{{ path('index') }}" class="button transparent blue block">Home</a>
+                            </div>
+                        </div>	
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
