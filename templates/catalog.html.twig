@@ -5,11 +5,17 @@
         <div class="container md-pt-20 md-pb-20 pt-5">
             <div class="w-breadcrumbs-mobile-scroll-shadow">
                 <div class="w-breadcrumbs pt-10 pb-10">
-                    <a href="" class="__link">Главная</a>
+                    <a href="{{ path('index') }}" class="__link">Главная</a>
                     <span class="hr"></span>
-                    <a href="" class="__link">Промежуточная страница</a>
-                    <span class="hr"></span>
-                    <span class="page-name">Название страницы</span>
+                    {% if app.request.attributes.get('_route') != 'catalog' %}
+                        <a href="{{ path('catalog') }}" class="__link">Каталог</a>
+                        <span class="hr"></span>
+                    {% endif %}
+                    {% if page.parentSlug is defined and page.parentSlug is not null %}
+                        <a href="{{ path('level1', {slug: page.parentSlug}) }}" class="__link">{{ page.parentTitle }}</a>
+                        <span class="hr"></span>
+                    {% endif %}
+                    <span class="page-name">{{ page.title }}</span>
                 </div>
             </div>
         </div>
@@ -21,7 +27,7 @@
                 <div class="offset-xl-3 col-xl-9 col-12 col">
                     <div class="row sm-md-gutters sm-gutters align-items-xl-end align-items-center justify-content-between xl-mb-10 mb-10">
                         <div class="col-xl-8 col-12 order-xl-1 order-1">
-                            <h1 class="pagetitle _h3 upper fontCor semibold color-dblue">Аксессуары для чемоданов</h1>
+                            <h1 class="pagetitle _h3 upper fontCor semibold color-dblue">{{ page.h1 ?? page.title }}</h1>
                         </div>
                         
                         <div class="col-xl-4 col-auto mt-10 xl-mb-10 mb-0 order-xl-2 order-3">

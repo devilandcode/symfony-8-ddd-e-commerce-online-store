@@ -32,14 +32,6 @@ final readonly class FindPageBySlugHandler
             ? null
             : $this->pageContentRepository->findByPageId($pageId);
 
-        return new ViewPageDTO(
-            title: $page->getTitle(),
-            h1: $page->getH1(),
-            desc: $page->getDesc(),
-            content: $page->getContent(),
-            seo_title: $page->getSeoTitle(),
-            seo_description: $page->getSeoDescription(),
-            pageContent: new PageContentView($pageContent?->payload()->toArray() ?? []),
-        );
+        return ViewPageDTO::fromPage($page, $pageContent);
     }
 }

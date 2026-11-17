@@ -15,21 +15,14 @@ final readonly class FindCategoryBySlugHandler
         private CategoryRepositoryInterface $categoryRepository,
     ){}
 
-    public function __invoke(Slug $slug): ?ViewCategoryDTO
+    public function __invoke(Slug $slug): ViewCategoryDTO
     {
         $category = $this->categoryRepository->findBySlug($slug);
 
-        if ($category === null) {
+        if (null === $category || !$category->getIsActive()) {
             throw CategoryNotFoundException::withSlug($slug->toString());
         }
 
-        return new ViewCategoryDTO(
-            title: $category->getTitle(),
-            h1: $category->getH1(),
-            desc: $category->getDesc(),
-            content: $category->getContent(),
-            seoTitle: $category->getSeoTitle(),
-            seoDescription: $category->getSeoDescription(),
-        );
+        return ViewCategoryDTO::fromCategory($category);
     }
 }
