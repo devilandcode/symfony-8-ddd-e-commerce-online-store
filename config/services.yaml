@@ -40,5 +40,13 @@ services:
     App\Shared\Application\FlusherInterface:
         alias: App\Shared\Infrastructure\Persistence\DoctrineFlusher
 
+    App\Storefront\Infrastructure\Http\EventListener\KernelExceptionEventListener:
+        tags:
+            - {
+                name: kernel.event_listener,
+                event: kernel.exception,
+                method: onKernelException
+            }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

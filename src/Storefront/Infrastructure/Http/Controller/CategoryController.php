@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Infrastructure\Http;
+namespace App\Storefront\Infrastructure\Http\Controller;
 
 use App\Catalog\Application\Category\FrontUseCases\Exception\CategoryNotFoundException;
 use App\Catalog\Application\Category\FrontUseCases\FindBySlug\FindCategoryBySlugHandler;
@@ -26,11 +26,7 @@ final class CategoryController extends AbstractController
     #[Route('/catalog', name: 'catalog', options: ['methods' => ['GET']])]
     public function getCatalog(): Response
     {
-        try {
-            $page = ($this->findPageBySlug)(new Slug('catalog'));
-        } catch (PageNotFoundException) {
-            throw $this->createNotFoundException('Page not found.');
-        }
+        $page = ($this->findPageBySlug)(new Slug('catalog'));
 
         return $this->render('catalog.html.twig', compact('page'));
     }
@@ -38,11 +34,7 @@ final class CategoryController extends AbstractController
     #[Route('/catalog/{slug}', name: 'level1', options: ['methods' => ['GET']])]
     public function getLevel1(string $slug): Response
     {
-        try {
-            $page = ($this->findCategoryBySlug)(new Slug($slug));
-        } catch (CategoryNotFoundException) {
-            throw $this->createNotFoundException('Category not found.');
-        }
+        $page = ($this->findCategoryBySlug)(new Slug($slug));
 
         return $this->render('catalog.html.twig', compact('page'));
     }
@@ -50,11 +42,7 @@ final class CategoryController extends AbstractController
     #[Route('/catalog/{parentSlug}/{slug}', name: 'level2', options: ['methods' => ['GET']])]
     public function getLevel2(string $parentSlug, string $slug): Response
     {
-        try {
-            $page = ($this->findChildCategory)(new Slug($parentSlug), new Slug($slug));
-        } catch (CategoryNotFoundException) {
-            throw $this->createNotFoundException('Category not found.');
-        }
+        $page = ($this->findChildCategory)(new Slug($parentSlug), new Slug($slug));
 
         return $this->render('catalog.html.twig', compact('page'));
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Infrastructure\Http;
+namespace App\Storefront\Infrastructure\Http\Controller;
 
 use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
@@ -20,11 +20,7 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'index')]
     public function getIndex(): Response
     {
-        try {
-            $page = ($this->findPageBySlugHandler)(new Slug('home'));
-        }catch (PageNotFoundException) {
-            throw $this->createNotFoundException('Page not found.');
-        }
+        $page = ($this->findPageBySlugHandler)(new Slug('home'));
 
         return $this->render('index.html.twig', compact('page'));
     }
