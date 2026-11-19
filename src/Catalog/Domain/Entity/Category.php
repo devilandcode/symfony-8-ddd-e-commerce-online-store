@@ -39,6 +39,11 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: CategoryCharacteristic::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $characteristics;
 
+    /** @var Collection<int, Product> */
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
+    #[ORM\OrderBy(['pos' => \SortDirection::Ascending])]
+    private Collection $products;
+
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     private int $level = 0;
 
@@ -70,6 +75,7 @@ class Category
     {
         $this->children = new ArrayCollection();
         $this->characteristics = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public static function create(
@@ -172,6 +178,11 @@ class Category
     public function getChildren(): Collection
     {
         return $this->children;
+    }
+
+    public function getProducts(): Collection
+    {
+        return $this->products;
     }
 
     public function assignCharacteristic(
