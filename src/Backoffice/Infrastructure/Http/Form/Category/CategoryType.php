@@ -7,6 +7,7 @@ namespace App\Backoffice\Infrastructure\Http\Form\Category;
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -50,7 +51,14 @@ final class CategoryType extends AbstractType
             ->add('seoTitle', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])
             ->add('seoDescription', TextareaType::class, ['required' => false])
             ->add('position', IntegerType::class)
-            ->add('isActive', CheckboxType::class, ['required' => false]);
+            ->add('isActive', CheckboxType::class, ['required' => false])
+            ->add('characteristicAssignments', CollectionType::class, [
+                'entry_type' => CategoryCharacteristicType::class,
+                'label' => 'Characteristics',
+                'allow_add' => false,
+                'allow_delete' => false,
+                'by_reference' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

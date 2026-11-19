@@ -34,6 +34,9 @@ services:
     App\Catalog\Domain\Repository\CategoryRepositoryInterface:
         alias: App\Catalog\Infrastructure\Persistence\Doctrine\CategoryRepository
 
+    App\Catalog\Domain\Repository\CharacteristicRepositoryInterface:
+        alias: App\Catalog\Infrastructure\Persistence\Doctrine\CharacteristicRepository
+
     App\Customer\Application\PasswordHasherInterface:
         alias: App\Customer\Infrastructure\Security\SymfonyPasswordHasher
 

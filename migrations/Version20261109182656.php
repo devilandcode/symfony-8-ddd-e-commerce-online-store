@@ -14,7 +14,7 @@ final class Version20261109182656 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Create site menu for header or footer';
     }
 
     public function up(Schema $schema): void

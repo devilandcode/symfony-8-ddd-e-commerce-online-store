@@ -3,6 +3,7 @@
 namespace App\Backoffice\Infrastructure\Http\Controller\Admin;
 
 use App\Backoffice\Infrastructure\Http\Controller\Admin\CategoryCrudController;
+use App\Backoffice\Infrastructure\Http\Controller\Admin\CharacteristicCrudController;
 use App\Backoffice\Infrastructure\Http\Controller\Admin\PageContentController;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -31,6 +32,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Content');
         yield MenuItem::linkTo(CategoryCrudController::class, 'Categories', 'fa fa-folder')->setAction('index');
+        yield MenuItem::linkTo(CharacteristicCrudController::class, 'Characteristics', 'fa fa-tags')->setAction('index');
         yield MenuItem::linkTo(PageCrudController::class, 'Pages', 'fa fa-file')->setAction('index');
         yield MenuItem::section('Administration');
         yield MenuItem::linkTo(SettingsController::class, 'Settings', 'fa fa-cog');

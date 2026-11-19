@@ -9,8 +9,6 @@ use App\Catalog\Application\Characteristic\AdminUseCases\Input\CharDataDTO;
 use App\Catalog\Domain\Entity\Characteristic;
 use App\Catalog\Domain\Repository\CharacteristicRepositoryInterface;
 use App\Shared\Application\FlusherInterface;
-use Exception;
-
 final readonly class CreateCharHandler
 {
     public function __construct(
@@ -18,7 +16,7 @@ final readonly class CreateCharHandler
         private FlusherInterface $flusher,
     ){}
 
-    public function __invoke(CharDataDTO $data)
+    public function __invoke(CharDataDTO $data): void
     {
         $char = $this->charRepository->findBy($data->title, $data->measure);
 
@@ -36,11 +34,6 @@ final readonly class CreateCharHandler
 
         $this->charRepository->save($char);
 
-        try {
-            $this->flusher->commit();
-        } catch(\Throwable $ex) {
-            throw new Exception(message: $ex->getMessage());
-        }
+        $this->flusher->commit();
     }
-
 }

@@ -6,7 +6,40 @@
 
 {% block main %}
     {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.parent) }}
+        {{ form_row(form.slug) }}
+        {{ form_row(form.level) }}
+        {{ form_row(form.h1) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.content) }}
+        {{ form_row(form.seoTitle) }}
+        {{ form_row(form.seoDescription) }}
+        {{ form_row(form.position) }}
+        {{ form_row(form.isActive) }}
+
+        <fieldset class="mb-3">
+            <legend>Characteristics</legend>
+            {% for assignment in form.characteristicAssignments %}
+                <div class="border rounded p-3 mb-2">
+                    {{ form_widget(assignment.characteristicId) }}
+                    <strong>{{ assignment.vars.data.title }}</strong>
+                    {% if assignment.vars.data.measure %}
+                        <span class="text-muted">({{ assignment.vars.data.measure }})</span>
+                    {% endif %}
+                    <div class="d-flex gap-3 mt-2">
+                        {{ form_row(assignment.assigned) }}
+                        {{ form_row(assignment.isActive) }}
+                        {{ form_row(assignment.inFilter) }}
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">No characteristics have been created yet.</p>
+            {% endfor %}
+            {{ form_errors(form.characteristicAssignments) }}
+        </fieldset>
+
+        {{ form_rest(form) }}
         <button class="btn btn-primary" type="submit">Save</button>
         <a class="btn btn-secondary" href="{{ path('admin_categories_index') }}">Cancel</a>
     {{ form_end(form) }}

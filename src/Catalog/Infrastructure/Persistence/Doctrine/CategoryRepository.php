@@ -14,12 +14,16 @@ final readonly class CategoryRepository implements CategoryRepositoryInterface
     public function __construct(private EntityManagerInterface $entityManager)
     {}
 
+    /** @return list<Category> */
     public function findAll(): array
     {
         return $this->entityManager->createQueryBuilder()
-            ->select('category', 'parent')
+            ->select('category', 'parent', 'assignments', 'characteristic')
+            ->distinct()
             ->from(Category::class, 'category')
             ->leftJoin('category.parent', 'parent')
+            ->leftJoin('category.characteristics', 'assignments')
+            ->leftJoin('assignments.characteristic', 'characteristic')
             ->getQuery()
             ->getResult();
     }
@@ -40,7 +44,16 @@ final readonly class CategoryRepository implements CategoryRepositoryInterface
 
     public function findById(int $id): ?Category
     {
-        $category = $this->entityManager->getRepository(Category::class)->find($id);
+        $category = $this->entityManager->createQueryBuilder()
+            ->select('category', 'parent', 'assignments', 'characteristic')
+            ->from(Category::class, 'category')
+            ->leftJoin('category.parent', 'parent')
+            ->leftJoin('category.characteristics', 'assignments')
+            ->leftJoin('assignments.characteristic', 'characteristic')
+            ->where('category.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
 
         if (null !== $category && !$category instanceof Category) {
             throw new \LogicException('The category repository returned an unexpected entity.');

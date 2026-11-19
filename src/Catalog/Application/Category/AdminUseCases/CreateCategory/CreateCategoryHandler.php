@@ -6,6 +6,7 @@ namespace App\Catalog\Application\Category\AdminUseCases\CreateCategory;
 
 use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUseException;
 use App\Catalog\Application\Category\AdminUseCases\Input\CategoryDataDTO;
+use App\Catalog\Application\Category\AdminUseCases\SyncCategoryCharacteristics;
 use App\Catalog\Domain\Entity\Category;
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
 use App\Shared\Application\FlusherInterface;
@@ -15,6 +16,7 @@ final readonly class CreateCategoryHandler
 {
     public function __construct(
         private CategoryRepositoryInterface $categoryRepository,
+        private SyncCategoryCharacteristics $syncCharacteristics,
         private FlusherInterface $flusher,
     ) {
     }
@@ -41,6 +43,7 @@ final readonly class CreateCategoryHandler
             $data->isActive,
             new \DateTime(),
         );
+        ($this->syncCharacteristics)($category, $data->characteristicAssignments);
 
         $this->categoryRepository->save($category);
 

@@ -20,6 +20,8 @@ final readonly class CategoryDataDTO
         public ?string $seoDescription,
         public int $position,
         public bool $isActive,
+        /** @var list<CategoryCharacteristicDataDTO> */
+        public array $characteristicAssignments = [],
     ) {
     }
 }

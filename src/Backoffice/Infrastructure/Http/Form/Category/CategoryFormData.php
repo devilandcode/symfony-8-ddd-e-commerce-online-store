@@ -27,4 +27,7 @@ final class CategoryFormData
     public int $position = 0;
 
     public bool $isActive = true;
+
+    /** @var list<CategoryCharacteristicFormData> */
+    public array $characteristicAssignments = [];
 }

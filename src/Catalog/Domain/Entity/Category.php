@@ -35,6 +35,10 @@ class Category
     #[ORM\OrderBy(['pos' => \SortDirection::Ascending])]
     private Collection $children;
 
+    /** @var Collection<int, CategoryCharacteristic> */
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: CategoryCharacteristic::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $characteristics;
+
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     private int $level = 0;
 
@@ -65,6 +69,7 @@ class Category
     private function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->characteristics = new ArrayCollection();
     }
 
     public static function create(
@@ -167,6 +172,50 @@ class Category
     public function getChildren(): Collection
     {
         return $this->children;
+    }
+
+    public function assignCharacteristic(
+        Characteristic $characteristic,
+        bool $isActive,
+        bool $inFilter,
+        \DateTime $updatedAt,
+    ): void {
+        foreach ($this->characteristics as $assignment) {
+            if ($assignment->getCharacteristic() === $characteristic
+                || (null !== $assignment->getCharacteristic()->getId()
+                    && $assignment->getCharacteristic()->getId() === $characteristic->getId())) {
+                $assignment->update($isActive, $inFilter, $updatedAt);
+
+                return;
+            }
+        }
+
+        $this->characteristics->add(CategoryCharacteristic::create(
+            $this,
+            $characteristic,
+            $isActive,
+            $inFilter,
+            $updatedAt,
+        ));
+    }
+
+    public function removeCharacteristic(Characteristic $characteristic): void
+    {
+        foreach ($this->characteristics as $assignment) {
+            if ($assignment->getCharacteristic() === $characteristic
+                || (null !== $assignment->getCharacteristic()->getId()
+                    && $assignment->getCharacteristic()->getId() === $characteristic->getId())) {
+                $this->characteristics->removeElement($assignment);
+
+                return;
+            }
+        }
+    }
+
+    /** @return list<CategoryCharacteristic> */
+    public function getCharacteristicAssignments(): array
+    {
+        return array_values($this->characteristics->toArray());
     }
 
     public function getDesc(): ?string

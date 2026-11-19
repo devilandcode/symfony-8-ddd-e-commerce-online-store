@@ -22,6 +22,8 @@ final readonly class CategoryViewDTO
         public ?string $seoDescription,
         public int $position,
         public bool $isActive,
+        /** @var list<CategoryCharacteristicViewDTO> */
+        public array $characteristicAssignments,
     ) {
     }
 
@@ -47,6 +49,10 @@ final readonly class CategoryViewDTO
             $category->getSeoDescription(),
             $category->getPos(),
             $category->getIsActive(),
+            array_map(
+                CategoryCharacteristicViewDTO::fromAssignment(...),
+                $category->getCharacteristicAssignments(),
+            ),
         );
     }
 }

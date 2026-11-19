@@ -7,7 +7,7 @@ namespace App\Catalog\Domain\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'category')]
+#[ORM\Table(name: 'characteristic')]
 class Characteristic
 {
     #[ORM\Id]
@@ -34,7 +34,8 @@ class Characteristic
     private \DateTime $updated_at;
 
     private function __construct()
-    {}
+    {
+    }
 
     public static function create(
         string $title,
@@ -43,17 +44,17 @@ class Characteristic
         bool $isActive,
         \DateTime $updatedAt,
     ): self {
-        $charatirestic = new self();
-        $charatirestic->update(
+        $characteristic = new self();
+        $characteristic->update(
             $title,
             $measure,
             $position,
             $isActive,
             $updatedAt,
         );
-        $charatirestic->created_at = $updatedAt;
+        $characteristic->created_at = $updatedAt;
 
-        return $charatirestic;
+        return $characteristic;
     }
 
     public function update(
@@ -68,6 +69,7 @@ class Characteristic
             throw new \InvalidArgumentException('Characteristic title cannot be empty.');
         }
 
+        $measure = null === $measure || '' === trim($measure) ? null : trim($measure);
         $this->title = $title;
         $this->measure = $measure;
         $this->pos = $position;
@@ -96,9 +98,16 @@ class Characteristic
         return $this->pos;
     }
 
-        public function getIsActive(): bool
+    public function getIsActive(): bool
     {
         return $this->is_active;
+    }
+
+    public function getTitleWithMeasure(): string
+    {
+        return null === $this->measure
+            ? $this->title
+            : sprintf('%s (%s)', $this->title, $this->measure);
     }
 
     public function getCreatedAt(): \DateTime
