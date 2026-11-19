@@ -1,0 +1,49 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% form_theme form with ['@EasyAdmin/crud/form_theme.html.twig'] only %}
+
+{% block content_title %}{{ title }}{% endblock %}
+
+{% block main %}
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.slug) }}
+        {{ form_row(form.categoryId) }}
+        {{ form_row(form.brandId) }}
+        {{ form_row(form.h1) }}
+        {{ form_row(form.description) }}
+        <div class="row">
+            <div class="col-md-4">{{ form_row(form.price) }}</div>
+            <div class="col-md-4">{{ form_row(form.oldPrice) }}</div>
+            <div class="col-md-4">{{ form_row(form.currencyCode) }}</div>
+        </div>
+        {{ form_row(form.balance) }}
+        {{ form_row(form.image) }}
+        {{ form_row(form.additionalImages) }}
+        {{ form_row(form.seoTitle) }}
+        {{ form_row(form.seoDescription) }}
+        {{ form_row(form.position) }}
+        {{ form_row(form.isActive) }}
+
+        <fieldset class="mb-3">
+            <legend>Product characteristics</legend>
+            <p class="text-muted">Values are optional. Empty values are not stored.</p>
+            {% for assignment in form.characteristicAssignments %}
+                <div class="border rounded p-3 mb-2">
+                    {{ form_widget(assignment.characteristicId) }}
+                    {{ form_row(assignment.value, {
+                        label: assignment.vars.data.title ~ (assignment.vars.data.measure ? ' (' ~ assignment.vars.data.measure ~ ')' : '')
+                    }) }}
+                </div>
+            {% else %}
+                <p class="text-muted">Choose a category and load its active characteristics.</p>
+            {% endfor %}
+            {{ form_errors(form.characteristicAssignments) }}
+        </fieldset>
+
+        {{ form_widget(form.loadCharacteristics, {attr: {class: 'btn btn-secondary'}}) }}
+        {{ form_widget(form.save, {attr: {class: 'btn btn-primary'}}) }}
+        <a class="btn btn-secondary" href="{{ path('admin_products_index') }}">Cancel</a>
+        {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}

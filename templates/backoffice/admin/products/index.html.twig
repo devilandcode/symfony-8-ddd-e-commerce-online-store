@@ -1,0 +1,50 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Products{% endblock %}
+
+{% block main %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+    {% endfor %}
+
+    <div class="mb-3">
+        <a class="btn btn-primary" href="{{ path('admin_products_new') }}">Create product</a>
+    </div>
+
+    <table class="table datagrid">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Category</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Price</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.categoryTitle }}</td>
+                    <td>{{ product.brandTitle }}</td>
+                    <td>{{ product.priceMinorUnits|minor_units_amount(product.currencyCode) }} {{ product.currencyCode }}</td>
+                    <td>{{ product.balance }}</td>
+                    <td>{{ product.isActive ? 'Active' : 'Inactive' }}</td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-secondary btn-sm" href="{{ path('admin_products_edit', {id: product.id}) }}">Edit</a>
+                        <form class="d-inline" method="post" action="{{ path('admin_products_delete', {id: product.id}) }}" onsubmit="return confirm('Delete this product?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-product-' ~ product.id) }}">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">No products found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

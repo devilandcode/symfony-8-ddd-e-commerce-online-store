@@ -6,6 +6,9 @@
     {% for message in app.flashes('success') %}
         <div class="alert alert-success" role="status">{{ message }}</div>
     {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% endfor %}
 
     <div class="mb-3">
         <a class="btn btn-primary" href="{{ path('admin_categories_new') }}">Create category</a>

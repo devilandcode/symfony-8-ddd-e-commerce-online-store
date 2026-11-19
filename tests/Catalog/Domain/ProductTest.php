@@ -6,6 +6,7 @@ namespace App\Tests\Catalog\Domain;
 
 use App\Catalog\Domain\Entity\Brand;
 use App\Catalog\Domain\Entity\Category;
+use App\Catalog\Domain\Entity\Characteristic;
 use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\ValueObject\Balance;
 use App\Catalog\Domain\ValueObject\OldPrice;
@@ -100,5 +101,70 @@ final class ProductTest extends TestCase
         );
 
         self::assertSame($oldPrice, $product->getOldPrice());
+    }
+
+    public function testProductCanStoreValuesForCharacteristicsAssignedToItsCategory(): void
+    {
+        $now = new \DateTime();
+        $category = Category::create('Cameras', new Slug('cameras'), null, null, 0, null, null, null, null, 0, true, $now);
+        $brand = Brand::create('Acme', new Slug('acme'), null, null, null, null, 0, true, $now);
+        $characteristic = Characteristic::create('Resolution', 'MP', 0, true, $now);
+        $category->assignCharacteristic($characteristic, true, false, $now);
+        $product = Product::create(
+            'Camera',
+            new Slug('camera'),
+            null,
+            null,
+            new Price(1000, 'BYN'),
+            null,
+            new Balance(5),
+            $category,
+            $brand,
+            null,
+            null,
+            null,
+            null,
+            0,
+            true,
+            $now,
+        );
+
+        $product->assignCharacteristic($characteristic, ' 24 MP ');
+
+        self::assertCount(1, $product->getCharacteristicAssignments());
+        self::assertSame('24 MP', $product->getCharacteristicAssignments()[0]->getValue());
+        $product->assignCharacteristic($characteristic, '32 MP');
+        self::assertCount(1, $product->getCharacteristicAssignments());
+        self::assertSame('32 MP', $product->getCharacteristicAssignments()[0]->getValue());
+        $product->removeCharacteristic($characteristic);
+        self::assertSame([], $product->getCharacteristicAssignments());
+    }
+
+    public function testProductCannotStoreACharacteristicNotAssignedToItsCategory(): void
+    {
+        $now = new \DateTime();
+        $category = Category::create('Cameras', new Slug('cameras'), null, null, 0, null, null, null, null, 0, true, $now);
+        $brand = Brand::create('Acme', new Slug('acme'), null, null, null, null, 0, true, $now);
+        $product = Product::create(
+            'Camera',
+            new Slug('camera'),
+            null,
+            null,
+            new Price(1000, 'BYN'),
+            null,
+            new Balance(5),
+            $category,
+            $brand,
+            null,
+            null,
+            null,
+            null,
+            0,
+            true,
+            $now,
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $product->assignCharacteristic(Characteristic::create('Resolution', 'MP', 0, true, $now), '24 MP');
     }
 }

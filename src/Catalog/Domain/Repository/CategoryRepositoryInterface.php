@@ -16,6 +16,8 @@ interface CategoryRepositoryInterface
 
     public function findBySlug(Slug $slug): ?Category;
 
+    public function hasProducts(Category $category): bool;
+
     public function save(Category $category): void;
 
     public function delete(Category $category): void;

@@ -8,6 +8,8 @@ use App\Catalog\Domain\ValueObject\Balance;
 use App\Catalog\Domain\ValueObject\OldPrice;
 use App\Catalog\Domain\ValueObject\Price;
 use App\Shared\Domain\ValueObject\Slug;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -51,6 +53,10 @@ class Product
     #[ORM\JoinColumn(name: 'brand_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT', foreignKeyName: 'fk_product_brand')]
     private Brand $brand;
 
+    /** @var Collection<int, ProductCharacteristic> */
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductCharacteristic::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $characteristicAssignments;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $image = null;
 
@@ -76,7 +82,9 @@ class Product
     private \DateTime $updated_at;
 
     private function __construct()
-    {}
+    {
+        $this->characteristicAssignments = new ArrayCollection();
+    }
 
     public static function create(
         string $title,
@@ -176,6 +184,11 @@ class Product
         return $this->title;
     }
 
+    public function getH1(): ?string
+    {
+        return $this->h1;
+    }
+
     public function getSlug(): Slug
     {
         return $this->slug;
@@ -249,5 +262,55 @@ class Product
     public function getUpdatedAt(): \DateTime
     {
         return $this->updated_at;
+    }
+
+    public function assignCharacteristic(Characteristic $characteristic, string $value): void
+    {
+        $isAssignedToCategory = false;
+        foreach ($this->category->getCharacteristicAssignments() as $categoryAssignment) {
+            if ($categoryAssignment->isActive()
+                && $categoryAssignment->getCharacteristic()->getIsActive()
+                && $this->sameCharacteristic($categoryAssignment->getCharacteristic(), $characteristic)) {
+                $isAssignedToCategory = true;
+                break;
+            }
+        }
+
+        if (!$isAssignedToCategory) {
+            throw new \InvalidArgumentException('Product characteristic must be active and assigned to its category.');
+        }
+
+        foreach ($this->characteristicAssignments as $assignment) {
+            if ($this->sameCharacteristic($assignment->getCharacteristic(), $characteristic)) {
+                $assignment->updateValue($value);
+
+                return;
+            }
+        }
+
+        $this->characteristicAssignments->add(ProductCharacteristic::create($this, $characteristic, $value));
+    }
+
+    public function removeCharacteristic(Characteristic $characteristic): void
+    {
+        foreach ($this->characteristicAssignments as $assignment) {
+            if ($this->sameCharacteristic($assignment->getCharacteristic(), $characteristic)) {
+                $this->characteristicAssignments->removeElement($assignment);
+
+                return;
+            }
+        }
+    }
+
+    /** @return list<ProductCharacteristic> */
+    public function getCharacteristicAssignments(): array
+    {
+        return array_values($this->characteristicAssignments->toArray());
+    }
+
+    private function sameCharacteristic(Characteristic $first, Characteristic $second): bool
+    {
+        return $first === $second
+            || (null !== $first->getId() && $first->getId() === $second->getId());
     }
 }

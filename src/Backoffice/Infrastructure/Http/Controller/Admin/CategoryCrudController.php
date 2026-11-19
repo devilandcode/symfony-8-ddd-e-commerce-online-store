@@ -10,6 +10,7 @@ use App\Backoffice\Infrastructure\Http\Form\Category\CategoryType;
 use App\Catalog\Application\Category\AdminUseCases\CreateCategory\CreateCategoryHandler;
 use App\Catalog\Application\Category\AdminUseCases\DeleteCategory\DeleteCategoryHandler;
 use App\Catalog\Application\Category\AdminUseCases\Exception\CategoryNotFoundException;
+use App\Catalog\Application\Category\AdminUseCases\Exception\CategoryHasProductsException;
 use App\Catalog\Application\Category\AdminUseCases\Exception\CategorySlugAlreadyInUseException;
 use App\Catalog\Application\Category\AdminUseCases\FindCategory\FindCategoryHandler;
 use App\Catalog\Application\Category\AdminUseCases\Input\CategoryDataDTO;
@@ -125,6 +126,10 @@ final class CategoryCrudController extends AbstractController
             $deleteCategory($id);
         } catch (CategoryNotFoundException) {
             throw $this->createNotFoundException();
+        } catch (CategoryHasProductsException $exception) {
+            $this->addFlash('danger', $exception->getMessage());
+
+            return $this->redirectToRoute('admin_categories_index');
         }
 
         $this->addFlash('success', 'Category deleted.');
