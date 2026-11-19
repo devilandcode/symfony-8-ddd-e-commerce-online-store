@@ -19,11 +19,14 @@ final readonly class CategoryRepository implements CategoryRepositoryInterface
     {
         return $this->entityManager->createQueryBuilder()
             ->select('category', 'parent', 'assignments', 'characteristic')
+            ->addSelect('CASE WHEN category.parent IS NULL THEN 0 ELSE 1 END AS HIDDEN parentOrder')
             ->distinct()
             ->from(Category::class, 'category')
             ->leftJoin('category.parent', 'parent')
             ->leftJoin('category.characteristics', 'assignments')
             ->leftJoin('assignments.characteristic', 'characteristic')
+            ->orderBy('parentOrder', \SortDirection::Ascending)
+            ->addOrderBy('category.pos', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
