@@ -8,6 +8,8 @@ use App\Backoffice\Infrastructure\Http\Form\Product\ProductCharacteristicFormDat
 use App\Backoffice\Infrastructure\Http\Form\Product\ProductFormData;
 use App\Backoffice\Infrastructure\Http\Form\Product\ProductType;
 use App\Backoffice\Infrastructure\Money\CurrencyAmountConverter;
+use App\Backoffice\Infrastructure\Storage\ProductImageChanges;
+use App\Backoffice\Infrastructure\Storage\ProductImageSetManager;
 use App\Catalog\Application\Product\AdminUseCases\CreateProduct\CreateProductHandler;
 use App\Catalog\Application\Product\AdminUseCases\DeleteProduct\DeleteProductHandler;
 use App\Catalog\Application\Product\AdminUseCases\Exception\ProductNotFoundException;
@@ -38,6 +40,7 @@ final class ProductCrudController extends AbstractController
     public function __construct(
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly CurrencyAmountConverter $amountConverter,
+        private readonly ProductImageSetManager $productImageSetManager,
     )
     {
     }
@@ -53,35 +56,42 @@ final class ProductCrudController extends AbstractController
     #[AdminRoute('/new', name: 'new', options: ['methods' => ['GET', 'POST']])]
     public function new(Request $request, CreateProductHandler $createProduct): Response
     {
-        $data = $this->formDataFromProduct(null, $this->submittedCategoryId($request));
+        $data = $this->formDataFromProduct(null, null, false);
         $form = $this->createForm(ProductType::class, $data);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->get('loadCharacteristics')->isClicked()) {
-            $data = $form->getData();
-            $data->characteristicAssignments = [];
-            $this->refreshCharacteristicFields($data, $data->categoryId);
-            $form = $this->createForm(ProductType::class, $data);
-
-            return $this->renderForm($form, 'Create product');
-        }
-
         if ($form->isSubmitted() && $form->isValid() && $form->get('save')->isClicked()) {
+            $imageChanges = null;
             try {
-                $createProduct($this->dataFromForm($form->getData()));
+                $data = $form->getData();
+                $imageChanges = $this->productImageSetManager->prepare(
+                    null,
+                    null,
+                    false,
+                    [],
+                    $data->imageUpload,
+                    $data->additionalImageUploads,
+                );
+                $id = $createProduct($this->dataFromForm($data, $imageChanges->image, $imageChanges->additionalImages));
             } catch (ProductSlugAlreadyInUseException $exception) {
+                $this->discardProductImageUploads($imageChanges);
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderForm($form, 'Create product');
             } catch (\InvalidArgumentException $exception) {
+                $this->discardProductImageUploads($imageChanges);
                 $this->addProductDomainError($form, $exception);
 
                 return $this->renderForm($form, 'Create product');
+            } catch (\Throwable $exception) {
+                $this->discardProductImageUploads($imageChanges);
+
+                throw $exception;
             }
 
             $this->addFlash('success', 'Product created.');
 
-            return $this->redirectToRoute('admin_products_index');
+            return $this->redirectToRoute('admin_products_edit', ['id' => $id]);
         }
 
         return $this->renderForm($form, 'Create product');
@@ -101,39 +111,69 @@ final class ProductCrudController extends AbstractController
         }
 
         $data = $this->formDataFromProduct($product, $this->submittedCategoryId($request, $product->categoryId));
-        $form = $this->createForm(ProductType::class, $data);
+        $form = $this->createEditForm($data);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->get('loadCharacteristics')->isClicked()) {
+        $selectedCategoryMarker = null === $data->categoryId ? null : (string) $data->categoryId;
+        $characteristicsNeedRefresh = $form->isSubmitted()
+            && $data->characteristicsCategoryId !== $selectedCategoryMarker;
+        if ($form->isSubmitted() && $characteristicsNeedRefresh) {
             $data = $form->getData();
-            if ($product->categoryId !== $data->categoryId) {
+            if ($characteristicsNeedRefresh) {
                 $data->characteristicAssignments = [];
             }
             $this->refreshCharacteristicFields(
                 $data,
                 $data->categoryId,
-                $product->categoryId === $data->categoryId ? $product : null,
+                $data->categoryId === $product->categoryId ? $product : null,
             );
-            $form = $this->createForm(ProductType::class, $data);
+            $data->characteristicsCategoryId = null === $data->categoryId ? null : (string) $data->categoryId;
+            $form = $this->createEditForm($data);
+            $form->get('categoryId')->addError(new FormError('Review the characteristics for this category, then save again.'));
+            if (null !== $data->imageUpload || [] !== $data->additionalImageUploads) {
+                $this->addFlash('warning', 'Please reselect image files after refreshing the characteristics.');
+            }
 
             return $this->renderForm($form, 'Edit product');
         }
 
         if ($form->isSubmitted() && $form->isValid() && $form->get('save')->isClicked()) {
+            $data = $form->getData();
+            $imageChanges = null;
             try {
-                $updateProduct($id, $this->dataFromForm($form->getData()));
+                $imageChanges = $this->productImageSetManager->prepare(
+                    $product->image,
+                    $product->additionalImages,
+                    $data->removeImage,
+                    $data->additionalImagesToRemove,
+                    $data->imageUpload,
+                    $data->additionalImageUploads,
+                );
+                $updateProduct($id, $this->dataFromForm(
+                    $data,
+                    $imageChanges->image,
+                    $imageChanges->additionalImages,
+                ));
             } catch (ProductSlugAlreadyInUseException $exception) {
+                $this->discardProductImageUploads($imageChanges);
                 $form->get('slug')->addError(new FormError($exception->getMessage()));
 
                 return $this->renderForm($form, 'Edit product');
             } catch (\InvalidArgumentException $exception) {
+                $this->discardProductImageUploads($imageChanges);
                 $this->addProductDomainError($form, $exception);
 
                 return $this->renderForm($form, 'Edit product');
             } catch (ProductNotFoundException) {
+                $this->discardProductImageUploads($imageChanges);
                 throw $this->createNotFoundException();
+            } catch (\Throwable $exception) {
+                $this->discardProductImageUploads($imageChanges);
+
+                throw $exception;
             }
 
+            $this->productImageSetManager->removeObsolete($imageChanges);
             $this->addFlash('success', 'Product updated.');
 
             return $this->redirectToRoute('admin_products_index');
@@ -160,17 +200,16 @@ final class ProductCrudController extends AbstractController
         return $this->redirectToRoute('admin_products_index');
     }
 
-    private function dataFromForm(ProductFormData $data): ProductDataDTO
-    {
+    private function dataFromForm(
+        ProductFormData $data,
+        ?string $image,
+        ?array $additionalImages,
+    ): ProductDataDTO {
         $currencyCode = strtoupper(trim($data->currencyCode));
         $price = new Price($this->amountConverter->toMinorUnits($data->price, $currencyCode), $currencyCode);
         $oldPrice = null === $data->oldPrice || '' === trim($data->oldPrice)
             ? null
             : new OldPrice($this->amountConverter->toMinorUnits($data->oldPrice, $currencyCode));
-        $additionalImages = null === $data->additionalImages
-            ? []
-            : array_values(array_filter(array_map('trim', preg_split('/\R/', $data->additionalImages) ?: [])));
-
         return new ProductDataDTO(
             trim($data->title),
             new Slug($data->slug),
@@ -181,7 +220,7 @@ final class ProductCrudController extends AbstractController
             new Balance($data->balance),
             $data->categoryId ?? throw new \InvalidArgumentException('A category is required.'),
             $data->brandId ?? throw new \InvalidArgumentException('A brand is required.'),
-            $data->image,
+            $image,
             [] === $additionalImages ? null : $additionalImages,
             $data->seoTitle,
             $data->seoDescription,
@@ -197,10 +236,14 @@ final class ProductCrudController extends AbstractController
         );
     }
 
-    private function formDataFromProduct(?ProductViewDTO $product, ?int $categoryId): ProductFormData
-    {
+    private function formDataFromProduct(
+        ?ProductViewDTO $product,
+        ?int $categoryId,
+        bool $showCharacteristics = true,
+    ): ProductFormData {
         $data = new ProductFormData();
         $data->categoryId = $categoryId;
+        $data->characteristicsCategoryId = null === $categoryId ? null : (string) $categoryId;
         if (null !== $product) {
             $data->title = $product->title;
             $data->slug = $product->slug;
@@ -214,16 +257,54 @@ final class ProductCrudController extends AbstractController
             $data->balance = $product->balance;
             $data->brandId = $product->brandId;
             $data->image = $product->image;
-            $data->additionalImages = null === $product->additionalImages ? null : implode("\n", $product->additionalImages);
+            $data->additionalImages = $product->additionalImages;
             $data->seoTitle = $product->seoTitle;
             $data->seoDescription = $product->seoDescription;
             $data->position = $product->position;
             $data->isActive = $product->isActive;
         }
 
-        $this->refreshCharacteristicFields($data, $categoryId, $product);
+        if ($showCharacteristics) {
+            $this->refreshCharacteristicFields($data, $categoryId, $product);
+        }
 
         return $data;
+    }
+
+    private function createEditForm(ProductFormData $data): FormInterface
+    {
+        $choices = [];
+        foreach ($data->additionalImages ?? [] as $index => $path) {
+            $choices[sprintf('Image %d (%s)', $index + 1, basename($path))] = $path;
+        }
+
+        return $this->createForm(ProductType::class, $data, [
+            'show_characteristics' => true,
+            'existing_additional_images' => $choices,
+        ]);
+    }
+
+    private function discardProductImageUploads(?ProductImageChanges $changes): void
+    {
+        if (null !== $changes) {
+            $this->productImageSetManager->discardUploads($changes);
+        }
+    }
+
+    private function submittedCategoryId(Request $request, ?int $fallback = null): ?int
+    {
+        if (!$request->isMethod('POST')) {
+            return $fallback;
+        }
+
+        $value = $request->request->all('product_form')['categoryId'] ?? null;
+        if (null === $value || '' === $value) {
+            return null;
+        }
+
+        $categoryId = filter_var($value, FILTER_VALIDATE_INT);
+
+        return false === $categoryId || $categoryId <= 0 ? $fallback : $categoryId;
     }
 
     private function refreshCharacteristicFields(
@@ -261,22 +342,6 @@ final class ProductCrudController extends AbstractController
             $formData->value = $existingValues[$id] ?? '';
             $data->characteristicAssignments[] = $formData;
         }
-    }
-
-    private function submittedCategoryId(Request $request, ?int $fallback = null): ?int
-    {
-        if (!$request->isMethod('POST')) {
-            return $fallback;
-        }
-
-        $value = $request->request->all('product_form')['categoryId'] ?? null;
-        if (null === $value || '' === $value) {
-            return null;
-        }
-
-        $categoryId = filter_var($value, FILTER_VALIDATE_INT);
-
-        return false === $categoryId || $categoryId <= 0 ? $fallback : $categoryId;
     }
 
     private function addProductDomainError(FormInterface $form, \InvalidArgumentException $exception): void

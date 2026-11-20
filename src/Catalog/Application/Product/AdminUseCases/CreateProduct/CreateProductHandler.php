@@ -25,7 +25,7 @@ final readonly class CreateProductHandler
     ) {
     }
 
-    public function __invoke(ProductDataDTO $data): void
+    public function __invoke(ProductDataDTO $data): int
     {
         if (null !== $this->productRepository->findBySlug($data->slug)) {
             throw ProductSlugAlreadyInUseException::withSlug($data->slug->toString());
@@ -61,5 +61,7 @@ final readonly class CreateProductHandler
         } catch (UniqueConstraintViolationException $exception) {
             throw ProductSlugAlreadyInUseException::withSlug($data->slug->toString(), $exception);
         }
+
+        return $product->getId() ?? throw new \LogicException('Created product is missing its persisted ID.');
     }
 }

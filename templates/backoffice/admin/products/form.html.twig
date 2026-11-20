@@ -5,6 +5,13 @@
 {% block content_title %}{{ title }}{% endblock %}
 
 {% block main %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="status">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning" role="status">{{ message }}</div>
+    {% endfor %}
+
     {{ form_start(form) }}
         {{ form_row(form.title) }}
         {{ form_row(form.slug) }}
@@ -18,30 +25,68 @@
             <div class="col-md-4">{{ form_row(form.currencyCode) }}</div>
         </div>
         {{ form_row(form.balance) }}
-        {{ form_row(form.image) }}
-        {{ form_row(form.additionalImages) }}
+        {% if form.vars.data.image %}
+            <p>Current product image:</p>
+            <img src="{{ asset(form.vars.data.image) }}" alt="" class="img-thumbnail mb-2" style="max-width: 180px">
+            {{ form_row(form.removeImage) }}
+        {% endif %}
+        {{ form_row(form.imageUpload) }}
+        {% if form.vars.data.additionalImages %}
+            <div class="mb-3">
+                <p>Current additional images:</p>
+                {% for removeChoice in form.additionalImagesToRemove %}
+                    {% set imagePath = form.vars.data.additionalImages[loop.index0] %}
+                    <div class="d-inline-flex flex-column align-items-start me-3 mb-2">
+                        <img src="{{ asset(imagePath) }}" alt="" class="img-thumbnail mb-2" style="max-width: 120px">
+                        <div class="form-check">
+                            {{ form_widget(removeChoice, {attr: {class: 'form-check-input'}}) }}
+                            {{ form_label(removeChoice, null, {label_attr: {class: 'form-check-label'}}) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {{ form_row(form.additionalImageUploads) }}
         {{ form_row(form.seoTitle) }}
         {{ form_row(form.seoDescription) }}
         {{ form_row(form.position) }}
         {{ form_row(form.isActive) }}
 
-        <fieldset class="mb-3">
-            <legend>Product characteristics</legend>
-            <p class="text-muted">Values are optional. Empty values are not stored.</p>
-            {% for assignment in form.characteristicAssignments %}
-                <div class="border rounded p-3 mb-2">
-                    {{ form_widget(assignment.characteristicId) }}
-                    {{ form_row(assignment.value, {
-                        label: assignment.vars.data.title ~ (assignment.vars.data.measure ? ' (' ~ assignment.vars.data.measure ~ ')' : '')
-                    }) }}
-                </div>
-            {% else %}
-                <p class="text-muted">Choose a category and load its active characteristics.</p>
-            {% endfor %}
-            {{ form_errors(form.characteristicAssignments) }}
-        </fieldset>
+        {% if form.characteristicAssignments is defined %}
+            <fieldset class="mb-3">
+                <legend>Product characteristics</legend>
+                <p class="text-muted">Characteristic values are optional. Empty values are not stored.</p>
+                {% if form.characteristicAssignments|length > 0 %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Measure</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in form.characteristicAssignments %}
+                                <tr>
+                                    <th scope="row">{{ assignment.vars.data.title }}</th>
+                                    <td>{{ assignment.vars.data.measure ?? '-' }}</td>
+                                    <td>
+                                        {{ form_widget(assignment.value) }}
+                                        {{ form_errors(assignment.value) }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="3">No active characteristics are assigned to this category.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-muted">No active characteristics are assigned to this category.</p>
+                {% endif %}
+                {{ form_errors(form.characteristicAssignments) }}
+            </fieldset>
+        {% endif %}
 
-        {{ form_widget(form.loadCharacteristics, {attr: {class: 'btn btn-secondary'}}) }}
         {{ form_widget(form.save, {attr: {class: 'btn btn-primary'}}) }}
         <a class="btn btn-secondary" href="{{ path('admin_products_index') }}">Cancel</a>
         {{ form_rest(form) }}

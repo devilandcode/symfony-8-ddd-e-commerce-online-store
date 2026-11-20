@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Backoffice\Infrastructure\Http\Form\Product;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 final class ProductFormData
 {
     public string $title = '';
@@ -17,11 +19,20 @@ final class ProductFormData
     public ?int $categoryId = null;
     public ?int $brandId = null;
     public ?string $image = null;
-    public ?string $additionalImages = null;
+    /** @var list<string>|null */
+    public ?array $additionalImages = null;
+    public ?UploadedFile $imageUpload = null;
+    /** @var list<UploadedFile> */
+    public array $additionalImageUploads = [];
+    public bool $removeImage = false;
+    /** @var list<string> */
+    public array $additionalImagesToRemove = [];
     public ?string $seoTitle = null;
     public ?string $seoDescription = null;
     public int $position = 0;
     public bool $isActive = true;
+
+    public ?string $characteristicsCategoryId = null;
 
     /** @var list<ProductCharacteristicFormData> */
     public array $characteristicAssignments = [];

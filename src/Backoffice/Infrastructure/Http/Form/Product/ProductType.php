@@ -10,12 +10,16 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -67,32 +71,64 @@ final class ProductType extends AbstractType
                 'help' => 'Three-letter currency code, for example USD.',
             ])
             ->add('balance', IntegerType::class, ['constraints' => [new NotBlank(), new \Symfony\Component\Validator\Constraints\PositiveOrZero()]])
-            ->add('image', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])
-            ->add('additionalImages', TextareaType::class, [
+            ->add('imageUpload', FileType::class, [
                 'required' => false,
-                'help' => 'Enter one image path per line.',
+                'label' => 'Product image',
+                'constraints' => [new Image(
+                    maxSize: '5M',
+                    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                    detectCorrupted: true,
+                )],
+            ])
+            ->add('removeImage', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Remove current product image',
+            ])
+            ->add('additionalImageUploads', FileType::class, [
+                'required' => false,
+                'multiple' => true,
+                'label' => 'Additional product images',
+                'constraints' => [new All(new Image(
+                    maxSize: '5M',
+                    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                    detectCorrupted: true,
+                ))],
+            ])
+            ->add('additionalImagesToRemove', ChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
+                'expanded' => true,
+                'label' => 'Remove existing additional images',
+                'choices' => $options['existing_additional_images'],
             ])
             ->add('seoTitle', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])
             ->add('seoDescription', TextareaType::class, ['required' => false])
             ->add('position', IntegerType::class)
-            ->add('isActive', CheckboxType::class, ['required' => false])
-            ->add('characteristicAssignments', CollectionType::class, [
-                'entry_type' => ProductCharacteristicType::class,
-                'label' => 'Product characteristics',
-                'allow_add' => false,
-                'allow_delete' => false,
-                'by_reference' => false,
-            ])
-            ->add('loadCharacteristics', SubmitType::class, [
-                'label' => 'Load category characteristics',
-                'validate' => false,
-            ])
-            ->add('save', SubmitType::class, ['label' => 'Save']);
+            ->add('isActive', CheckboxType::class, ['required' => false]);
+        if ($options['show_characteristics']) {
+            $builder
+                ->add('characteristicsCategoryId', HiddenType::class)
+                ->add('characteristicAssignments', CollectionType::class, [
+                    'entry_type' => ProductCharacteristicType::class,
+                    'label' => 'Product characteristics',
+                    'allow_add' => false,
+                    'allow_delete' => false,
+                    'by_reference' => false,
+                ]);
+        }
+
+        $builder->add('save', SubmitType::class, ['label' => 'Save']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => ProductFormData::class]);
+        $resolver->setDefaults([
+            'data_class' => ProductFormData::class,
+            'show_characteristics' => false,
+            'existing_additional_images' => [],
+        ]);
+        $resolver->setAllowedTypes('show_characteristics', 'bool');
+        $resolver->setAllowedTypes('existing_additional_images', 'array');
     }
 
     public function getBlockPrefix(): string
