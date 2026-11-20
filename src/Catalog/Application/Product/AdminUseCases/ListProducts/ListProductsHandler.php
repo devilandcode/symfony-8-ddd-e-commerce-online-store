@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Catalog\Application\Product\AdminUseCases\ListProducts;
 
-use App\Catalog\Application\Product\AdminUseCases\Output\ProductViewDTO;
-use App\Catalog\Domain\Repository\ProductRepositoryInterface;
+use App\Catalog\Application\Product\AdminUseCases\Output\ProductIndexView;
 
 final readonly class ListProductsHandler
 {
-    public function __construct(private ProductRepositoryInterface $productRepository)
+    public function __construct(private ProductIndexQueryInterface $productIndexQuery)
     {
     }
 
-    /** @return list<ProductViewDTO> */
+    /** @return list<ProductIndexView> */
     public function __invoke(): array
     {
-        return array_map(ProductViewDTO::fromProduct(...), $this->productRepository->findAll());
+        return $this->productIndexQuery->findAll();
     }
 }

@@ -19,13 +19,10 @@ final readonly class ProductRepository implements ProductRepositoryInterface
     public function findAll(): array
     {
         return $this->entityManager->createQueryBuilder()
-            ->select('product', 'category', 'brand', 'assignments', 'characteristic')
-            ->distinct()
+            ->select('product', 'category', 'brand')
             ->from(Product::class, 'product')
             ->join('product.category', 'category')
             ->join('product.brand', 'brand')
-            ->leftJoin('product.characteristicAssignments', 'assignments')
-            ->leftJoin('assignments.characteristic', 'characteristic')
             ->orderBy('product.pos', \SortDirection::Ascending)
             ->addOrderBy('product.title', \SortDirection::Ascending)
             ->getQuery()

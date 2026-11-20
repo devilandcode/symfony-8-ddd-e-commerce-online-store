@@ -64,7 +64,7 @@ final class ProductType extends AbstractType
             ])
             ->add('currencyCode', TextType::class, [
                 'constraints' => [new NotBlank(), new Length(exactly: 3)],
-                'help' => 'Three-letter currency code, for example BYN.',
+                'help' => 'Three-letter currency code, for example USD.',
             ])
             ->add('balance', IntegerType::class, ['constraints' => [new NotBlank(), new \Symfony\Component\Validator\Constraints\PositiveOrZero()]])
             ->add('image', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])

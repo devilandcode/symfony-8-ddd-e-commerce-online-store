@@ -12,7 +12,7 @@ final class ProductFormData
     public ?string $description = null;
     public string $price = '';
     public ?string $oldPrice = null;
-    public string $currencyCode = 'BYN';
+    public string $currencyCode = 'USD';
     public int $balance = 0;
     public ?int $categoryId = null;
     public ?int $brandId = null;
