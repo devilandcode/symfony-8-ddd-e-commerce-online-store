@@ -281,6 +281,7 @@ final class ProductCrudController extends AbstractController
         return $this->createForm(ProductType::class, $data, [
             'show_characteristics' => true,
             'existing_additional_images' => $choices,
+            'has_existing_image' => null !== $data->image,
         ]);
     }
 

@@ -80,10 +80,6 @@ final class ProductType extends AbstractType
                     detectCorrupted: true,
                 )],
             ])
-            ->add('removeImage', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Remove current product image',
-            ])
             ->add('additionalImageUploads', FileType::class, [
                 'required' => false,
                 'multiple' => true,
@@ -94,17 +90,25 @@ final class ProductType extends AbstractType
                     detectCorrupted: true,
                 ))],
             ])
-            ->add('additionalImagesToRemove', ChoiceType::class, [
+            ->add('seoTitle', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])
+            ->add('seoDescription', TextareaType::class, ['required' => false])
+            ->add('position', IntegerType::class)
+            ->add('isActive', CheckboxType::class, ['required' => false]);
+        if ($options['has_existing_image']) {
+            $builder->add('removeImage', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Remove current product image',
+            ]);
+        }
+        if ([] !== $options['existing_additional_images']) {
+            $builder->add('additionalImagesToRemove', ChoiceType::class, [
                 'required' => false,
                 'multiple' => true,
                 'expanded' => true,
                 'label' => 'Remove existing additional images',
                 'choices' => $options['existing_additional_images'],
-            ])
-            ->add('seoTitle', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])
-            ->add('seoDescription', TextareaType::class, ['required' => false])
-            ->add('position', IntegerType::class)
-            ->add('isActive', CheckboxType::class, ['required' => false]);
+            ]);
+        }
         if ($options['show_characteristics']) {
             $builder
                 ->add('characteristicsCategoryId', HiddenType::class)
@@ -126,9 +130,11 @@ final class ProductType extends AbstractType
             'data_class' => ProductFormData::class,
             'show_characteristics' => false,
             'existing_additional_images' => [],
+            'has_existing_image' => false,
         ]);
         $resolver->setAllowedTypes('show_characteristics', 'bool');
         $resolver->setAllowedTypes('existing_additional_images', 'array');
+        $resolver->setAllowedTypes('has_existing_image', 'bool');
     }
 
     public function getBlockPrefix(): string

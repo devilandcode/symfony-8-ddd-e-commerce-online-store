@@ -28,6 +28,8 @@ final class ProductTypeTest extends KernelTestCase
 
         self::assertFalse($form->has('characteristicAssignments'));
         self::assertFalse($form->has('loadCharacteristics'));
+        self::assertFalse($form->has('removeImage'));
+        self::assertFalse($form->has('additionalImagesToRemove'));
         self::assertTrue($form->has('imageUpload'));
         self::assertTrue($form->has('additionalImageUploads'));
         self::assertTrue($form->get('additionalImageUploads')->getConfig()->getOption('multiple'));
@@ -82,6 +84,7 @@ final class ProductTypeTest extends KernelTestCase
         $form = $this->formFactory()->create(ProductType::class, $data, [
             'show_characteristics' => true,
             'existing_additional_images' => $choices,
+            'has_existing_image' => true,
         ]);
         $view = $form->createView();
 
@@ -119,6 +122,7 @@ final class ProductTypeTest extends KernelTestCase
                 'Image 1' => $data->additionalImages[0],
                 'Image 2' => $data->additionalImages[1],
             ],
+            'has_existing_image' => true,
         ]);
         $html = static::getContainer()
             ->get('twig')
@@ -132,6 +136,10 @@ final class ProductTypeTest extends KernelTestCase
         self::assertStringContainsString('id="product_form_additionalImagesToRemove_1"', $html);
         self::assertStringContainsString($data->additionalImages[0], $html);
         self::assertStringContainsString($data->additionalImages[1], $html);
+        self::assertSame(1, substr_count($html, 'Remove existing additional images'));
+        self::assertLessThan(strpos($html, 'product_form_save'), strpos($html, 'product_form_removeImage'));
+        self::assertLessThan(strpos($html, 'product_form_save'), strpos($html, 'product_form_additionalImagesToRemove_0'));
+        self::assertStringContainsString('gap-2 mt-4', $html);
     }
 
     private function formFactory(): \Symfony\Component\Form\FormFactoryInterface
