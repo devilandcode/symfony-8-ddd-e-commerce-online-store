@@ -7,9 +7,8 @@
     {% set popularBrands = sections.popular_brands|default({}) %}
     {% set priceHits = sections.price_hits|default({}) %}
     {% set heroSlides = pageContent.slides|default([])|filter(slide => slide.isActive|default(false) and slide.desktopImage|default('') is not empty) %}
-    {% if pageContent is empty %}
-        {% include 'general/home-hero-fallback.html.twig' %}
-    {% elseif heroSlides is not empty %}
+
+    {% if heroSlides is not empty %}
         <section class="s-line s-index-slider">
             <div class="owl-carousel owl-index-slider">
                 {% for slide in heroSlides %}
@@ -51,6 +50,7 @@
             </div>
         </section>
     {% endif %}
+    
     <section class="s-line s-items-slider">
         <div class="container pt-60 pb-60">
             <div class="_h2 upper fontCor semibold color-dblue align-center xl-mb-45 md-mb-30 mb-20">
