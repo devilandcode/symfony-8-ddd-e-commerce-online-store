@@ -11,7 +11,7 @@ final readonly class GetHomePageCatalogHandler
 {
     public function __construct(
         private ListContentSettingHandler $listContentSetting,
-        private HomePageCatalogQueryInterface $homePageCatalogQuery,
+        private HomePageCatalogQueryInterface $homePageCatalogRepository,
     ) {
     }
 
@@ -21,9 +21,9 @@ final readonly class GetHomePageCatalogHandler
         $productsLimit = $settings->productsLimit();
 
         return new ViewHomePageCatalogDTO(
-            newProducts: $this->homePageCatalogQuery->findNewProducts($productsLimit),
-            hitProducts: $this->homePageCatalogQuery->findHitProducts($productsLimit),
-            brands: $this->homePageCatalogQuery->findPopularBrands($settings->brandsLimit()),
+            newProducts: $this->homePageCatalogRepository->findNewProducts($productsLimit),
+            hitProducts: $this->homePageCatalogRepository->findHitProducts($productsLimit),
+            brands: $this->homePageCatalogRepository->findPopularBrands($settings->brandsLimit()),
         );
     }
 }
