@@ -32,6 +32,8 @@ final class ProductTypeTest extends KernelTestCase
         self::assertFalse($form->has('additionalImagesToRemove'));
         self::assertTrue($form->has('imageUpload'));
         self::assertTrue($form->has('additionalImageUploads'));
+        self::assertTrue($form->has('isNew'));
+        self::assertTrue($form->has('isHit'));
         self::assertTrue($form->get('additionalImageUploads')->getConfig()->getOption('multiple'));
         self::assertTrue($form->createView()->vars['multipart']);
 
@@ -43,6 +45,21 @@ final class ProductTypeTest extends KernelTestCase
         $additionalImagesConstraint = $form->get('additionalImageUploads')->getConfig()->getOption('constraints')[0];
         self::assertInstanceOf(All::class, $additionalImagesConstraint);
         self::assertSame(5_000_000, $additionalImagesConstraint->constraints[0]->maxSize);
+    }
+
+    public function testProductFlagsAreSubmittedAsBooleans(): void
+    {
+        $data = new ProductFormData();
+        $form = $this->formFactory()->create(ProductType::class, $data);
+        $form->submit([
+            'isNew' => '1',
+            'isHit' => '1',
+            'isActive' => null,
+        ], false);
+
+        self::assertTrue($data->isNew);
+        self::assertTrue($data->isHit);
+        self::assertFalse($data->isActive);
     }
 
     public function testEditFormKeepsCharacteristicIdsServerSide(): void

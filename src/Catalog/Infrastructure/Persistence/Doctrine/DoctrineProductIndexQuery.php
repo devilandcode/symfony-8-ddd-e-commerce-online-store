@@ -27,7 +27,9 @@ final readonly class DoctrineProductIndexQuery implements ProductIndexQueryInter
                 'product.balance.units AS balance',
                 'category.title AS categoryTitle',
                 'brand.title AS brandTitle',
-                'product.is_active AS isActive',
+                'product.isNew AS isNew',
+                'product.isHit AS isHit',
+                'product.isActive AS isActive',
                 'product.pos AS HIDDEN position',
             )
             ->distinct()
@@ -49,6 +51,8 @@ final readonly class DoctrineProductIndexQuery implements ProductIndexQueryInter
                 (int) $row['balance'],
                 (string) $row['categoryTitle'],
                 (string) $row['brandTitle'],
+                (bool) $row['isNew'],
+                (bool) $row['isHit'],
                 (bool) $row['isActive'],
             ),
             $rows,

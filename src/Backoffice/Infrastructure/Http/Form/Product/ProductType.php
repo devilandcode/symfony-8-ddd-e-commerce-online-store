@@ -93,6 +93,8 @@ final class ProductType extends AbstractType
             ->add('seoTitle', TextType::class, ['required' => false, 'constraints' => [new Length(max: 255)]])
             ->add('seoDescription', TextareaType::class, ['required' => false])
             ->add('position', IntegerType::class)
+            ->add('isNew', CheckboxType::class, ['required' => false, 'label' => 'New product'])
+            ->add('isHit', CheckboxType::class, ['required' => false, 'label' => 'Product hit'])
             ->add('isActive', CheckboxType::class, ['required' => false]);
         if ($options['has_existing_image']) {
             $builder->add('removeImage', CheckboxType::class, [

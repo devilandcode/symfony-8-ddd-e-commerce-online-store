@@ -15,6 +15,8 @@ final readonly class ProductIndexView
         public int $balance,
         public string $categoryTitle,
         public string $brandTitle,
+        public bool $isNew,
+        public bool $isHit,
         public bool $isActive,
     ) {
     }

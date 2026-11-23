@@ -52,6 +52,8 @@ final readonly class UpdateProductHandler
             $data->seoTitle,
             $data->seoDescription,
             $data->position,
+            $data->isNew,
+            $data->isHit,
             $data->isActive,
             new \DateTime(),
         );

@@ -72,8 +72,14 @@ class Product
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     private int $pos = 0;
 
-    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
-    private bool $is_active = true;
+    #[ORM\Column(name: 'is_new', type: 'boolean', nullable: false, options: ['default' => false])]
+    private bool $isNew = false;
+
+    #[ORM\Column(name: 'is_hit', type: 'boolean', nullable: false, options: ['default' => false])]
+    private bool $isHit = false;
+
+    #[ORM\Column(name: 'is_active', type: 'boolean', nullable: false, options: ['default' => true])]
+    private bool $isActive = true;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     private \DateTime $created_at;
@@ -101,6 +107,8 @@ class Product
         ?string $seoTitle,
         ?string $seoDescription,
         int $position,
+        bool $isNew,
+        bool $isHit,
         bool $isActive,
         \DateTime $now,
     ): self {
@@ -120,6 +128,8 @@ class Product
             $seoTitle,
             $seoDescription,
             $position,
+            $isNew,
+            $isHit,
             $isActive,
             $now,
         );
@@ -143,6 +153,8 @@ class Product
         ?string $seoTitle,
         ?string $seoDescription,
         int $position,
+        bool $isNew,
+        bool $isHit,
         bool $isActive,
         \DateTime $updatedAt,
     ): void {
@@ -170,7 +182,9 @@ class Product
         $this->seo_title = $seoTitle;
         $this->seo_description = $seoDescription;
         $this->pos = $position;
-        $this->is_active = $isActive;
+        $this->isNew = $isNew;
+        $this->isHit = $isHit;
+        $this->isActive = $isActive;
         $this->updated_at = $updatedAt;
     }
 
@@ -249,9 +263,19 @@ class Product
         return $this->pos;
     }
 
+    public function isNew(): bool
+    {
+        return $this->isNew;
+    }
+
+    public function isHit(): bool
+    {
+        return $this->isHit;
+    }
+
     public function isActive(): bool
     {
-        return $this->is_active;
+        return $this->isActive;
     }
 
     public function getCreatedAt(): \DateTime

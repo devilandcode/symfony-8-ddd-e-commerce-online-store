@@ -27,6 +27,8 @@ final readonly class ProductDataDTO
         public ?string $seoTitle,
         public ?string $seoDescription,
         public int $position,
+        public bool $isNew,
+        public bool $isHit,
         public bool $isActive,
         /** @var list<ProductCharacteristicDataDTO> */
         public array $characteristics,

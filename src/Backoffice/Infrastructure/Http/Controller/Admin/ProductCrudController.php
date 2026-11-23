@@ -225,6 +225,8 @@ final class ProductCrudController extends AbstractController
             $data->seoTitle,
             $data->seoDescription,
             $data->position,
+            $data->isNew,
+            $data->isHit,
             $data->isActive,
             array_values(array_map(
                 static fn (ProductCharacteristicFormData $assignment): ProductCharacteristicDataDTO => new ProductCharacteristicDataDTO(
@@ -261,6 +263,8 @@ final class ProductCrudController extends AbstractController
             $data->seoTitle = $product->seoTitle;
             $data->seoDescription = $product->seoDescription;
             $data->position = $product->position;
+            $data->isNew = $product->isNew;
+            $data->isHit = $product->isHit;
             $data->isActive = $product->isActive;
         }
 

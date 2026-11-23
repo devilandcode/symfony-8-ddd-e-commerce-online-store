@@ -30,6 +30,8 @@ final class ProductFormData
     public ?string $seoTitle = null;
     public ?string $seoDescription = null;
     public int $position = 0;
+    public bool $isNew = false;
+    public bool $isHit = false;
     public bool $isActive = true;
 
     public ?string $characteristicsCategoryId = null;

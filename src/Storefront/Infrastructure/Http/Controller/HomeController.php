@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Storefront\Infrastructure\Http\Controller;
 
-use App\ContentManagement\Application\Page\FrontUseCases\Exception\PageNotFoundException;
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\Shared\Domain\ValueObject\Slug;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

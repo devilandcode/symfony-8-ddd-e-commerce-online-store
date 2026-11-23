@@ -39,6 +39,8 @@ final class ProductTest extends TestCase
             null,
             null,
             0,
+            false,
+            false,
             true,
             $now,
         );
@@ -66,12 +68,40 @@ final class ProductTest extends TestCase
             null,
             0,
             true,
+            false,
+            true,
             $now,
         );
 
         self::assertNull($product->getOldPrice());
         self::assertSame($category, $product->getCategory());
         self::assertSame($brand, $product->getBrand());
+        self::assertTrue($product->isNew());
+        self::assertFalse($product->isHit());
+
+        $product->update(
+            'Camera',
+            new Slug('camera'),
+            null,
+            null,
+            new Price(1000, 'BYN'),
+            null,
+            new Balance(5),
+            $category,
+            $brand,
+            null,
+            null,
+            null,
+            null,
+            0,
+            false,
+            true,
+            true,
+            $now,
+        );
+
+        self::assertFalse($product->isNew());
+        self::assertTrue($product->isHit());
     }
 
     public function testProductKeepsOldPriceAsAValueObjectWhenItExceedsCurrentPrice(): void
@@ -96,6 +126,8 @@ final class ProductTest extends TestCase
             null,
             null,
             0,
+            false,
+            false,
             true,
             $now,
         );
@@ -125,6 +157,8 @@ final class ProductTest extends TestCase
             null,
             null,
             0,
+            false,
+            false,
             true,
             $now,
         );
@@ -160,6 +194,8 @@ final class ProductTest extends TestCase
             null,
             null,
             0,
+            false,
+            false,
             true,
             $now,
         );

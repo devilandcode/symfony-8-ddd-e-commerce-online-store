@@ -20,6 +20,8 @@
                 <th scope="col">Brand</th>
                 <th scope="col">Price</th>
                 <th scope="col">Stock</th>
+                <th scope="col">New</th>
+                <th scope="col">Hit</th>
                 <th scope="col">Status</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -33,6 +35,8 @@
                     <td>{{ product.brandTitle }}</td>
                     <td>{{ product.priceMinorUnits|minor_units_amount(product.currencyCode) }} {{ product.currencyCode }}</td>
                     <td>{{ product.balance }}</td>
+                    <td>{{ product.isNew ? 'Yes' : 'No' }}</td>
+                    <td>{{ product.isHit ? 'Yes' : 'No' }}</td>
                     <td>{{ product.isActive ? 'Active' : 'Inactive' }}</td>
                     <td class="text-nowrap">
                         <a class="btn btn-secondary btn-sm" href="{{ path('admin_products_edit', {id: product.id}) }}">Edit</a>
@@ -44,7 +48,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="8">No products found.</td>
+                    <td colspan="10">No products found.</td>
                 </tr>
             {% endfor %}
         </tbody>

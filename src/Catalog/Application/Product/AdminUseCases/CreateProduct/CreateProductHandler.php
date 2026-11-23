@@ -50,6 +50,8 @@ final readonly class CreateProductHandler
             $data->seoTitle,
             $data->seoDescription,
             $data->position,
+            $data->isNew,
+            $data->isHit,
             $data->isActive,
             new \DateTime(),
         );

@@ -28,6 +28,8 @@ final readonly class ProductViewDTO
         public ?string $seoTitle,
         public ?string $seoDescription,
         public int $position,
+        public bool $isNew,
+        public bool $isHit,
         public bool $isActive,
         /** @var list<ProductCharacteristicViewDTO> */
         public array $characteristics,
@@ -59,6 +61,8 @@ final readonly class ProductViewDTO
             $product->getSeoTitle(),
             $product->getSeoDescription(),
             $product->getPosition(),
+            $product->isNew(),
+            $product->isHit(),
             $product->isActive(),
             array_map(ProductCharacteristicViewDTO::fromAssignment(...), $product->getCharacteristicAssignments()),
         );
