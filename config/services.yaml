@@ -43,6 +43,9 @@ services:
     App\Catalog\Domain\Repository\ProductRepositoryInterface:
         alias: App\Catalog\Infrastructure\Persistence\Doctrine\ProductRepository
 
+    App\Catalog\Application\HomePage\HomePageCatalogQueryInterface:
+        alias: App\Catalog\Infrastructure\Persistence\Doctrine\HomePageCatalogRepository
+
     App\Catalog\Application\Product\AdminUseCases\ListProducts\ProductIndexQueryInterface:
         alias: App\Catalog\Infrastructure\Persistence\Doctrine\DoctrineProductIndexQuery
 

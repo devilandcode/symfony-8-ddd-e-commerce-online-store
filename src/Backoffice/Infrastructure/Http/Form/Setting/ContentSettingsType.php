@@ -8,6 +8,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Regex;
 
 final class ContentSettingsType extends AbstractType
 {
@@ -16,8 +18,22 @@ final class ContentSettingsType extends AbstractType
         $builder
             ->add('copyright', TextType::class, ['label' => 'Copyright', 'required' => false])
             ->add('privacy', TextType::class, ['label' => 'Personal data policy URL', 'required' => false])
-            ->add('products_count', TextType::class, ['label' => 'Products per page', 'required' => false])
-            ->add('brands_count', TextType::class, ['label' => 'Brands per page', 'required' => false])
+            ->add('products_count', TextType::class, [
+                'label' => 'Products per page',
+                'required' => false,
+                'constraints' => [
+                    new Regex(pattern: '/\A[0-9]*\z/'),
+                    new Range(min: 0, max: PHP_INT_MAX),
+                ],
+            ])
+            ->add('brands_count', TextType::class, [
+                'label' => 'Brands per page',
+                'required' => false,
+                'constraints' => [
+                    new Regex(pattern: '/\A[0-9]*\z/'),
+                    new Range(min: 0, max: PHP_INT_MAX),
+                ],
+            ])
             ->add('news_count', TextType::class, ['label' => 'News items per page', 'required' => false]);
     }
 

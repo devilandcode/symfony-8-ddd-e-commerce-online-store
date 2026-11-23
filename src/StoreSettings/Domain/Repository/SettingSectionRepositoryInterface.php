@@ -14,6 +14,4 @@ interface SettingSectionRepositoryInterface
     public function save(SettingSection $section): void;
 
     public function getContactSetting(): array;
-
-    public function getContentSetting(): array;
 }

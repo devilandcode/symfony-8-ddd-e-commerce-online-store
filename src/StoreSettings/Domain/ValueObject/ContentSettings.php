@@ -33,6 +33,16 @@ final readonly class ContentSettings implements SettingsData
         return SettingSectionKey::CONTENT;
     }
 
+    public function productsLimit(): int
+    {
+        return self::nonNegativeInteger($this->productsCount, 'products_count');
+    }
+
+    public function brandsLimit(): int
+    {
+        return self::nonNegativeInteger($this->brandsCount, 'brands_count');
+    }
+
     public function toArray(): array
     {
         return [
@@ -53,5 +63,29 @@ final readonly class ContentSettings implements SettingsData
         }
 
         return $value;
+    }
+
+    private static function nonNegativeInteger(string $value, string $key): int
+    {
+        $value = trim($value);
+        if ('' === $value) {
+            return 0;
+        }
+
+        if (1 !== preg_match('/\A[0-9]+\z/', $value)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" setting must be a non-negative integer.', $key));
+        }
+
+        $normalizedValue = ltrim($value, '0');
+        if ('' === $normalizedValue) {
+            return 0;
+        }
+
+        $limit = filter_var($normalizedValue, FILTER_VALIDATE_INT);
+        if (false === $limit) {
+            throw new \InvalidArgumentException(sprintf('The "%s" setting exceeds the supported integer range.', $key));
+        }
+
+        return $limit;
     }
 }

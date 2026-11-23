@@ -44,7 +44,7 @@ class ViewShareExtenion extends AbstractExtension
                 if (null === $this->settings) {
                     $this->settings = [
                         'contacts' => ($this->listContactSettings)(),
-                        'content' => ($this->listContentSetting)(),
+                        'content' => ['payload' => ($this->listContentSetting)()->toArray()],
                     ];
                 }
 

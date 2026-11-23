@@ -66,8 +66,4 @@ final class InMemorySettingSectionRepository implements SettingSectionRepository
         return [];
     }
 
-    public function getContentSetting(): array
-    {
-        return [];
-    }
 }

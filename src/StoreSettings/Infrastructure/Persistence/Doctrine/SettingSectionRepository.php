@@ -42,14 +42,4 @@ final readonly class SettingSectionRepository implements SettingSectionRepositor
             ->getSingleResult();
     }
 
-    public function getContentSetting(): array
-    {
-        return $this->entityManager->createQueryBuilder()
-            ->select('settingSection.payload')
-            ->from(SettingSection::class, 'settingSection')
-            ->where('settingSection.key = :key')
-            ->setParameter('key', SettingSectionKey::CONTENT)
-            ->getQuery()
-            ->getSingleResult();
-    }
 }

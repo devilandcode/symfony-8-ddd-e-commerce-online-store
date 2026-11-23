@@ -35,6 +35,24 @@ final class SettingsDataTest extends TestCase
         ContentSettings::fromArray(['products_count' => 12]);
     }
 
+    public function testHomepageLimitsTreatEmptyValuesAsZeroAndParseNonNegativeIntegers(): void
+    {
+        $emptySettings = new ContentSettings();
+        $settings = new ContentSettings(productsCount: '0012', brandsCount: ' 6 ');
+
+        self::assertSame(0, $emptySettings->productsLimit());
+        self::assertSame(0, $emptySettings->brandsLimit());
+        self::assertSame(12, $settings->productsLimit());
+        self::assertSame(6, $settings->brandsLimit());
+    }
+
+    public function testHomepageLimitsRejectMalformedValues(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        (new ContentSettings(productsCount: '-1'))->productsLimit();
+    }
+
     public function testSectionRejectsSettingsForAnotherSection(): void
     {
         $section = new SettingSection(new ContactsSettings());
