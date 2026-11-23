@@ -61,6 +61,9 @@ final class PageContentAdminUiTest extends KernelTestCase
         self::assertStringContainsString('Current image: uploads/page-content/0123456789abcdef0123456789abcdef.jpg', $html);
         self::assertStringContainsString('field-collection-add-button', $html);
         self::assertStringContainsString('field-collection-delete-button', $html);
+        self::assertSame(2, substr_count($html, 'data-ea-collection-field="true"'));
+        self::assertSame(2, substr_count($html, 'data-prototype='));
+        self::assertSame(2, substr_count($html, 'data-form-type-name-placeholder="__name__"'));
         self::assertStringNotContainsString('Array (', $html);
         self::assertStringNotContainsString('__name__label__', $html);
     }

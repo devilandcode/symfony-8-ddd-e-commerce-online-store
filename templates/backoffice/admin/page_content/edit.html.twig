@@ -2,6 +2,15 @@
 
 {% form_theme form with [_self, '@EasyAdmin/crud/form_theme.html.twig', 'backoffice/admin/page_content/_collection_theme.html.twig'] only %}
 
+{% block configured_javascripts %}
+    {{ parent() }}
+    {% guard function csp_nonce %}
+        <script src="{{ asset('field-collection.js', ea().assets.defaultAssetPackageName) }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('field-collection.js', ea().assets.defaultAssetPackageName) }}"></script>
+    {% endguard %}
+{% endblock %}
+
 {% block file_widget %}
     {% if stored_path is defined and stored_path %}
         <div class="mb-2">
