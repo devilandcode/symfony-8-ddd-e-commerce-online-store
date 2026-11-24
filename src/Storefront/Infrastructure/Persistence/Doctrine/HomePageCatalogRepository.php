@@ -6,7 +6,7 @@ namespace App\Storefront\Infrastructure\Persistence\Doctrine;
 
 use App\Catalog\Domain\Entity\Brand;
 use App\Catalog\Domain\Entity\Product;
-use App\Storefront\Application\HomePage\Interfaces\HomePageCatalogQueryInterface;
+use App\Storefront\Application\HomePage\Interface\HomePageCatalogQueryInterface;
 use App\Storefront\Application\HomePage\Output\HomePageBrandView;
 use App\Storefront\Application\HomePage\Output\HomePageProductView;
 use Doctrine\ORM\EntityManagerInterface;

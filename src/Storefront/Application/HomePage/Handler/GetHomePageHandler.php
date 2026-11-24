@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Application\HomePage\Handlers;
+namespace App\Storefront\Application\HomePage\Handler;
 
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\Shared\Domain\ValueObject\Slug;

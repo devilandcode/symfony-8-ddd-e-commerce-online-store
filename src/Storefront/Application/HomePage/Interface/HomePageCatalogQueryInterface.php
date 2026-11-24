@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Application\HomePage\Interfaces;
+namespace App\Storefront\Application\HomePage\Interface;
 
 use App\Storefront\Application\HomePage\Output\HomePageBrandView;
 use App\Storefront\Application\HomePage\Output\HomePageProductView;

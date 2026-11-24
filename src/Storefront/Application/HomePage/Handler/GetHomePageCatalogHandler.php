@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Application\HomePage\Handlers;
+namespace App\Storefront\Application\HomePage\Handler;
 
-use App\Storefront\Application\HomePage\Interfaces\HomePageCatalogQueryInterface;
+use App\Storefront\Application\HomePage\Interface\HomePageCatalogQueryInterface;
 use App\Storefront\Application\HomePage\Output\ViewHomePageCatalogDTO;
 use App\StoreSettings\Application\FrontUseCases\ListContentSetting\ListContentSettingHandler;
 
