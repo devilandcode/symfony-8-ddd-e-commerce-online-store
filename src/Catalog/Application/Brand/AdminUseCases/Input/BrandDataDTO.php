@@ -17,6 +17,7 @@ final readonly class BrandDataDTO
         public ?string $seoDescription,
         public int $position,
         public bool $isActive,
+        public ?string $image = null,
     ) {
     }
 }

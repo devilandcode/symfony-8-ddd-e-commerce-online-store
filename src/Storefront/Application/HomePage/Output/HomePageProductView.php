@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Catalog\Application\HomePage;
+namespace App\Storefront\Application\HomePage\Output;
 
 final readonly class HomePageProductView
 {

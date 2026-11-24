@@ -28,6 +28,9 @@ class Brand
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $h1 = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image = null;
+
     #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     private ?string $desc = null;
 
@@ -69,6 +72,7 @@ class Brand
         int $position,
         bool $isActive,
         \DateTime $now,
+        ?string $image = null,
     ): self {
         $brand = new self();
         $brand->update(
@@ -81,6 +85,7 @@ class Brand
             $position,
             $isActive,
             $now,
+            $image,
         );
         $brand->created_at = $now;
 
@@ -97,6 +102,7 @@ class Brand
         int $position,
         bool $isActive,
         \DateTime $updatedAt,
+        ?string $image = null,
     ): void {
         $title = trim($title);
         if ('' === $title) {
@@ -106,6 +112,7 @@ class Brand
         $this->title = $title;
         $this->slug = $slug;
         $this->h1 = $h1;
+        $this->image = $image;
         $this->desc = $description;
         $this->seo_title = $seoTitle;
         $this->seo_description = $seoDescription;
@@ -132,6 +139,11 @@ class Brand
     public function getH1(): ?string
     {
         return $this->h1;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
     }
 
     public function getDescription(): ?string

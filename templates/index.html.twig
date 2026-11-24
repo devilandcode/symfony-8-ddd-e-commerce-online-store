@@ -125,6 +125,9 @@
                             <div class="w-brands-list-item-frame">
                                 <div class="frame">
                                     <div class="w-image">
+                                        {% if brand.image is not empty %}
+                                            <img src="{{ asset(brand.image) }}" alt="{{ brand.title }}" class="img block">
+                                        {% endif %}
                                         <span class="brand-name">{{ brand.title }}</span>
                                     </div>
                                 </div>
@@ -174,17 +177,17 @@
             <div class="owl-carousel owl-index-sales-slider">
                 <div class="slide">
                     <a href="" class="block__link">
-                        <img src="assets/content/index-offer-image001.jpg" alt="" class="img block">
+                        <img src="/assets/content/index-offer-image001.jpg" alt="" class="img block">
                     </a>
                 </div>
                 <div class="slide">
                     <a href="" class="block__link">
-                        <img src="assets/content/index-offer-image002.jpg" alt="" class="img block">
+                        <img src="/assets/content/index-offer-image002.jpg" alt="" class="img block">
                     </a>
                 </div>
                 <div class="slide">
                     <a href="" class="block__link">
-                        <img src="assets/content/index-offer-image003.jpg" alt="" class="img block">
+                        <img src="/assets/content/index-offer-image003.jpg" alt="" class="img block">
                     </a>
                 </div>
                 <div class="slide">

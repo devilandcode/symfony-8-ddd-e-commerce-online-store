@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Application\HomePage;
+namespace App\Storefront\Application\HomePage\Handlers;
 
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\Shared\Domain\ValueObject\Slug;
+use App\Storefront\Application\HomePage\Output\ViewHomePageDTO;
 
 final readonly class GetHomePageHandler
 {

@@ -18,6 +18,7 @@ final readonly class BrandViewDTO
         public ?string $seoDescription,
         public int $position,
         public bool $isActive,
+        public ?string $image,
     ) {
     }
 
@@ -35,6 +36,7 @@ final readonly class BrandViewDTO
             $brand->getSeoDescription(),
             $brand->getPosition(),
             $brand->isActive(),
+            $brand->getImage(),
         );
     }
 }

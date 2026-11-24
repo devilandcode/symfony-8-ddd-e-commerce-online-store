@@ -35,6 +35,7 @@ final readonly class CreateBrandHandler
             $data->position,
             $data->isActive,
             new \DateTime(),
+            $data->image,
         );
         $this->brandRepository->save($brand);
 

@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Application\HomePage;
-
-use App\Catalog\Application\HomePage\HomePageBrandView;
-use App\Catalog\Application\HomePage\HomePageProductView;
+namespace App\Storefront\Application\HomePage\Output;
 
 final readonly class ViewHomePageCatalogDTO
 {

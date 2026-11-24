@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Storefront;
 
-use App\Catalog\Application\HomePage\HomePageBrandView;
-use App\Catalog\Application\HomePage\HomePageProductView;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\PageContentView;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\ViewPageDTO;
-use App\Storefront\Application\HomePage\ViewHomePageCatalogDTO;
-use App\Storefront\Application\HomePage\ViewHomePageDTO;
+use App\Storefront\Application\HomePage\Output\HomePageBrandView;
+use App\Storefront\Application\HomePage\Output\HomePageProductView;
+use App\Storefront\Application\HomePage\Output\ViewHomePageCatalogDTO;
+use App\Storefront\Application\HomePage\Output\ViewHomePageDTO;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -66,7 +66,7 @@ final class HomePageTemplateTest extends KernelTestCase
                 isHit: true,
             ),
         ], [
-            new HomePageBrandView('Popular brand'),
+            new HomePageBrandView('Popular brand', 'uploads/brands/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png'),
         ]);
 
         self::assertStringContainsString('Summer offers', $html);
@@ -80,6 +80,7 @@ final class HomePageTemplateTest extends KernelTestCase
         self::assertStringContainsString('Hit product', $html);
         self::assertStringContainsString('50.00 EUR', $html);
         self::assertStringContainsString('Popular brand', $html);
+        self::assertStringContainsString('src="/uploads/brands/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png"', $html);
         self::assertStringNotContainsString('Hidden slide', $html);
         self::assertStringNotContainsString('Описание 1', $html);
     }

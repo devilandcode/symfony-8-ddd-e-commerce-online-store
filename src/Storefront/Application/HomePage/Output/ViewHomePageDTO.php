@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Storefront\Application\HomePage;
+namespace App\Storefront\Application\HomePage\Output;
 
 use App\ContentManagement\Application\Page\FrontUseCases\Output\ViewPageDTO;
 

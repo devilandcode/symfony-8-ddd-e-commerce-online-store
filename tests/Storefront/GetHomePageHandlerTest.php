@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Storefront;
 
-use App\Catalog\Application\HomePage\HomePageCatalogQueryInterface;
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\ContentManagement\Domain\Entity\Page;
 use App\ContentManagement\Domain\Repository\PageContentRepositoryInterface;
@@ -15,8 +14,9 @@ use App\StoreSettings\Domain\Entity\SettingSection;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;
 use App\StoreSettings\Domain\Repository\SettingSectionRepositoryInterface;
 use App\StoreSettings\Domain\ValueObject\ContentSettings;
-use App\Storefront\Application\HomePage\GetHomePageCatalogHandler;
-use App\Storefront\Application\HomePage\GetHomePageHandler;
+use App\Storefront\Application\HomePage\Handlers\GetHomePageCatalogHandler;
+use App\Storefront\Application\HomePage\Handlers\GetHomePageHandler;
+use App\Storefront\Application\HomePage\Interfaces\HomePageCatalogQueryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class GetHomePageHandlerTest extends TestCase

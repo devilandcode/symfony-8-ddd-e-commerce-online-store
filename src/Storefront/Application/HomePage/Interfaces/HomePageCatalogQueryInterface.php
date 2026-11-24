@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Catalog\Application\HomePage;
+namespace App\Storefront\Application\HomePage\Interfaces;
+
+use App\Storefront\Application\HomePage\Output\HomePageBrandView;
+use App\Storefront\Application\HomePage\Output\HomePageProductView;
 
 interface HomePageCatalogQueryInterface
 {

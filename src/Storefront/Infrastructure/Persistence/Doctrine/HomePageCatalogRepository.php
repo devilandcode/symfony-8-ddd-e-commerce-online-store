@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Catalog\Infrastructure\Persistence\Doctrine;
+namespace App\Storefront\Infrastructure\Persistence\Doctrine;
 
-use App\Catalog\Application\HomePage\HomePageBrandView;
-use App\Catalog\Application\HomePage\HomePageCatalogQueryInterface;
-use App\Catalog\Application\HomePage\HomePageProductView;
 use App\Catalog\Domain\Entity\Brand;
 use App\Catalog\Domain\Entity\Product;
+use App\Storefront\Application\HomePage\Interfaces\HomePageCatalogQueryInterface;
+use App\Storefront\Application\HomePage\Output\HomePageBrandView;
+use App\Storefront\Application\HomePage\Output\HomePageProductView;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class HomePageCatalogRepository implements HomePageCatalogQueryInterface
@@ -38,7 +38,7 @@ final readonly class HomePageCatalogRepository implements HomePageCatalogQueryIn
         }
 
         $rows = $this->entityManager->createQueryBuilder()
-            ->select('brand.title AS title')
+            ->select('brand.title AS title', 'brand.image AS image')
             ->from(Brand::class, 'brand')
             ->where('brand.is_active = true')
             ->orderBy('brand.pos', \SortDirection::Ascending)
@@ -48,7 +48,10 @@ final readonly class HomePageCatalogRepository implements HomePageCatalogQueryIn
             ->getArrayResult();
 
         return array_map(
-            static fn (array $row): HomePageBrandView => new HomePageBrandView((string) $row['title']),
+            static fn (array $row): HomePageBrandView => new HomePageBrandView(
+                title: (string) $row['title'],
+                image: null === $row['image'] ? null : (string) $row['image'],
+            ),
             $rows,
         );
     }
