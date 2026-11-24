@@ -12,8 +12,8 @@
         <section class="s-line s-index-slider">
             <div class="owl-carousel owl-index-slider">
                 {% for slide in heroSlides %}
-                    <div class="slide mobile" style="background-image: url('{{ asset(slide.mobileImage ?? slide.desktopImage) }}');">
-                        <div class="slide desktop" style="background-image: url('{{ asset(slide.desktopImage) }}');">
+                    <div class="slide mobile" style="background-image: url('{{ asset(image_variant(slide.mobileImage ?? slide.desktopImage, 750, 1125, 'cover')) }}');">
+                        <div class="slide desktop" style="background-image: url('{{ asset(image_variant(slide.desktopImage, 1920, 600, 'cover')) }}');">
                             <div class="overlay"></div>
                             <div class="container">
                                 <div class="row row-slide-content align-items-center">
@@ -126,7 +126,7 @@
                                 <div class="frame">
                                     <div class="w-image">
                                         {% if brand.image is not empty %}
-                                            <img src="{{ asset(brand.image) }}" alt="{{ brand.title }}" class="img block">
+                                            <img src="{{ asset(image_variant(brand.image, 284, 142, 'contain')) }}" alt="{{ brand.title }}" class="img block">
                                         {% endif %}
                                         <span class="brand-name">{{ brand.title }}</span>
                                     </div>

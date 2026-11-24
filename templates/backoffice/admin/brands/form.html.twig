@@ -8,7 +8,7 @@
     {{ form_start(form) }}
         {% if currentImage is not empty %}
             <p>Current image:</p>
-            <img src="{{ asset(currentImage) }}" alt="" style="max-width: 240px; max-height: 120px;">
+            <img src="{{ asset(image_variant(currentImage, 480, 240, 'contain')) }}" alt="" style="max-width: 240px; max-height: 120px;">
         {% endif %}
         {{ form_widget(form) }}
         <button class="btn btn-primary" type="submit">Save</button>

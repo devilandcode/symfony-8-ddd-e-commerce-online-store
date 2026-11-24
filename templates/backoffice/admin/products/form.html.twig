@@ -27,7 +27,7 @@
         {{ form_row(form.balance) }}
         {% if form.vars.data.image and form.removeImage is defined %}
             <p>Current product image:</p>
-            <img src="{{ asset(form.vars.data.image) }}" alt="" class="img-thumbnail mb-2" style="max-width: 180px">
+            <img src="{{ asset(image_variant(form.vars.data.image, 360, 360, 'contain')) }}" alt="" class="img-thumbnail mb-2" style="max-width: 180px">
             {{ form_row(form.removeImage) }}
         {% endif %}
         {{ form_row(form.imageUpload) }}
@@ -38,7 +38,7 @@
                 {% for removeChoice in form.additionalImagesToRemove %}
                     {% set imagePath = form.vars.data.additionalImages[loop.index0] %}
                     <div class="d-inline-flex flex-column align-items-start me-3 mb-2">
-                        <img src="{{ asset(imagePath) }}" alt="" class="img-thumbnail mb-2" style="max-width: 120px">
+                        <img src="{{ asset(image_variant(imagePath, 240, 240, 'contain')) }}" alt="" class="img-thumbnail mb-2" style="max-width: 120px">
                         <div class="form-check">
                             {{ form_widget(removeChoice, {attr: {class: 'form-check-input'}}) }}
                             {{ form_label(removeChoice, null, {label_attr: {class: 'form-check-label'}}) }}

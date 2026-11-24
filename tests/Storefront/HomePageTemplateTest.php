@@ -10,6 +10,8 @@ use App\Storefront\Application\HomePage\Output\HomePageBrandView;
 use App\Storefront\Application\HomePage\Output\HomePageProductView;
 use App\Storefront\Application\HomePage\Output\ViewHomePageCatalogDTO;
 use App\Storefront\Application\HomePage\Output\ViewHomePageDTO;
+use Imagick;
+use ImagickPixel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -17,6 +19,46 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 final class HomePageTemplateTest extends KernelTestCase
 {
+    private string $projectDirectory;
+    /** @var list<string> */
+    private array $sourceFiles = [];
+    /** @var list<string> */
+    private array $existingVariantFiles = [];
+
+    protected function setUp(): void
+    {
+        self::bootKernel();
+        $this->projectDirectory = static::getContainer()->getParameter('kernel.project_dir');
+        $this->existingVariantFiles = $this->variantFiles();
+    }
+
+    protected function tearDown(): void
+    {
+        foreach ($this->sourceFiles as $sourceFile) {
+            if (is_file($sourceFile)) {
+                unlink($sourceFile);
+            }
+        }
+
+        $newVariantFiles = array_diff($this->variantFiles(), $this->existingVariantFiles);
+        foreach ($newVariantFiles as $variantFile) {
+            if (is_file($variantFile)) {
+                unlink($variantFile);
+            }
+        }
+
+        foreach (array_unique(array_map(dirname(...), $newVariantFiles)) as $directory) {
+            if (is_dir($directory)) {
+                $items = scandir($directory);
+                if (false !== $items && 2 === count($items)) {
+                    rmdir($directory);
+                }
+            }
+        }
+
+        parent::tearDown();
+    }
+
     public function testHomepageTemplateReadsStoredSlidesAndSections(): void
     {
         $html = $this->render(new PageContentView([
@@ -35,7 +77,7 @@ final class HomePageTemplateTest extends KernelTestCase
                     'description' => 'Explore the collection',
                     'buttonLabel' => 'Shop now',
                     'buttonUrl' => '/catalog',
-                    'desktopImage' => 'uploads/page-content/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.jpg',
+                    'desktopImage' => $this->createUploadedImage('page-content'),
                     'mobileImage' => null,
                     'isActive' => true,
                 ],
@@ -49,7 +91,7 @@ final class HomePageTemplateTest extends KernelTestCase
             new HomePageProductView(
                 title: 'New product',
                 brandTitle: 'New brand',
-                image: 'uploads/products/new-product.jpg',
+                image: $this->createUploadedImage('products'),
                 price: '12.34 EUR',
                 oldPrice: null,
                 isNew: true,
@@ -66,7 +108,7 @@ final class HomePageTemplateTest extends KernelTestCase
                 isHit: true,
             ),
         ], [
-            new HomePageBrandView('Popular brand', 'uploads/brands/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png'),
+            new HomePageBrandView('Popular brand', $this->createUploadedImage('brands')),
         ]);
 
         self::assertStringContainsString('Summer offers', $html);
@@ -80,7 +122,7 @@ final class HomePageTemplateTest extends KernelTestCase
         self::assertStringContainsString('Hit product', $html);
         self::assertStringContainsString('50.00 EUR', $html);
         self::assertStringContainsString('Popular brand', $html);
-        self::assertStringContainsString('src="/uploads/brands/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png"', $html);
+        self::assertStringContainsString('/uploads/variants/', $html);
         self::assertStringNotContainsString('Hidden slide', $html);
         self::assertStringNotContainsString('Описание 1', $html);
     }
@@ -120,5 +162,31 @@ final class HomePageTemplateTest extends KernelTestCase
                 catalog: new ViewHomePageCatalogDTO($newProducts, $hitProducts, $brands),
             ),
         ]);
+    }
+
+    private function createUploadedImage(string $folder): string
+    {
+        $relativePath = sprintf('uploads/%s/test-%s.png', $folder, bin2hex(random_bytes(8)));
+        $absolutePath = $this->projectDirectory.'/public/'.$relativePath;
+        if (!is_dir(dirname($absolutePath)) && !mkdir(dirname($absolutePath), 0755, true) && !is_dir(dirname($absolutePath))) {
+            throw new \RuntimeException('Unable to create a homepage image fixture directory.');
+        }
+
+        $image = new Imagick();
+        $image->newImage(80, 40, new ImagickPixel('blue'), 'PNG');
+        $image->writeImage($absolutePath);
+        $image->clear();
+        $image->destroy();
+        $this->sourceFiles[] = $absolutePath;
+
+        return $relativePath;
+    }
+
+    /** @return list<string> */
+    private function variantFiles(): array
+    {
+        $files = glob($this->projectDirectory.'/public/uploads/variants/*/*');
+
+        return false === $files ? [] : $files;
     }
 }

@@ -34,7 +34,7 @@
         <div class="image">
             <a href="" class="block__link image__link">
                 {% if product.image is not empty %}
-                    <img src="{{ asset(product.image) }}" alt="{{ product.title }}" class="img block">
+                    <img src="{{ asset(image_variant(product.image, 400, 400, 'contain')) }}" alt="{{ product.title }}" class="img block">
                 {% endif %}
             </a>
         </div>

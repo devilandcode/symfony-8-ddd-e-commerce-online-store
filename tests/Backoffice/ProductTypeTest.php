@@ -10,6 +10,8 @@ use App\Backoffice\Infrastructure\Http\Form\Product\ProductFormData;
 use App\Backoffice\Infrastructure\Http\Form\Product\ProductType;
 use App\Catalog\Domain\Repository\BrandRepositoryInterface;
 use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
+use Imagick;
+use ImagickPixel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;
@@ -22,6 +24,33 @@ use Symfony\Component\Validator\Constraints\Image;
 
 final class ProductTypeTest extends KernelTestCase
 {
+    private string $projectDirectory = '';
+    /** @var list<string> */
+    private array $sourceFiles = [];
+    /** @var list<string> */
+    private array $existingVariantFiles = [];
+
+    protected function tearDown(): void
+    {
+        if ('' !== $this->projectDirectory) {
+            foreach ($this->sourceFiles as $sourceFile) {
+                if (is_file($sourceFile)) {
+                    unlink($sourceFile);
+                }
+            }
+
+            $newVariantFiles = array_diff($this->variantFiles(), $this->existingVariantFiles);
+            foreach ($newVariantFiles as $variantFile) {
+                if (is_file($variantFile)) {
+                    unlink($variantFile);
+                }
+            }
+            $this->removeEmptyVariantDirectories($newVariantFiles);
+        }
+
+        parent::tearDown();
+    }
+
     public function testCreationFormOmitsCharacteristicsAndSupportsImageUploads(): void
     {
         $form = $this->formFactory()->create(ProductType::class, new ProductFormData());
@@ -123,15 +152,17 @@ final class ProductTypeTest extends KernelTestCase
     public function testEditTemplateHidesCharacteristicRefreshAndRendersRemovalCheckboxes(): void
     {
         self::bootKernel();
+        $this->projectDirectory = static::getContainer()->getParameter('kernel.project_dir');
+        $this->existingVariantFiles = $this->variantFiles();
         $request = Request::create('/admin/products/1/edit');
         $request->setSession(new Session(new MockArraySessionStorage()));
         static::getContainer()->get('request_stack')->push($request);
 
         $data = new ProductFormData();
-        $data->image = 'uploads/products/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png';
+        $data->image = $this->createUploadedImage();
         $data->additionalImages = [
-            'uploads/products/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.png',
-            'uploads/products/cccccccccccccccccccccccccccccccc.jpg',
+            $this->createUploadedImage(),
+            $this->createUploadedImage(),
         ];
         $form = $this->formFactory()->create(ProductType::class, $data, [
             'show_characteristics' => true,
@@ -151,8 +182,7 @@ final class ProductTypeTest extends KernelTestCase
         self::assertStringContainsString('product_form[additionalImagesToRemove][]', $html);
         self::assertStringContainsString('id="product_form_additionalImagesToRemove_0"', $html);
         self::assertStringContainsString('id="product_form_additionalImagesToRemove_1"', $html);
-        self::assertStringContainsString($data->additionalImages[0], $html);
-        self::assertStringContainsString($data->additionalImages[1], $html);
+        self::assertGreaterThanOrEqual(3, substr_count($html, '/uploads/variants/'));
         self::assertSame(1, substr_count($html, 'Remove existing additional images'));
         self::assertLessThan(strpos($html, 'product_form_save'), strpos($html, 'product_form_removeImage'));
         self::assertLessThan(strpos($html, 'product_form_save'), strpos($html, 'product_form_additionalImagesToRemove_0'));
@@ -171,5 +201,42 @@ final class ProductTypeTest extends KernelTestCase
             ->addType(new ProductType($categories, $brands))
             ->addExtension(new ValidatorExtension(Validation::createValidator()))
             ->getFormFactory();
+    }
+
+    private function createUploadedImage(): string
+    {
+        $relativePath = sprintf('uploads/products/test-%s.png', bin2hex(random_bytes(8)));
+        $absolutePath = $this->projectDirectory.'/public/'.$relativePath;
+        if (!is_dir(dirname($absolutePath)) && !mkdir(dirname($absolutePath), 0755, true) && !is_dir(dirname($absolutePath))) {
+            throw new \RuntimeException('Unable to create a product image fixture directory.');
+        }
+
+        $image = new Imagick();
+        $image->newImage(80, 40, new ImagickPixel('blue'), 'PNG');
+        $image->writeImage($absolutePath);
+        $image->clear();
+        $image->destroy();
+        $this->sourceFiles[] = $absolutePath;
+
+        return $relativePath;
+    }
+
+    /** @return list<string> */
+    private function variantFiles(): array
+    {
+        $files = glob($this->projectDirectory.'/public/uploads/variants/*/*');
+
+        return false === $files ? [] : $files;
+    }
+
+    /** @param list<string> $newVariantFiles */
+    private function removeEmptyVariantDirectories(array $newVariantFiles): void
+    {
+        foreach (array_unique(array_map(dirname(...), $newVariantFiles)) as $directory) {
+            $items = is_dir($directory) ? scandir($directory) : false;
+            if (false !== $items && 2 === count($items)) {
+                rmdir($directory);
+            }
+        }
     }
 }

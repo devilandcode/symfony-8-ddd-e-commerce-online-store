@@ -14,7 +14,7 @@
 {% block file_widget %}
     {% if stored_path is defined and stored_path %}
         <div class="mb-2">
-            <img src="{{ asset(stored_path) }}" alt="" style="max-width: 420px; max-height: 180px;">
+            <img src="{{ asset(image_variant(stored_path, 840, 360, 'contain')) }}" alt="" style="max-width: 420px; max-height: 180px;">
         </div>
     {% endif %}
     {{ parent() }}
