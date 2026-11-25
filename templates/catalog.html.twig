@@ -1,6 +1,35 @@
 {% extends 'layouts/main.html.twig' %}
 
+{% macro filterCheckbox(name, value, label, isChecked) %}
+    <div class="custom-selector check mb-10">
+        <label class="label block pointer">
+            <div class="input">
+                <input type="checkbox" name="{{ name }}" value="{{ value }}" class="selector hidden"{% if isChecked %} checked{% endif %}>
+                <div class="styled-figure">
+                    <div class="border">
+                        <div class="inset-figure"></div>
+                    </div>
+                </div>
+                <div class="label label-inner">{{ label }}</div>
+            </div>
+        </label>
+    </div>
+{% endmacro %}
+
+{% macro filterClear(resetUrl) %}
+    <div class="col-clear col">
+        <div class="w-clear-btn">
+            <a href="{{ resetUrl }}" class="clear-filter color-red nul"><span class="dashed dash">очистить</span></a>
+        </div>
+    </div>
+{% endmacro %}
+
 {% block content %}
+    {% import _self as catalogUi %}
+    {% set catalogRoute = app.request.attributes.get('_route') %}
+    {% set catalogRouteParameters = app.request.attributes.get('_route_params')|default({}) %}
+    {% set resetFiltersUrl = path(catalogRoute, catalogRouteParameters) %}
+
     <section class="s-line s-breadcrumbs">
         <div class="container md-pt-20 md-pb-20 pt-5">
             <div class="w-breadcrumbs-mobile-scroll-shadow">
@@ -9,91 +38,198 @@
         </div>
     </section>
 
-    <section class="s-line">
+    <section class="s-line _js-mobile-menu catalog-aside-filters">
         <div class="container pb-60">
-            <h1 class="pagetitle _h3 upper fontCor semibold color-dblue">
-                {{ catalog.page.h1 ?? catalog.page.title }}
-            </h1>
+            <div class="row">
+                <div class="offset-xl-3 col-xl-9 col-12 col">
+                    <div class="row sm-md-gutters sm-gutters align-items-xl-end align-items-center justify-content-between xl-mb-10 mb-10">
+                        <div class="col-xl-8 col-12 order-xl-1 order-1">
+                            <h1 class="pagetitle _h3 upper fontCor semibold color-dblue">{{ catalog.page.h1 ?? catalog.page.title }}</h1>
+                        </div>
 
-            <div class="row mt-30">
-                <aside class="col-xl-3 col-12">
-                    <form method="get" class="w-catalog-aside-filters">
-                        {% if catalog.categorySlug is null %}
-                            <fieldset class="mb-20">
-                                <legend class="_h4">Категории</legend>
-                                {% for category in catalog.categories %}
-                                    {% if category.parentSlug is null %}
-                                        <label class="d-block mb-10">
-                                            <input
-                                                type="checkbox"
-                                                name="categories[]"
-                                                value="{{ category.id }}"
-                                                {% if category.id in catalog.filters.categoryIds %}checked{% endif %}
-                                            >
-                                            {{ category.title }}
-                                        </label>
-                                    {% endif %}
-                                {% endfor %}
-                            </fieldset>
-                        {% else %}
-                            <nav class="mb-20" aria-label="Категории">
-                                <div class="_h4 mb-10">Категории</div>
-                                {% for category in catalog.categories %}
-                                    <div class="mb-10">
-                                        {% if category.parentSlug is null %}
-                                            <a href="{{ path('level1', {slug: category.slug}) }}">{{ category.title }}</a>
-                                        {% else %}
-                                            <a href="{{ path('level2', {parentSlug: category.parentSlug, slug: category.slug}) }}">{{ category.title }}</a>
-                                        {% endif %}
+                        <div class="col-xl-4 col-auto mt-10 xl-mb-10 mb-0 order-xl-2 order-3">
+                            <div class="row justify-content-lg-end justify-content-start align-items-center sm-gutters">
+                                <div class="col-auto">
+                                    <div class="w-cloud-dropper w-catalog-sort-by-dropper css js _js-click-dropper">
+                                        <div class="w-parent">
+                                            <div class="parent">Сначала со скидкой</div>
+                                            <div class="b-dropper"></div>
+                                            <div class="overlay _js-b-click-dropper"></div>
+                                            <div class="inset _js-inset">
+                                                <div class="frame">
+                                                    <div class="w-catalog-sort-by-dropper">
+                                                        <div><a href="" class="block __link color-black nul">Сначала дешевые</a></div>
+                                                        <div><a href="" class="block __link color-black nul">Сначала дорогие</a></div>
+                                                        <div><a href="" class="block __link color-black nul">Сначала новые</a></div>
+                                                        <div class="_active"><a href="" class="block __link color-black nul">Сначала со скидкой</a></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto col mt-10 col-lg-show col-filters-btn order-xl-3 order-2">
+                            <div class="w-mobile-navigation-button col-lg-show">
+                                <a href="" class="button btn-mobile-filters transparent gray block small _js-b-toggle-navigation-menu" data-nav-id="catalog-aside-filters">
+                                    <div class="w-icon-left">
+                                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve"><path d="m16 90.259h243.605c7.342 33.419 37.186 58.508 72.778 58.508s65.436-25.088 72.778-58.508h90.839c8.836 0 16-7.164 16-16s-7.164-16-16-16h-90.847c-7.356-33.402-37.241-58.507-72.77-58.507-35.548 0-65.419 25.101-72.772 58.507h-243.611c-8.836 0-16 7.164-16 16s7.164 16 16 16zm273.877-15.958c0-.057.001-.115.001-.172.07-23.367 19.137-42.376 42.505-42.376 23.335 0 42.403 18.983 42.504 42.339l.003.235c-.037 23.407-19.091 42.441-42.507 42.441-23.406 0-42.454-19.015-42.507-42.408zm206.123 347.439h-90.847c-7.357-33.401-37.241-58.507-72.77-58.507-35.548 0-65.419 25.102-72.772 58.507h-243.611c-8.836 0-16 7.163-16 16s7.164 16 16 16h243.605c7.342 33.419 37.186 58.508 72.778 58.508s65.436-25.089 72.778-58.508h90.839c8.836 0 16-7.163 16-16s-7.164-16-16-16zm-163.617 58.508c-23.406 0-42.454-19.015-42.507-42.408l.001-.058c0-.058.001-.115.001-.172.07-23.367 19.137-42.377 42.505-42.377 23.335 0 42.403 18.983 42.504 42.338l.003.235c-.034 23.41-19.089 42.442-42.507 42.442zm163.617-240.248h-243.605c-7.342-33.419-37.186-58.507-72.778-58.507s-65.436 25.088-72.778 58.507h-90.839c-8.836 0-16 7.164-16 16 0 8.837 7.164 16 16 16h90.847c7.357 33.401 37.241 58.507 72.77 58.507 35.548 0 65.419-25.102 72.772-58.507h243.611c8.836 0 16-7.163 16-16 0-8.836-7.164-16-16-16zm-273.877 15.958c0 .058-.001.115-.001.172-.07 23.367-19.137 42.376-42.505 42.376-23.335 0-42.403-18.983-42.504-42.338l-.003-.234c.035-23.41 19.09-42.441 42.507-42.441 23.406 0 42.454 19.014 42.507 42.408z"></path></svg></div>
+                                        <div class="text">Фильтры</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-auto col mt-10 col-xs-show order-xl-4 order-4">
+                            <div class="row row-catalog-list-views-switchers">
+                                <div class="col-auto col">
+                                    <a href="" class="catalog-view-switcher-btn _js-catalog-list-view-btn">
+                                        <svg width="20" height="21" viewBox="0 0 20 21" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="1.2074" width="19" height="19" rx="0.5"/></svg>
+                                    </a>
+                                </div>
+                                <div class="col-auto col">
+                                    <a href="" class="catalog-view-switcher-btn _js-catalog-list-view-btn _active">
+                                        <svg width="20" height="21" viewBox="0 0 20 21" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="1.2074" width="19" height="19" rx="0.5"/><line x1="10.5" y1="0.707397" x2="10.5" y2="19.7074"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    if (!window.jQuery) {
+                        return;
+                    }
+
+                    window.jQuery('body').on('click', '._js-catalog-list-view-btn', function () {
+                        window.jQuery('._js-catalog-list-view-btn').removeClass('_active');
+                        window.jQuery(this).addClass('_active');
+                        window.jQuery('._js-catalog-list-view').toggleClass('_js-short-view');
+                        return false;
+                    });
+                });
+            </script>
+            <div class="row">
+                <div class="col-xl-3 col-aside-filters col-12 col">
+                    <div class="navigation-menu left-side _js-navigation-menu catalog-aside-filters">
+                        <div class="menu-layout body-layout _js-b-toggle-navigation-menu catalog-aside-filters" data-nav-id="catalog-aside-filters"></div>
+                        <div class="mobile-menu-header">
+                            Подобрать по параметрам
+                            <a href="" class="close white _js-b-toggle-navigation-menu catalog-aside-filters" data-nav-id="catalog-aside-filters"></a>
+                        </div>
+                        <div class="navigation-menu-body">
+                            {% if catalog.categorySlug is not null %}
+                                <div class="w-filters w-aside-catalog col-lg-hide">
+                                    {% for parent in catalog.categories|filter(category => category.parentSlug is null) %}
+                                        {% set children = catalog.categories|filter(category => category.parentSlug == parent.slug) %}
+                                        {% set currentChildren = children|filter(category => category.slug == catalog.categorySlug) %}
+                                        {% set isOpen = parent.slug == catalog.categorySlug or currentChildren is not empty %}
+                                        <div class="w-filter dropper _js-toggler-button-parrent mt-5 mb-5{% if isOpen %} _toggled{% endif %}">
+                                            <div class="name _h5 pointer pt-5 pb-5{% if isOpen %} _active{% endif %}">
+                                                <a href="{{ path('level1', {slug: parent.slug}) }}" class="__link nul color-black"><span class="dashed dash">{{ parent.title }}</span></a>
+                                                {% if children is not empty %}
+                                                    <div class="b-dropper _js-b-toggler-button"></div>
+                                                {% endif %}
+                                            </div>
+                                            {% if children is not empty %}
+                                                <div class="inset _js-inset" style="display: {{ isOpen ? 'block' : 'none' }};">
+                                                    <ul class="ul-aside-catalog pb-15">
+                                                        {% for child in children %}
+                                                            <li class="li{% if child.slug == catalog.categorySlug %} _active{% endif %}">
+                                                                <a href="{{ path('level2', {parentSlug: child.parentSlug, slug: child.slug}) }}" class="__link block nul color-black"><span class="dashed dash">{{ child.title }}</span></a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <form method="get" class="w-catalog-aside-filters mt-20">
+                                <div class="w-item mt-20">
+                                    <div class="row row-filter-title-clear-aside justify-content-between align-items-end">
+                                        <div class="col-name col-12"><div class="_h4">Стоимость</div></div>
+                                    </div>
+                                    <div class="_range-slider"></div>
+                                </div>
+
+                                {% if catalog.categorySlug is null %}
+                                    <div class="w-item mt-20">
+                                        <div class="row sm-gutters row-filter-title-clear-aside justify-content-between align-items-end">
+                                            <div class="col-name col"><div class="_h4">Категории</div></div>
+                                            {{ catalogUi.filterClear(resetFiltersUrl) }}
+                                        </div>
+                                        <div class="pt-15">
+                                            <div class="w-aside-filters-overflow custom-scroll">
+                                                {% for category in catalog.categories|filter(category => category.parentSlug is null) %}
+                                                    {{ catalogUi.filterCheckbox('categories[]', category.id, category.title, category.id in catalog.filters.categoryIds) }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if catalog.brands is not empty %}
+                                    <div class="w-item mt-20">
+                                        <div class="row sm-gutters row-filter-title-clear-aside justify-content-between align-items-end">
+                                            <div class="col-name col"><div class="_h4">Бренд</div></div>
+                                            {{ catalogUi.filterClear(resetFiltersUrl) }}
+                                        </div>
+                                        <div class="pt-5 pb-5">
+                                            <div class="w-header-search w-aside-filter-search">
+                                                <div class="search">
+                                                    <input type="text" class="input__default" placeholder="Поиск по бренду">
+                                                    <div class="w-btn">
+                                                        <button type="button" class="button fcm">
+                                                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.6956 22.0544L16.7257 16.0845C18.3988 14.2439 19.2858 11.8219 19.197 9.33603C19.1082 6.85018 18.0507 4.49764 16.2505 2.78112C14.4502 1.0646 12.05 0.120241 9.56274 0.149846C7.07548 0.17945 4.69843 1.18067 2.93955 2.93955C1.18067 4.69843 0.17945 7.07548 0.149846 9.56274C0.120241 12.05 1.0646 14.4502 2.78112 16.2505C4.49764 18.0507 6.85018 19.1082 9.33603 19.197C11.8219 19.2858 14.2439 18.3988 16.0845 16.7257L22.0544 22.6956C22.1394 22.7806 22.2547 22.8284 22.375 22.8284C22.4952 22.8284 22.6105 22.7806 22.6956 22.6956C22.7806 22.6105 22.8284 22.4952 22.8284 22.375C22.8284 22.2547 22.7806 22.1394 22.6956 22.0544ZM1.07811 9.68749C1.07811 7.98471 1.58304 6.32018 2.52905 4.90437C3.47506 3.48857 4.81966 2.38508 6.39282 1.73346C7.96598 1.08184 9.69704 0.911344 11.3671 1.24354C13.0371 1.57573 14.5712 2.3957 15.7752 3.59974C16.9793 4.80378 17.7992 6.33782 18.1314 8.00788C18.4636 9.67793 18.2931 11.409 17.6415 12.9822C16.9899 14.5553 15.8864 15.8999 14.4706 16.8459C13.0548 17.7919 11.3903 18.2969 9.68749 18.2969C7.40487 18.2945 5.21644 17.3866 3.60239 15.7726C1.98834 14.1585 1.08051 11.9701 1.07811 9.68749Z" fill="black"></path></svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pt-15">
+                                            <div class="w-aside-filters-overflow custom-scroll">
+                                                {% for brand in catalog.brands %}
+                                                    {{ catalogUi.filterCheckbox('brands[]', brand.id, brand.title, brand.id in catalog.filters.brandIds) }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% for characteristic in catalog.characteristics %}
+                                    <div class="w-item mt-20">
+                                        <div class="row sm-gutters row-filter-title-clear-aside justify-content-between align-items-end">
+                                            <div class="col-name col">
+                                                <div class="_h4">{{ characteristic.title }}{% if characteristic.measure is not empty %} ({{ characteristic.measure }}){% endif %}</div>
+                                            </div>
+                                            {{ catalogUi.filterClear(resetFiltersUrl) }}
+                                        </div>
+                                        <div class="pt-15">
+                                            <div class="w-aside-filters-overflow custom-scroll">
+                                                {% for value in characteristic.values %}
+                                                    {{ catalogUi.filterCheckbox('characteristics[' ~ characteristic.id ~ '][]', value, value, value in catalog.filters.characteristicValues[characteristic.id]|default([])) }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
                                     </div>
                                 {% endfor %}
-                            </nav>
-                        {% endif %}
 
-                        {% if catalog.brands is not empty %}
-                            <fieldset class="mb-20">
-                                <legend class="_h4">Бренды</legend>
-                                {% for brand in catalog.brands %}
-                                    <label class="d-block mb-10">
-                                        <input
-                                            type="checkbox"
-                                            name="brands[]"
-                                            value="{{ brand.id }}"
-                                            {% if brand.id in catalog.filters.brandIds %}checked{% endif %}
-                                        >
-                                        {{ brand.title }}
-                                    </label>
-                                {% endfor %}
-                            </fieldset>
-                        {% endif %}
-
-                        {% for characteristic in catalog.characteristics %}
-                            <fieldset class="mb-20">
-                                <legend class="_h4">
-                                    {{ characteristic.title }}{% if characteristic.measure is not empty %} ({{ characteristic.measure }}){% endif %}
-                                </legend>
-                                {% for value in characteristic.values %}
-                                    <label class="d-block mb-10">
-                                        <input
-                                            type="checkbox"
-                                            name="characteristics[{{ characteristic.id }}][]"
-                                            value="{{ value }}"
-                                            {% if value in catalog.filters.characteristicValues[characteristic.id]|default([]) %}checked{% endif %}
-                                        >
-                                        {{ value }}
-                                    </label>
-                                {% endfor %}
-                            </fieldset>
-                        {% endfor %}
-
-                        <button type="submit" class="button medium block dblue">ПОКАЗАТЬ</button>
-                        <a class="d-block mt-10" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|default({})) }}">
-                            Сбросить фильтры
-                        </a>
-                    </form>
-                </aside>
-
-                <div class="col-xl-9 col-12">
+                                <div class="mt-20">
+                                    <button type="submit" class="button medium block dblue">ПОКАЗАТЬ</button>
+                                </div>
+                                <div class="mt-10">
+                                    <a href="{{ resetFiltersUrl }}" class="clear-filter color-red nul"><span class="dashed dash">Сбросить фильтры</span></a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-9 col-12 col">
                     <div class="row row-catalog-list _js-catalog-list-view _js-short-view xl-lg-gutters md-md-gutters sm-gutters">
                         {% for product in catalog.productPage.products %}
                             <div class="col-xl-4 col-md-4 col-xs-6 col-12 col xl-mb-30 md-mb-20 mb-10">
@@ -111,29 +247,38 @@
                     {% if catalog.productPage.totalPages > 1 %}
                         {% set firstPage = max(1, catalog.productPage.currentPage - 2) %}
                         {% set lastPage = min(catalog.productPage.totalPages, catalog.productPage.currentPage + 2) %}
-                        {% set routeParameters = app.request.attributes.get('_route_params')|default({}) %}
-                        <nav class="mt-30" aria-label="Страницы каталога">
-                            {% if catalog.productPage.currentPage > 1 %}
-                                {% set previousParameters = app.request.query.all|merge({'page': catalog.productPage.currentPage - 1}) %}
-                                <a class="mr-10" href="{{ path(app.request.attributes.get('_route'), routeParameters|merge(previousParameters)) }}">Назад</a>
-                            {% endif %}
+                        <div class="w-pagination mt-30" aria-label="Страницы каталога">
+                            <div class="row sm-gutters">
+                                {% if catalog.productPage.currentPage > 1 %}
+                                    {% set previousParameters = app.request.query.all|merge({'page': catalog.productPage.currentPage - 1}) %}
+                                    <div class="col-sm-auto col">
+                                        <a href="{{ path(catalogRoute, catalogRouteParameters|merge(previousParameters)) }}" class="link w-arrow prev">
+                                            <div class="_arrow _prev"></div>
+                                        </a>
+                                    </div>
+                                {% endif %}
 
-                            {% for pageNumber in firstPage..lastPage %}
-                                {% set pageParameters = app.request.query.all|merge({'page': pageNumber}) %}
-                                <a
-                                    class="mr-10{% if pageNumber == catalog.productPage.currentPage %} _active{% endif %}"
-                                    href="{{ path(app.request.attributes.get('_route'), routeParameters|merge(pageParameters)) }}"
-                                    {% if pageNumber == catalog.productPage.currentPage %}aria-current="page"{% endif %}
-                                >
-                                    {{ pageNumber }}
-                                </a>
-                            {% endfor %}
+                                {% for pageNumber in firstPage..lastPage %}
+                                    {% set pageParameters = app.request.query.all|merge({'page': pageNumber}) %}
+                                    <div class="col-sm-auto col">
+                                        <a
+                                            class="link{% if pageNumber == catalog.productPage.currentPage %} _active{% endif %}"
+                                            href="{{ path(catalogRoute, catalogRouteParameters|merge(pageParameters)) }}"
+                                            {% if pageNumber == catalog.productPage.currentPage %}aria-current="page"{% endif %}
+                                        >{{ pageNumber }}</a>
+                                    </div>
+                                {% endfor %}
 
-                            {% if catalog.productPage.currentPage < catalog.productPage.totalPages %}
-                                {% set nextParameters = app.request.query.all|merge({'page': catalog.productPage.currentPage + 1}) %}
-                                <a href="{{ path(app.request.attributes.get('_route'), routeParameters|merge(nextParameters)) }}">Вперёд</a>
-                            {% endif %}
-                        </nav>
+                                {% if catalog.productPage.currentPage < catalog.productPage.totalPages %}
+                                    {% set nextParameters = app.request.query.all|merge({'page': catalog.productPage.currentPage + 1}) %}
+                                    <div class="col-sm-auto col">
+                                        <a href="{{ path(catalogRoute, catalogRouteParameters|merge(nextParameters)) }}" class="link w-arrow next">
+                                            <div class="_arrow _next"></div>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     {% endif %}
                 </div>
             </div>
