@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Storefront;
 
-use App\Storefront\Application\HomePage\Handlers\GetHomePageCatalogHandler;
-use App\Storefront\Application\HomePage\Interfaces\HomePageCatalogQueryInterface;
+use App\Storefront\Application\HomePage\Handler\GetHomePageCatalogHandler;
+use App\Storefront\Application\HomePage\Interface\HomePageCatalogQueryInterface;
 use App\Storefront\Application\HomePage\Output\HomePageBrandView;
 use App\Storefront\Application\HomePage\Output\HomePageProductView;
 use App\StoreSettings\Application\FrontUseCases\ListContentSetting\ListContentSettingHandler;

@@ -9,12 +9,15 @@ use App\Catalog\Domain\Entity\Product;
 use App\Storefront\Application\HomePage\Interface\HomePageCatalogQueryInterface;
 use App\Storefront\Application\HomePage\Output\HomePageBrandView;
 use App\Storefront\Application\HomePage\Output\HomePageProductView;
+use App\Storefront\Infrastructure\Money\PriceFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class HomePageCatalogRepository implements HomePageCatalogQueryInterface
 {
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private PriceFormatter $priceFormatter,
+    ) {
     }
 
     public function findNewProducts(int $limit): array
@@ -89,23 +92,18 @@ final readonly class HomePageCatalogRepository implements HomePageCatalogQueryIn
             ->getArrayResult();
 
         return array_map(
-            static fn (array $row): HomePageProductView => new HomePageProductView(
+            fn (array $row): HomePageProductView => new HomePageProductView(
                 title: (string) $row['title'],
                 brandTitle: (string) $row['brandTitle'],
                 image: null === $row['image'] ? null : (string) $row['image'],
-                price: self::formatPrice((int) $row['priceMinorUnits'], (string) $row['currencyCode']),
+                price: $this->priceFormatter->format((int) $row['priceMinorUnits'], (string) $row['currencyCode']),
                 oldPrice: null === $row['oldPriceMinorUnits']
                     ? null
-                    : self::formatPrice((int) $row['oldPriceMinorUnits'], (string) $row['currencyCode']),
+                    : $this->priceFormatter->format((int) $row['oldPriceMinorUnits'], (string) $row['currencyCode']),
                 isNew: (bool) $row['isNew'],
                 isHit: (bool) $row['isHit'],
             ),
             $rows,
         );
-    }
-
-    private static function formatPrice(int $minorUnits, string $currencyCode): string
-    {
-        return sprintf('%d.%02d %s', intdiv($minorUnits, 100), $minorUnits % 100, $currencyCode);
     }
 }

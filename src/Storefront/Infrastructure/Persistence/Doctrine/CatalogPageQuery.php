@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Catalog\Infrastructure\Persistence\Doctrine;
+namespace App\Storefront\Infrastructure\Persistence\Doctrine;
 
-use App\Storefront\Application\CatalogPage\Output\CatalogBrandView;
-use App\Storefront\Application\CatalogPage\Output\CatalogCategoryView;
-use App\Storefront\Application\CatalogPage\Output\CatalogCharacteristicFilterView;
-use App\Storefront\Application\CatalogPage\Output\CatalogProductPage;
-use App\Storefront\Application\CatalogPage\Output\CatalogProductView;
 use App\Catalog\Domain\Entity\Brand;
 use App\Catalog\Domain\Entity\Category;
 use App\Catalog\Domain\Entity\CategoryCharacteristic;
 use App\Catalog\Domain\Entity\Product;
 use App\Storefront\Application\CatalogPage\Input\CatalogPageFilters;
 use App\Storefront\Application\CatalogPage\Interface\CatalogPageQueryInterface;
+use App\Storefront\Application\CatalogPage\Output\CatalogBrandView;
+use App\Storefront\Application\CatalogPage\Output\CatalogCategoryView;
+use App\Storefront\Application\CatalogPage\Output\CatalogCharacteristicFilterView;
+use App\Storefront\Application\CatalogPage\Output\CatalogProductPage;
+use App\Storefront\Application\CatalogPage\Output\CatalogProductView;
 use App\Storefront\Infrastructure\Money\PriceFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;

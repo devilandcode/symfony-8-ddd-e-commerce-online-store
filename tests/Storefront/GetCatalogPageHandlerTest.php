@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Storefront;
 
-use App\Catalog\Application\CatalogBrowse\CatalogBrowseQueryInterface;
-use App\Catalog\Application\CatalogBrowse\Input\CatalogBrowseCriteria;
-use App\Catalog\Application\CatalogBrowse\Output\CatalogProductPage;
+use App\Storefront\Application\CatalogPage\Output\CatalogProductPage;
 use App\Catalog\Application\Category\FrontUseCases\Exception\CategoryNotFoundException;
 use App\Catalog\Application\Category\FrontUseCases\FindBySlug\FindCategoryBySlugHandler;
 use App\Catalog\Application\Category\FrontUseCases\FindChild\FindChildCategoryHandler;
@@ -19,6 +17,7 @@ use App\ContentManagement\Domain\Repository\PageRepositoryInterface;
 use App\Shared\Domain\ValueObject\Slug;
 use App\Storefront\Application\CatalogPage\Handler\GetCatalogPageHandler;
 use App\Storefront\Application\CatalogPage\Input\CatalogPageFilters;
+use App\Storefront\Application\CatalogPage\Interface\CatalogPageQueryInterface;
 use App\StoreSettings\Application\FrontUseCases\ListContentSetting\ListContentSettingHandler;
 use App\StoreSettings\Domain\Entity\SettingSection;
 use App\StoreSettings\Domain\Repository\SettingSectionRepositoryInterface;
@@ -45,19 +44,17 @@ final class GetCatalogPageHandlerTest extends TestCase
         $categoryRepository = $this->createMock(CategoryRepositoryInterface::class);
         $categoryRepository->expects(self::never())->method('findBySlug');
 
-        $catalogQuery = $this->createMock(CatalogBrowseQueryInterface::class);
+        $catalogQuery = $this->createMock(CatalogPageQueryInterface::class);
         $catalogQuery->expects(self::once())->method('findActiveCategories')->willReturn([]);
         $catalogQuery->expects(self::once())->method('findActiveBrands')->with(null)->willReturn([]);
         $catalogQuery->expects(self::never())->method('findFilterableCharacteristics');
         $catalogQuery->expects(self::once())
             ->method('findProducts')
             ->with(
-                self::callback(static function (CatalogBrowseCriteria $criteria): bool {
-                    return null === $criteria->categorySlug
-                        && [7] === $criteria->categoryIds
-                        && [9] === $criteria->brandIds
-                        && [] === $criteria->characteristicValues;
-                }),
+                null,
+                self::callback(static fn (CatalogPageFilters $f): bool => [7] === $f->categoryIds
+                    && [9] === $f->brandIds
+                    && [] === $f->characteristicValues),
                 2,
                 5,
             )
@@ -91,19 +88,17 @@ final class GetCatalogPageHandlerTest extends TestCase
             ->with(self::callback(static fn (Slug $slug): bool => 'face' === $slug->toString()))
             ->willReturn($category);
 
-        $catalogQuery = $this->createMock(CatalogBrowseQueryInterface::class);
+        $catalogQuery = $this->createMock(CatalogPageQueryInterface::class);
         $catalogQuery->expects(self::once())->method('findActiveCategories')->willReturn([]);
         $catalogQuery->expects(self::once())->method('findActiveBrands')->with('face')->willReturn([]);
         $catalogQuery->expects(self::once())->method('findFilterableCharacteristics')->with('face')->willReturn([]);
         $catalogQuery->expects(self::once())
             ->method('findProducts')
             ->with(
-                self::callback(static function (CatalogBrowseCriteria $criteria): bool {
-                    return 'face' === $criteria->categorySlug
-                        && [] === $criteria->categoryIds
-                        && [9] === $criteria->brandIds
-                        && [11 => ['Spray']] === $criteria->characteristicValues;
-                }),
+                'face',
+                self::callback(static fn (CatalogPageFilters $f): bool => [] === $f->categoryIds
+                    && [9] === $f->brandIds
+                    && [11 => ['Spray']] === $f->characteristicValues),
                 1,
                 5,
             )
@@ -132,14 +127,15 @@ final class GetCatalogPageHandlerTest extends TestCase
             ->with(self::callback(static fn (Slug $slug): bool => 'face' === $slug->toString()))
             ->willReturn($child);
 
-        $catalogQuery = $this->createMock(CatalogBrowseQueryInterface::class);
+        $catalogQuery = $this->createMock(CatalogPageQueryInterface::class);
         $catalogQuery->method('findActiveCategories')->willReturn([]);
         $catalogQuery->method('findActiveBrands')->willReturn([]);
         $catalogQuery->expects(self::once())->method('findFilterableCharacteristics')->with('face')->willReturn([]);
         $catalogQuery->expects(self::once())
             ->method('findProducts')
             ->with(
-                self::callback(static fn (CatalogBrowseCriteria $criteria): bool => 'face' === $criteria->categorySlug && [] === $criteria->categoryIds),
+                'face',
+                self::callback(static fn (CatalogPageFilters $f): bool => [] === $f->categoryIds),
                 1,
                 5,
             )
@@ -161,7 +157,7 @@ final class GetCatalogPageHandlerTest extends TestCase
         $categoryRepository = $this->createStub(CategoryRepositoryInterface::class);
         $categoryRepository->method('findBySlug')->willReturn($child);
 
-        $catalogQuery = $this->createMock(CatalogBrowseQueryInterface::class);
+        $catalogQuery = $this->createMock(CatalogPageQueryInterface::class);
         $catalogQuery->expects(self::never())->method('findProducts');
 
         $this->expectException(CategoryNotFoundException::class);
@@ -176,7 +172,7 @@ final class GetCatalogPageHandlerTest extends TestCase
 
     public function testItRejectsAParentSlugWithoutACategorySlug(): void
     {
-        $catalogQuery = $this->createMock(CatalogBrowseQueryInterface::class);
+        $catalogQuery = $this->createMock(CatalogPageQueryInterface::class);
         $catalogQuery->expects(self::never())->method('findProducts');
 
         $this->expectException(\InvalidArgumentException::class);
@@ -194,7 +190,7 @@ final class GetCatalogPageHandlerTest extends TestCase
         $settingsRepository = $this->createMock(SettingSectionRepositoryInterface::class);
         $settingsRepository->expects(self::never())->method('findByKey');
 
-        $catalogQuery = $this->createMock(CatalogBrowseQueryInterface::class);
+        $catalogQuery = $this->createMock(CatalogPageQueryInterface::class);
         $catalogQuery->expects(self::never())->method('findProducts');
 
         $handler = new GetCatalogPageHandler(
@@ -215,7 +211,7 @@ final class GetCatalogPageHandlerTest extends TestCase
     private function handler(
         PageRepositoryInterface $pageRepository,
         CategoryRepositoryInterface $categoryRepository,
-        CatalogBrowseQueryInterface $catalogQuery,
+        CatalogPageQueryInterface $catalogQuery,
         string $productsCount,
     ): GetCatalogPageHandler {
         $settingsRepository = $this->createStub(SettingSectionRepositoryInterface::class);

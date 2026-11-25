@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Storefront\Application\CatalogPage\Handler;
 
-use App\Catalog\Application\CatalogBrowse\CatalogBrowseQueryInterface;
-use App\Catalog\Application\CatalogBrowse\Input\CatalogBrowseCriteria;
 use App\Catalog\Application\Category\FrontUseCases\FindBySlug\FindCategoryBySlugHandler;
 use App\Catalog\Application\Category\FrontUseCases\FindChild\FindChildCategoryHandler;
 use App\ContentManagement\Application\Page\FrontUseCases\FindBySlug\FindPageBySlugHandler;
 use App\Shared\Domain\ValueObject\Slug;
 use App\StoreSettings\Application\FrontUseCases\ListContentSetting\ListContentSettingHandler;
 use App\Storefront\Application\CatalogPage\Input\CatalogPageFilters;
+use App\Storefront\Application\CatalogPage\Interface\CatalogPageQueryInterface;
 use App\Storefront\Application\CatalogPage\Output\ViewCatalogPageDTO;
 
 final readonly class GetCatalogPageHandler
@@ -21,7 +20,7 @@ final readonly class GetCatalogPageHandler
         private FindCategoryBySlugHandler $findCategoryBySlug,
         private FindChildCategoryHandler $findChildCategory,
         private ListContentSettingHandler $listContentSetting,
-        private CatalogBrowseQueryInterface $catalogBrowse,
+        private CatalogPageQueryInterface $catalogQuery,
     ) {
     }
 
@@ -42,7 +41,7 @@ final readonly class GetCatalogPageHandler
         if (null === $slug) {
             $pageView = ($this->findPageBySlug)(new Slug('catalog'));
             $categorySlug = null;
-            $criteria = new CatalogBrowseCriteria(
+            $productFilters = new CatalogPageFilters(
                 categoryIds: $filters->categoryIds,
                 brandIds: $filters->brandIds,
             );
@@ -52,8 +51,7 @@ final readonly class GetCatalogPageHandler
                 ? ($this->findCategoryBySlug)($category)
                 : ($this->findChildCategory)(new Slug($parentSlug), $category);
             $categorySlug = $category->toString();
-            $criteria = new CatalogBrowseCriteria(
-                categorySlug: $categorySlug,
+            $productFilters = new CatalogPageFilters(
                 brandIds: $filters->brandIds,
                 characteristicValues: $filters->characteristicValues,
             );
@@ -62,13 +60,14 @@ final readonly class GetCatalogPageHandler
         return new ViewCatalogPageDTO(
             page: $pageView,
             categorySlug: $categorySlug,
-            categories: $this->catalogBrowse->findActiveCategories(),
-            brands: $this->catalogBrowse->findActiveBrands($categorySlug),
+            categories: $this->catalogQuery->findActiveCategories(),
+            brands: $this->catalogQuery->findActiveBrands($categorySlug),
             characteristics: null === $categorySlug
                 ? []
-                : $this->catalogBrowse->findFilterableCharacteristics($categorySlug),
-            productPage: $this->catalogBrowse->findProducts(
-                $criteria,
+                : $this->catalogQuery->findFilterableCharacteristics($categorySlug),
+            productPage: $this->catalogQuery->findProducts(
+                $categorySlug,
+                $productFilters,
                 $page,
                 ($this->listContentSetting)()->productsLimit(),
             ),

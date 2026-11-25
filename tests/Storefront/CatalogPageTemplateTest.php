@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Storefront;
 
-use App\Catalog\Application\CatalogBrowse\Output\CatalogBrandView;
-use App\Catalog\Application\CatalogBrowse\Output\CatalogCategoryView;
-use App\Catalog\Application\CatalogBrowse\Output\CatalogCharacteristicFilterView;
-use App\Catalog\Application\CatalogBrowse\Output\CatalogProductPage;
-use App\Catalog\Application\CatalogBrowse\Output\CatalogProductView;
+use App\Storefront\Application\CatalogPage\Output\CatalogBrandView;
+use App\Storefront\Application\CatalogPage\Output\CatalogCategoryView;
+use App\Storefront\Application\CatalogPage\Output\CatalogCharacteristicFilterView;
+use App\Storefront\Application\CatalogPage\Output\CatalogProductPage;
+use App\Storefront\Application\CatalogPage\Output\CatalogProductView;
 use App\Catalog\Application\Category\FrontUseCases\Output\ViewCategoryDTO;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\PageContentView;
 use App\ContentManagement\Application\Page\FrontUseCases\Output\ViewPageDTO;

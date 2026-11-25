@@ -14,9 +14,9 @@ use App\StoreSettings\Domain\Entity\SettingSection;
 use App\StoreSettings\Domain\Enum\SettingSectionKey;
 use App\StoreSettings\Domain\Repository\SettingSectionRepositoryInterface;
 use App\StoreSettings\Domain\ValueObject\ContentSettings;
-use App\Storefront\Application\HomePage\Handlers\GetHomePageCatalogHandler;
-use App\Storefront\Application\HomePage\Handlers\GetHomePageHandler;
-use App\Storefront\Application\HomePage\Interfaces\HomePageCatalogQueryInterface;
+use App\Storefront\Application\HomePage\Handler\GetHomePageCatalogHandler;
+use App\Storefront\Application\HomePage\Handler\GetHomePageHandler;
+use App\Storefront\Application\HomePage\Interface\HomePageCatalogQueryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class GetHomePageHandlerTest extends TestCase
