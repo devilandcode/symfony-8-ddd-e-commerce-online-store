@@ -25,4 +25,13 @@ final class CatalogPageQueryStringTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(400);
     }
+
+    public function testInvalidCharacteristicIdsReturnBadRequest(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/catalog/face?characteristics%5Bnope%5D%5B%5D=x');
+
+        self::assertResponseStatusCodeSame(400);
+    }
 }

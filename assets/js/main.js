@@ -57,12 +57,12 @@ $(document).ready(function(){
         $('.s-popup').hide();
         $('.w-popup').hide();
         $('.s-popup__background').hide();
-        $('.w-popup').removeClass('animate');
+        $('.w-popup').removeClass('animate');E
         return false;
     });
 ////////////toggler-button-inset-default
     $('._js-b-toggler-button').on('click', function () {
-        insetCurrent = $(this).closest('._js-toggler-button-parrent').find('._js-inset');
+        let insetCurrent = $(this).closest('._js-toggler-button-parrent').find('._js-inset');
         if (insetCurrent.is(":visible")){
             insetCurrent.slideUp();
             $(this).removeClass('_toggled');

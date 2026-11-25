@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Storefront\Application\CatalogPage\Interface;
 
 use App\Storefront\Application\CatalogPage\Input\CatalogPageFilters;
+use App\Storefront\Application\CatalogPage\Input\PageNumber;
 use App\Storefront\Application\CatalogPage\Output\CatalogBrandView;
 use App\Storefront\Application\CatalogPage\Output\CatalogCategoryView;
 use App\Storefront\Application\CatalogPage\Output\CatalogCharacteristicFilterView;
@@ -24,7 +25,7 @@ interface CatalogPageQueryInterface
     public function findProducts(
         ?string $categorySlug,
         CatalogPageFilters $filters,
-        int $page,
+        PageNumber $page,
         int $pageSize,
     ): CatalogProductPage;
 }

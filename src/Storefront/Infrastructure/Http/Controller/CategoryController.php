@@ -4,62 +4,43 @@ declare(strict_types=1);
 
 namespace App\Storefront\Infrastructure\Http\Controller;
 
-use App\Storefront\Application\CatalogPage\Handler\GetCatalogPageHandler;
+use App\Storefront\Application\CatalogPage\Handler\GetCategoryCatalogPageHandler;
+use App\Storefront\Application\CatalogPage\Handler\GetRootCatalogPageHandler;
 use App\Storefront\Infrastructure\Http\Request\CatalogPageQueryParameters;
+use App\Storefront\Infrastructure\Http\Request\MapCatalogQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class CategoryController extends AbstractController
 {
-    public function __construct(private readonly GetCatalogPageHandler $getCatalogPage)
-    {
+    public function __construct(
+        private readonly GetRootCatalogPageHandler $getRootCatalogPage,
+        private readonly GetCategoryCatalogPageHandler $getCategoryCatalogPage,
+    ) {
     }
 
     #[Route('/catalog', name: 'catalog', methods: ['GET'])]
-    public function getCatalog(
-        #[MapQueryString(validationFailedStatusCode: Response::HTTP_BAD_REQUEST)]
-        CatalogPageQueryParameters $query = new CatalogPageQueryParameters(),
-    ): Response
+    public function getCatalog(#[MapCatalogQuery] CatalogPageQueryParameters $query = new CatalogPageQueryParameters()): Response
     {
-        return $this->renderCatalog($query);
+        $catalog = ($this->getRootCatalogPage)($query->toFilters(), $query->toPageNumber());
+
+        return $this->render('catalog.html.twig', compact('catalog'));
     }
 
     #[Route('/catalog/{slug}', name: 'level1', methods: ['GET'])]
-    public function getLevel1(
-        string $slug,
-        #[MapQueryString(validationFailedStatusCode: Response::HTTP_BAD_REQUEST)]
-        CatalogPageQueryParameters $query = new CatalogPageQueryParameters(),
-    ): Response
+    public function getLevel1(string $slug, #[MapCatalogQuery] CatalogPageQueryParameters $query = new CatalogPageQueryParameters()): Response
     {
-        return $this->renderCatalog($query, $slug);
+        $catalog = ($this->getCategoryCatalogPage)(null, $slug, $query->toFilters(), $query->toPageNumber());
+
+        return $this->render('catalog.html.twig', compact('catalog'));
     }
 
     #[Route('/catalog/{parentSlug}/{slug}', name: 'level2', methods: ['GET'])]
-    public function getLevel2(
-        string $parentSlug,
-        string $slug,
-        #[MapQueryString(validationFailedStatusCode: Response::HTTP_BAD_REQUEST)]
-        CatalogPageQueryParameters $query = new CatalogPageQueryParameters(),
-    ): Response
+    public function getLevel2(string $parentSlug, string $slug, #[MapCatalogQuery] CatalogPageQueryParameters $query = new CatalogPageQueryParameters()): Response
     {
-        return $this->renderCatalog($query, $slug, $parentSlug);
-    }
+        $catalog = ($this->getCategoryCatalogPage)($parentSlug, $slug, $query->toFilters(), $query->toPageNumber());
 
-    private function renderCatalog(
-        CatalogPageQueryParameters $query,
-        ?string $slug = null,
-        ?string $parentSlug = null,
-    ): Response
-    {
-        $catalog = ($this->getCatalogPage)(
-            $slug,
-            $parentSlug,
-            $query->toFilters(),
-            $query->page,
-        );
-
-        return $this->render('catalog.html.twig', ['catalog' => $catalog]);
+        return $this->render('catalog.html.twig', compact('catalog'));
     }
 }

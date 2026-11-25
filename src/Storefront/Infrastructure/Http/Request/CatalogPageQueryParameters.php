@@ -5,48 +5,47 @@ declare(strict_types=1);
 namespace App\Storefront\Infrastructure\Http\Request;
 
 use App\Storefront\Application\CatalogPage\Input\CatalogPageFilters;
+use App\Storefront\Application\CatalogPage\Input\PageNumber;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-#[Assert\Callback(callback: 'validateQueryParameters')]
+/** HTTP shape of the catalog query string. Only shape, type and range checks live here (-> 400). */
 final class CatalogPageQueryParameters
 {
+    private const POSITIVE_INT = '/\A[1-9][0-9]{0,17}\z/';
+
     #[Assert\Positive]
     public int $page = 1;
 
     /** @var list<string> */
-    #[Assert\Type('array')]
-    #[Assert\All([
-        new Assert\Type('string'),
-        new Assert\Regex('/\A[1-9][0-9]*\z/'),
-    ])]
+    #[Assert\All([new Assert\Type('string'), new Assert\Regex(self::POSITIVE_INT)])]
     public array $categories = [];
 
     /** @var list<string> */
-    #[Assert\Type('array')]
-    #[Assert\All([
-        new Assert\Type('string'),
-        new Assert\Regex('/\A[1-9][0-9]*\z/'),
-    ])]
+    #[Assert\All([new Assert\Type('string'), new Assert\Regex(self::POSITIVE_INT)])]
     public array $brands = [];
 
     /**
+     * Characteristic id => selected values.
+     *
      * @var array<int, list<string>>
      */
-    #[Assert\Type('array')]
+    #[Assert\All([new Assert\Type('array'), new Assert\All([new Assert\Type('string')])])]
+    #[Assert\Callback([self::class, 'validateCharacteristicIds'])]
     public array $characteristics = [];
+
+    public function toPageNumber(): PageNumber
+    {
+        return new PageNumber($this->page);
+    }
 
     public function toFilters(): CatalogPageFilters
     {
         $characteristicValues = [];
         foreach ($this->characteristics as $id => $values) {
-            $values = array_values(array_unique(array_filter(
-                array_map(trim(...), $values),
-                static fn (string $value): bool => '' !== $value,
-            )));
-
+            $values = array_values(array_unique(array_filter(array_map(trim(...), $values), static fn (string $v): bool => '' !== $v)));
             if ([] !== $values) {
-                $characteristicValues[(int) $id] = $values;
+                $characteristicValues[$id] = $values;
             }
         }
 
@@ -57,33 +56,14 @@ final class CatalogPageQueryParameters
         );
     }
 
-    public function validateQueryParameters(ExecutionContextInterface $context): void
+    /** @param array<array-key, mixed> $characteristics */
+    public static function validateCharacteristicIds(array $characteristics, ExecutionContextInterface $context): void
     {
-        foreach (['categories' => $this->categories, 'brands' => $this->brands] as $filterName => $ids) {
-            foreach ($ids as $index => $id) {
-                if (false === filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
-                    $context->buildViolation('Filter identifiers must be positive integers within the supported range.')
-                        ->atPath(sprintf('%s[%d]', $filterName, $index))
-                        ->addViolation();
-                }
-            }
-        }
+        foreach (array_keys($characteristics) as $id) {
+            if (!is_int($id) || $id < 1) {
+                $context->buildViolation('Characteristic ids must be positive integers.')->addViolation();
 
-        foreach ($this->characteristics as $id => $values) {
-            if (!is_int($id) || $id < 1 || !is_array($values) || !array_is_list($values)) {
-                $context->buildViolation('Each characteristic filter must use a positive ID and a list of values.')
-                    ->atPath('characteristics')
-                    ->addViolation();
-
-                continue;
-            }
-
-            foreach ($values as $value) {
-                if (!is_string($value)) {
-                    $context->buildViolation('Characteristic filter values must be strings.')
-                        ->atPath(sprintf('characteristics[%d]', $id))
-                        ->addViolation();
-                }
+                return;
             }
         }
     }

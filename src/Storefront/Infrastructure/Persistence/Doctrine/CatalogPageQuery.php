@@ -9,6 +9,7 @@ use App\Catalog\Domain\Entity\Category;
 use App\Catalog\Domain\Entity\CategoryCharacteristic;
 use App\Catalog\Domain\Entity\Product;
 use App\Storefront\Application\CatalogPage\Input\CatalogPageFilters;
+use App\Storefront\Application\CatalogPage\Input\PageNumber;
 use App\Storefront\Application\CatalogPage\Interface\CatalogPageQueryInterface;
 use App\Storefront\Application\CatalogPage\Output\CatalogBrandView;
 use App\Storefront\Application\CatalogPage\Output\CatalogCategoryView;
@@ -144,14 +145,14 @@ final readonly class CatalogPageQuery implements CatalogPageQueryInterface
     public function findProducts(
         ?string $categorySlug,
         CatalogPageFilters $filters,
-        int $page,
+        PageNumber $page,
         int $pageSize,
     ): CatalogProductPage {
-        if ($page < 1 || $pageSize < 0) {
-            throw new \InvalidArgumentException('Catalog pagination values are invalid.');
+        if ($pageSize < 0) {
+            throw new \InvalidArgumentException('Catalog page size cannot be negative.');
         }
 
-        if (0 < $pageSize && $page - 1 > intdiv(PHP_INT_MAX, $pageSize)) {
+        if (0 < $pageSize && $page->value - 1 > intdiv(PHP_INT_MAX, $pageSize)) {
             throw new \InvalidArgumentException('The requested catalog page is too large.');
         }
 
@@ -175,7 +176,7 @@ final readonly class CatalogPageQuery implements CatalogPageQueryInterface
                 )
                 ->orderBy('product.pos', \SortDirection::Ascending)
                 ->addOrderBy('product.title', \SortDirection::Ascending)
-                ->setFirstResult(($page - 1) * $pageSize)
+                ->setFirstResult(($page->value - 1) * $pageSize)
                 ->setMaxResults($pageSize)
                 ->getQuery()
                 ->getArrayResult();
@@ -190,7 +191,7 @@ final readonly class CatalogPageQuery implements CatalogPageQueryInterface
             ? 0
             : intdiv($totalProducts, $pageSize) + (0 === $totalProducts % $pageSize ? 0 : 1);
 
-        return new CatalogProductPage($products, $totalProducts, $page, $pageSize, $totalPages);
+        return new CatalogProductPage($products, $totalProducts, $page->value, $pageSize, $totalPages);
     }
 
     private function buildProductQuery(?string $categorySlug, CatalogPageFilters $filters): QueryBuilder

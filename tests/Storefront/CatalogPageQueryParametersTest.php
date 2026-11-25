@@ -19,7 +19,7 @@ final class CatalogPageQueryParametersTest extends TestCase
         $query->characteristics = [11 => [' Eau de parfum ', '']];
 
         self::assertCount(0, self::validator()->validate($query));
-        self::assertSame(2, $query->page);
+        self::assertSame(2, $query->toPageNumber()->value);
         self::assertSame([2, 4], $query->toFilters()->categoryIds);
         self::assertSame([7], $query->toFilters()->brandIds);
         self::assertSame([11 => ['Eau de parfum']], $query->toFilters()->characteristicValues);
