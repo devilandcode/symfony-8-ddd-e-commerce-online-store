@@ -18,8 +18,8 @@ class Cart
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $hash = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    private string $hash;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE', foreignKeyName: 'fk_cart_user')]
@@ -40,6 +40,39 @@ class Cart
 
     private function __construct()
     {}
+
+    public static function create(
+        string $hash, 
+        ?User $user,
+        Product $product, 
+        int $count, 
+        \DateTime $now
+    ): self {
+        $cart = new self();
+        $cart->update(
+            $hash,
+            $user,
+            $product,
+            $count,
+            $now,
+        );
+        $cart->createdAt = $now;
+        return $cart;
+    }
+
+    public function update(
+        string $hash, 
+        ?User $user,
+        Product $product, 
+        int $count, 
+        \DateTime $updatedAt
+    ): void {
+        $this->hash = $hash;
+        $this->user = $user;
+        $this->product = $product;
+        $this->count = $count;
+        $this->updatedAt = $updatedAt;
+    }
 
     public function getId(): ?int
     {
