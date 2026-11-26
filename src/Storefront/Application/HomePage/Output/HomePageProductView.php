@@ -7,6 +7,7 @@ namespace App\Storefront\Application\HomePage\Output;
 final readonly class HomePageProductView
 {
     public function __construct(
+        public int $id,
         public string $title,
         public string $brandTitle,
         public ?string $image,

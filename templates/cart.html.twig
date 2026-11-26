@@ -1,0 +1,332 @@
+{% extends 'layouts/main.html.twig' %}
+
+{% block content %}
+    <section class="s-line s-breadcrumbs">
+        <div class="container md-pt-20 md-pb-20 pt-5">
+            <div class="w-breadcrumbs-mobile-scroll-shadow">
+                {% include 'general/breadcrumbs.html.twig' with {page: {title: 'Корзина'}} only %}
+            </div>
+        </div>
+    </section>
+
+    <section class="s-line">
+        <div class="container xl-pb-60 pb-80">
+            {% if cart.isEmpty %}
+            <div class="w-cart-empty xl-pt-40 pt-20">
+                <div class="_h4 upper fontCor semibold color-dblue mb-20">Корзина пуста</div>
+                <a href="{{ path('catalog') }}" class="button medium">ПЕРЕЙТИ В КАТАЛОГ</a>
+            </div>
+            {% else %}
+            <div class="w-cart-page">
+                <div class="row row-cart-page">
+                    <div class="col-xl-6 col-lg-7 col-md-8 col-12 pb-30">
+                        <div class="w-cart-list xl-mb-40 mb-20">
+                            {% for item in cart.items %}
+                            <div class="w-cart-list-item">
+                                <div class="row row-cart-list-item md-gutters">
+                                    <div class="col-image col sm-pb-20 pb-10">
+                                        <a href="" class="block__link image__link">
+                                            {% if item.image is not empty %}
+                                                <img src="{{ asset(image_variant(item.image, 400, 400, 'contain')) }}" alt="{{ item.title }}" class="img block">
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-content col sm-pb-20 pb-20">
+                                        <div class="w-title xl-mb-10 mb-5">
+                                            <div class="description xl-mb-10 mb-5">{{ item.brandTitle }}</div>
+                                            <div class="name _h5 semibold upper">
+                                                <a href="" class="name__link block__link nul color-black"><span class="dashed dash">{{ item.title }}</span></a>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-between align-items-end sm-gutters">
+                                            <div class="col-auto xl-mt-10 mt-5">
+                                                <div class="pcscontrolls">
+                                                    <input type="text" value="{{ item.quantity }}" class="input__default" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-5 col-md-6 col-6 xl-mt-10 mt-5">
+                                                <div class="align-right">
+                                                    <div class="row justify-content-end align-items-end sm-gutters">
+                                                        <div class="col-12 col">сумма</div>
+                                                        {% if item.oldTotalMinorUnits is not null %}
+                                                            <div class="col-12 col"><div class="_h6 static color-gray line-through old-price">{{ item.oldTotalMinorUnits|money(item.currencyCode) }}</div></div>
+                                                        {% endif %}
+                                                        <div class="col-12 col"><div class="_h4 static bold color-dblue">{{ item.totalMinorUnits|money(item.currencyCode) }}</div></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="xl-mb-40 mb-20">
+                            <div class="s-name fontCor _h4 upper color-dblue mb-20">1 Личные данные</div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input mb-20 input-password _js-label-top-absolute label-top-absolute empty">
+                                        <input type="text" class="input__default transparent val" placeholder="">
+                                        <label class="hidden-label">Имя*</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input mb-20 input-password _js-label-top-absolute label-top-absolute empty">
+                                        <input type="text" class="input__default transparent val" placeholder="">
+                                        <label class="hidden-label">Фамилия*</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input mb-20 input-password _js-label-top-absolute label-top-absolute empty">
+                                        <input type="text" class="input__default transparent val" placeholder="">
+                                        <label class="hidden-label">Телефон*</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input mb-20 input-password _js-label-top-absolute label-top-absolute empty">
+                                        <input type="text" class="input__default transparent val" placeholder="">
+                                        <label class="hidden-label">E-mail*</label>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input w-aside-tippy-el">
+                                        <div class="input mb-20 input-password _js-label-top-absolute label-top-absolute empty">
+                                            <input type="text" class="input__default transparent val" placeholder="">
+                                            <label class="hidden-label">Номер рейса*</label>
+                                        </div>
+                                        <div class="aside-helper tippy-light" data-template="html_content_id_001">
+                                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.20313 9.3125C7.20313 9.37466 7.17843 9.43427 7.13448 9.47823C7.09053 9.52218 7.03091 9.54688 6.96875 9.54688C6.78227 9.54688 6.60343 9.4728 6.47157 9.34093C6.33971 9.20907 6.26563 9.03023 6.26563 8.84375V6.5C6.26563 6.43784 6.24093 6.37823 6.19698 6.33427C6.15303 6.29032 6.09341 6.26562 6.03125 6.26562C5.96909 6.26562 5.90948 6.24093 5.86552 6.19698C5.82157 6.15302 5.79688 6.09341 5.79688 6.03125C5.79688 5.96909 5.82157 5.90948 5.86552 5.86552C5.90948 5.82157 5.96909 5.79688 6.03125 5.79688C6.21773 5.79688 6.39658 5.87095 6.52844 6.00282C6.6603 6.13468 6.73438 6.31352 6.73438 6.5V8.84375C6.73438 8.90591 6.75907 8.96552 6.80302 9.00948C6.84698 9.05343 6.90659 9.07812 6.96875 9.07812C7.03091 9.07812 7.09053 9.10282 7.13448 9.14677C7.17843 9.19073 7.20313 9.25034 7.20313 9.3125ZM6.26563 4.39062C6.35834 4.39062 6.44897 4.36313 6.52605 4.31163C6.60314 4.26012 6.66322 4.18691 6.6987 4.10126C6.73417 4.01561 6.74346 3.92136 6.72537 3.83043C6.70728 3.7395 6.66264 3.65597 6.59708 3.59042C6.53153 3.52486 6.448 3.48022 6.35708 3.46213C6.26615 3.44405 6.1719 3.45333 6.08624 3.48881C6.00059 3.52429 5.92738 3.58437 5.87588 3.66145C5.82437 3.73854 5.79688 3.82916 5.79688 3.92188C5.79688 4.0462 5.84626 4.16542 5.93417 4.25333C6.02208 4.34124 6.14131 4.39062 6.26563 4.39062ZM12.3594 6.5C12.3594 7.65887 12.0157 8.79173 11.3719 9.75529C10.7281 10.7189 9.81295 11.4699 8.74229 11.9134C7.67163 12.3568 6.4935 12.4729 5.3569 12.2468C4.22029 12.0207 3.17625 11.4627 2.3568 10.6432C1.53735 9.82376 0.979299 8.77971 0.753214 7.64311C0.527129 6.5065 0.643164 5.32838 1.08665 4.25771C1.53013 3.18705 2.28114 2.27194 3.24471 1.62811C4.20828 0.984271 5.34113 0.640625 6.5 0.640625C8.05348 0.642331 9.54285 1.2602 10.6413 2.35868C11.7398 3.45716 12.3577 4.94652 12.3594 6.5ZM11.8906 6.5C11.8906 5.43384 11.5745 4.39161 10.9821 3.50513C10.3898 2.61865 9.54791 1.92772 8.56291 1.51971C7.5779 1.11171 6.49402 1.00496 5.44834 1.21295C4.40266 1.42095 3.44215 1.93436 2.68826 2.68825C1.93436 3.44214 1.42096 4.40266 1.21296 5.44834C1.00496 6.49402 1.11171 7.5779 1.51971 8.5629C1.92772 9.54791 2.61865 10.3898 3.50513 10.9821C4.39162 11.5745 5.43384 11.8906 6.5 11.8906C7.92921 11.8891 9.29943 11.3206 10.31 10.31C11.3206 9.29943 11.8891 7.92921 11.8906 6.5Z" fill="#163D5C"/></svg>
+                                            <div id="html_content_id_001" class="hidden">
+                                                Тут выводим краткое описание, объясняющее значение этого поля 1
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input w-aside-tippy-el">
+                                        <div class="input mb-20 _js-label-top-absolute label-top-absolute empty">
+                                            <select id="flight-number-select" class="transparent">
+                                                <option></option>
+                                                <option>18273 56612835126</option>
+                                                <option>182735 6612835126</option>
+                                                <option>1827356 612835126</option>
+                                                <option>18273566 12835126</option>
+                                                <option>182735661 52835126</option>
+                                                <option>1827356612 835126</option>
+                                            </select>
+                                            <script>
+                                                $('#flight-number-select').select2({
+                                                    maximumSelectionLength: 10,
+                                                    placeholder: "Номер рейса",
+                                                    minimumResultsForSearch: Infinity,
+                                                    tags: true,
+                                                    allowClear: false
+                                                });
+                                            </script>
+                                            <!-- <label class="hidden-label">Номер рейса*</label> -->
+                                        </div>
+                                        <div class="aside-helper tippy-light" data-template="html_content_id_001">
+                                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.20313 9.3125C7.20313 9.37466 7.17843 9.43427 7.13448 9.47823C7.09053 9.52218 7.03091 9.54688 6.96875 9.54688C6.78227 9.54688 6.60343 9.4728 6.47157 9.34093C6.33971 9.20907 6.26563 9.03023 6.26563 8.84375V6.5C6.26563 6.43784 6.24093 6.37823 6.19698 6.33427C6.15303 6.29032 6.09341 6.26562 6.03125 6.26562C5.96909 6.26562 5.90948 6.24093 5.86552 6.19698C5.82157 6.15302 5.79688 6.09341 5.79688 6.03125C5.79688 5.96909 5.82157 5.90948 5.86552 5.86552C5.90948 5.82157 5.96909 5.79688 6.03125 5.79688C6.21773 5.79688 6.39658 5.87095 6.52844 6.00282C6.6603 6.13468 6.73438 6.31352 6.73438 6.5V8.84375C6.73438 8.90591 6.75907 8.96552 6.80302 9.00948C6.84698 9.05343 6.90659 9.07812 6.96875 9.07812C7.03091 9.07812 7.09053 9.10282 7.13448 9.14677C7.17843 9.19073 7.20313 9.25034 7.20313 9.3125ZM6.26563 4.39062C6.35834 4.39062 6.44897 4.36313 6.52605 4.31163C6.60314 4.26012 6.66322 4.18691 6.6987 4.10126C6.73417 4.01561 6.74346 3.92136 6.72537 3.83043C6.70728 3.7395 6.66264 3.65597 6.59708 3.59042C6.53153 3.52486 6.448 3.48022 6.35708 3.46213C6.26615 3.44405 6.1719 3.45333 6.08624 3.48881C6.00059 3.52429 5.92738 3.58437 5.87588 3.66145C5.82437 3.73854 5.79688 3.82916 5.79688 3.92188C5.79688 4.0462 5.84626 4.16542 5.93417 4.25333C6.02208 4.34124 6.14131 4.39062 6.26563 4.39062ZM12.3594 6.5C12.3594 7.65887 12.0157 8.79173 11.3719 9.75529C10.7281 10.7189 9.81295 11.4699 8.74229 11.9134C7.67163 12.3568 6.4935 12.4729 5.3569 12.2468C4.22029 12.0207 3.17625 11.4627 2.3568 10.6432C1.53735 9.82376 0.979299 8.77971 0.753214 7.64311C0.527129 6.5065 0.643164 5.32838 1.08665 4.25771C1.53013 3.18705 2.28114 2.27194 3.24471 1.62811C4.20828 0.984271 5.34113 0.640625 6.5 0.640625C8.05348 0.642331 9.54285 1.2602 10.6413 2.35868C11.7398 3.45716 12.3577 4.94652 12.3594 6.5ZM11.8906 6.5C11.8906 5.43384 11.5745 4.39161 10.9821 3.50513C10.3898 2.61865 9.54791 1.92772 8.56291 1.51971C7.5779 1.11171 6.49402 1.00496 5.44834 1.21295C4.40266 1.42095 3.44215 1.93436 2.68826 2.68825C1.93436 3.44214 1.42096 4.40266 1.21296 5.44834C1.00496 6.49402 1.11171 7.5779 1.51971 8.5629C1.92772 9.54791 2.61865 10.3898 3.50513 10.9821C4.39162 11.5745 5.43384 11.8906 6.5 11.8906C7.92921 11.8891 9.29943 11.3206 10.31 10.31C11.3206 9.29943 11.8891 7.92921 11.8906 6.5Z" fill="#163D5C"/></svg>
+                                            <div id="html_content_id_001" class="hidden">
+                                                Тут выводим краткое описание, объясняющее значение этого поля 1
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-12 mb-20">
+                                    <div class="input w-aside-tippy-el">
+                                        <div class="input mb-20 input-password _js-label-top-absolute label-top-absolute empty">
+                                            <input type="text" class="input__default transparent val" placeholder="">
+                                            <label class="hidden-label">Номер билета*</label>
+                                        </div>
+                                        <div class="aside-helper tippy-light" data-template="html_content_id_002">
+                                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.20313 9.3125C7.20313 9.37466 7.17843 9.43427 7.13448 9.47823C7.09053 9.52218 7.03091 9.54688 6.96875 9.54688C6.78227 9.54688 6.60343 9.4728 6.47157 9.34093C6.33971 9.20907 6.26563 9.03023 6.26563 8.84375V6.5C6.26563 6.43784 6.24093 6.37823 6.19698 6.33427C6.15303 6.29032 6.09341 6.26562 6.03125 6.26562C5.96909 6.26562 5.90948 6.24093 5.86552 6.19698C5.82157 6.15302 5.79688 6.09341 5.79688 6.03125C5.79688 5.96909 5.82157 5.90948 5.86552 5.86552C5.90948 5.82157 5.96909 5.79688 6.03125 5.79688C6.21773 5.79688 6.39658 5.87095 6.52844 6.00282C6.6603 6.13468 6.73438 6.31352 6.73438 6.5V8.84375C6.73438 8.90591 6.75907 8.96552 6.80302 9.00948C6.84698 9.05343 6.90659 9.07812 6.96875 9.07812C7.03091 9.07812 7.09053 9.10282 7.13448 9.14677C7.17843 9.19073 7.20313 9.25034 7.20313 9.3125ZM6.26563 4.39062C6.35834 4.39062 6.44897 4.36313 6.52605 4.31163C6.60314 4.26012 6.66322 4.18691 6.6987 4.10126C6.73417 4.01561 6.74346 3.92136 6.72537 3.83043C6.70728 3.7395 6.66264 3.65597 6.59708 3.59042C6.53153 3.52486 6.448 3.48022 6.35708 3.46213C6.26615 3.44405 6.1719 3.45333 6.08624 3.48881C6.00059 3.52429 5.92738 3.58437 5.87588 3.66145C5.82437 3.73854 5.79688 3.82916 5.79688 3.92188C5.79688 4.0462 5.84626 4.16542 5.93417 4.25333C6.02208 4.34124 6.14131 4.39062 6.26563 4.39062ZM12.3594 6.5C12.3594 7.65887 12.0157 8.79173 11.3719 9.75529C10.7281 10.7189 9.81295 11.4699 8.74229 11.9134C7.67163 12.3568 6.4935 12.4729 5.3569 12.2468C4.22029 12.0207 3.17625 11.4627 2.3568 10.6432C1.53735 9.82376 0.979299 8.77971 0.753214 7.64311C0.527129 6.5065 0.643164 5.32838 1.08665 4.25771C1.53013 3.18705 2.28114 2.27194 3.24471 1.62811C4.20828 0.984271 5.34113 0.640625 6.5 0.640625C8.05348 0.642331 9.54285 1.2602 10.6413 2.35868C11.7398 3.45716 12.3577 4.94652 12.3594 6.5ZM11.8906 6.5C11.8906 5.43384 11.5745 4.39161 10.9821 3.50513C10.3898 2.61865 9.54791 1.92772 8.56291 1.51971C7.5779 1.11171 6.49402 1.00496 5.44834 1.21295C4.40266 1.42095 3.44215 1.93436 2.68826 2.68825C1.93436 3.44214 1.42096 4.40266 1.21296 5.44834C1.00496 6.49402 1.11171 7.5779 1.51971 8.5629C1.92772 9.54791 2.61865 10.3898 3.50513 10.9821C4.39162 11.5745 5.43384 11.8906 6.5 11.8906C7.92921 11.8891 9.29943 11.3206 10.31 10.31C11.3206 9.29943 11.8891 7.92921 11.8906 6.5Z" fill="#163D5C"/></svg>
+                                            <div id="html_content_id_002" class="hidden">
+                                                Тут выводим краткое описание, объясняющее значение этого поля 1
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="xl-mb-40 mb-20">
+                            <div class="s-name fontCor _h4 upper color-dblue mb-20">2 доставка</div>
+                            <div class="_h4 mb-15">Выберите пункт самовывоза</div>
+                            <div class="custom-selector radio mb-10">
+                                <label class="label block pointer">
+                                    <div class="input">
+                                        <input type="radio" name="radio-9817236" class="selector hidden">
+                                        <div class="styled-figure">
+                                            <div class="border">
+                                                <div class="inset-figure"></div>
+                                            </div>
+                                        </div>
+                                        <div class="label label-inner">HV Store: Замковая 27</div>
+                                    </div> 
+                                </label>
+                            </div>
+                            <div class="custom-selector radio mb-10">
+                                <label class="label block pointer">
+                                    <div class="input">
+                                        <input type="radio" name="radio-9817236" class="selector hidden">
+                                        <div class="styled-figure">
+                                            <div class="border">
+                                                <div class="inset-figure"></div>
+                                            </div>
+                                        </div>
+                                        <div class="label label-inner">Helen Valery: Национальный аэропорт Минск, 3 этаж</div>
+                                    </div> 
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="xl-mb-40 mb-20">
+                            <div class="s-name fontCor _h4 upper color-dblue mb-20">3 оплата</div>
+                            <div class="_h4">Оплата будет производиться при получении товара.  </div>
+                            <!-- <div class="_h4 mb-15">Выберите вариант оплаты</div>
+                            <div class="custom-selector radio mb-10">
+                                <label class="label block pointer">
+                                    <div class="input">
+                                        <input type="radio" name="radio-234672534" class="selector hidden">
+                                        <div class="styled-figure">
+                                            <div class="border">
+                                                <div class="inset-figure"></div>
+                                            </div>
+                                        </div>
+                                        <div class="label label-inner">Оплата при получении заказа</div>
+                                    </div> 
+                                </label>
+                            </div>
+                            <div class="custom-selector radio mb-10">
+                                <label class="label block pointer">
+                                    <div class="input">
+                                        <input type="radio" name="radio-234672534" class="selector hidden">
+                                        <div class="styled-figure">
+                                            <div class="border">
+                                                <div class="inset-figure"></div>
+                                            </div>
+                                        </div>
+                                        <div class="label label-inner">Оплата картой онлайн</div>
+                                    </div> 
+                                </label>
+                            </div> -->
+                        </div>
+
+                        <div class="">
+                            <div class="s-name fontCor _h4 upper color-dblue mb-20">4 комментарий к заказу</div>
+                            <!-- <div class="_h4 mb-15">Добавить комментарий к заказу</div> -->
+                            <div class="input mb-20 _js-label-top-absolute label-top-absolute empty">
+                                <textarea type="text" class="textarea__default transparent val" placeholder=""></textarea>
+                                <label class="hidden-label">Комментарий</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="col-aside col-xl-6 col-lg-5 col-md-4 col-12 pb-30">
+                        <div class="w-cart-aside-summary-frame">
+                            <div class="frame lg-pt-30 lg-pb-30 md-pt-0 md-pb-0 pt-15 pb-15">
+                                <div class="w-promocode xl-mb-20 mb-10">
+                                    <div class="row row-promocode sm-gutters">
+                                        <div class="col-input col-xl-7 col-lg-6 col-md-12 col-xs-7 col-12 col mb-10">
+                                            <input type="text" class="input__default" placeholder="введите промокод">
+                                        </div>
+                                        <div class="col-btn col-xl-5 col-lg-6 col-md-12 col-xs-5 col-12 col mb-10"><button class="button block medium">ПРИМЕНИТЬ</button></div>
+                                    </div>
+                                </div>
+
+                                <div class="_h4 upper fontCor semibold color-dblue">Сумма заказа</div>
+
+                                {% for total in cart.totals %}
+                                <div class="w-default-dotts-features xl-mb-20 mb-10 _h6">
+                                    <div class="w-default-dotts-features-item pt-10">
+                                        <div class="row sm-gutters">
+                                            <div class="col">
+                                                <div class="row no-gutters">
+                                                    <div class="col-auto col-feature-name">
+                                                        Стоимость продуктов
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="dotts"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                {{ total.productsMinorUnits|money(total.currencyCode) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-default-dotts-features-item pt-10">
+                                        <div class="row sm-gutters">
+                                            <div class="col">
+                                                <div class="row no-gutters">
+                                                    <div class="col-auto col-feature-name">
+                                                        Скидка
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="dotts"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                {{ total.discountMinorUnits|money(total.currencyCode) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="w-default-dotts-features xl-mb-20 mb-10">
+                                    <div class="w-default-dotts-features-item">
+                                        <div class="row sm-gutters align-items-end">
+                                            <div class="col">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto col-feature-name">
+                                                        <div class="_h4 color-dblue semibold">Итого</div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="dotts"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="_h4 color-dblue bold">{{ total.totalMinorUnits|money(total.currencyCode) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                                <div class="mb-20">
+                                    <div class="custom-selector check xl-mb-10 mb-0">
+                                        <label class="label block pointer">
+                                            <div class="input">
+                                                <input type="checkbox" name="checkbox001" class="selector hidden">
+                                                <div class="styled-figure">
+                                                    <div class="border">
+                                                        <div class="inset-figure"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="label label-inner">
+                                                    <div>Согласие на <a href="">обработку персональных данных</a></div>
+                                                    <div class="small-text mt-5"><span class="color-red">*</span> Поля обязательные для заполнения</div>
+                                                </div>
+                                            </div> 
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end mt-20">
+                                    <div class="col-xl-auto col-md-12 col-12">
+                                        <button class="button block">ОФОРМИТЬ ЗАКАЗ</div>
+                                    </div>
+                                </div>
+                            </div>							
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

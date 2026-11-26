@@ -20,10 +20,10 @@ final class GetHomePageCatalogHandlerTest extends TestCase
     public function testItUsesConfiguredLimitsToLoadHomepageCatalogData(): void
     {
         $newProducts = [
-            new HomePageProductView('New', 'Brand', null, '10.00 EUR', null, true, false),
+            new HomePageProductView(1, 'New', 'Brand', null, '10.00 EUR', null, true, false),
         ];
         $hitProducts = [
-            new HomePageProductView('Hit', 'Brand', null, '20.00 EUR', null, false, true),
+            new HomePageProductView(2, 'Hit', 'Brand', null, '20.00 EUR', null, false, true),
         ];
         $brands = [new HomePageBrandView('Brand')];
 

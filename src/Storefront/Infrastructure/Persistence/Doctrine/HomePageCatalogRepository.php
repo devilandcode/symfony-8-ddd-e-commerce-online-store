@@ -72,6 +72,7 @@ final readonly class HomePageCatalogRepository implements HomePageCatalogQueryIn
 
         $rows = $this->entityManager->createQueryBuilder()
             ->select(
+                'product.id AS id',
                 'product.title AS title',
                 'brand.title AS brandTitle',
                 'product.image AS image',
@@ -93,6 +94,7 @@ final readonly class HomePageCatalogRepository implements HomePageCatalogQueryIn
 
         return array_map(
             fn (array $row): HomePageProductView => new HomePageProductView(
+                id: (int) $row['id'],
                 title: (string) $row['title'],
                 brandTitle: (string) $row['brandTitle'],
                 image: null === $row['image'] ? null : (string) $row['image'],

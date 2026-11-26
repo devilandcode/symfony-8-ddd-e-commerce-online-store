@@ -165,6 +165,7 @@ final readonly class CatalogPageQuery implements CatalogPageQueryInterface
         if (0 < $pageSize) {
             $rows = $this->buildProductQuery($categorySlug, $filters)
                 ->select(
+                    'product.id AS id',
                     'product.title AS title',
                     'brand.title AS brandTitle',
                     'product.image AS image',
@@ -270,6 +271,7 @@ final readonly class CatalogPageQuery implements CatalogPageQueryInterface
     {
         $currencyCode = (string) $row['currencyCode'];
         return new CatalogProductView(
+            id: (int) $row['id'],
             title: (string) $row['title'],
             brandTitle: (string) $row['brandTitle'],
             image: null === $row['image'] ? null : (string) $row['image'],

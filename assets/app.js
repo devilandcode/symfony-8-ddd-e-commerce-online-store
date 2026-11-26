@@ -26,6 +26,7 @@ import 'owl.carousel';
 
 // Import main scripts
 import './js/main.js';
+import './js/cart.js';
 // import './js/map-dealers.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

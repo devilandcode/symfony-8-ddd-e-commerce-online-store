@@ -6,36 +6,27 @@ namespace App\Cart\Infrastructure\Persistence\Doctrine;
 
 use App\Cart\Domain\Entity\Cart;
 use App\Cart\Domain\Repository\CartRepositoryInterface;
+use App\Cart\Domain\ValueObject\CartOwner;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class CartRepository implements CartRepositoryInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-    ) {}
-
-    public function findAll(): array
-    {
-        return $this->entityManager->getRepository(Cart::class)->findAll();
+    ) {
     }
 
-    public function findByHash(string $hash): array
+    public function findByOwner(CartOwner $owner): ?Cart
     {
-        return $this->entityManager->getRepository(Cart::class)->findBy(['hash' => $hash]);
-    }
+        $criteria = $owner->isGuest()
+            ? ['guestToken' => $owner->getGuestToken()]
+            : ['userId' => $owner->getUserId()];
 
-    public function findByUserId(int $userId): array
-    {
-        return $this->entityManager->getRepository(Cart::class)->findBy(['user' => $userId]);
+        return $this->entityManager->getRepository(Cart::class)->findOneBy($criteria);
     }
 
     public function save(Cart $cart): void
     {
         $this->entityManager->persist($cart);
-    }
-
-    public function remove(Cart $cart): void
-    {
-        $this->entityManager->remove($cart);
     }
 }

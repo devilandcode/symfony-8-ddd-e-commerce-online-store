@@ -89,6 +89,7 @@ final class HomePageTemplateTest extends KernelTestCase
             ],
         ]), [
             new HomePageProductView(
+                id: 1,
                 title: 'New product',
                 brandTitle: 'New brand',
                 image: $this->createUploadedImage('products'),
@@ -99,6 +100,7 @@ final class HomePageTemplateTest extends KernelTestCase
             ),
         ], [
             new HomePageProductView(
+                id: 2,
                 title: 'Hit product',
                 brandTitle: 'Hit brand',
                 image: null,

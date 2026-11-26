@@ -47,7 +47,7 @@ final class CatalogPageTemplateTest extends KernelTestCase
                         brands: [new CatalogBrandView(9, 'Brand')],
                         characteristics: [],
                         productPage: new CatalogProductPage(
-                            products: [new CatalogProductView('Product', 'Brand', null, '10.00 EUR', null, false, false)],
+                            products: [new CatalogProductView(1, 'Product', 'Brand', null, '10.00 EUR', null, false, false)],
                             totalProducts: 1,
                             currentPage: 1,
                             pageSize: 5,
@@ -94,7 +94,7 @@ final class CatalogPageTemplateTest extends KernelTestCase
                             new CatalogCharacteristicFilterView(11, 'Type', null, ['Spray']),
                         ],
                         productPage: new CatalogProductPage(
-                            products: [new CatalogProductView('Product', 'Brand', null, '10.00 EUR', null, false, false)],
+                            products: [new CatalogProductView(1, 'Product', 'Brand', null, '10.00 EUR', null, false, false)],
                             totalProducts: 12,
                             currentPage: 2,
                             pageSize: 5,

@@ -58,11 +58,32 @@ services:
     App\Shared\Application\FlusherInterface:
         alias: App\Shared\Infrastructure\Persistence\DoctrineFlusher
 
+    App\Cart\Domain\Repository\CartRepositoryInterface:
+        alias: App\Cart\Infrastructure\Persistence\Doctrine\CartRepository
+
+    App\Cart\Application\Interface\CartOwnerProviderInterface:
+        alias: App\Cart\Infrastructure\Session\SessionCartOwnerProvider
+
+    App\Cart\Application\Interface\PurchasableProductProviderInterface:
+        alias: App\Cart\Infrastructure\Catalog\CatalogPurchasableProductProvider
+
+    App\Cart\Application\Interface\CartProductProviderInterface:
+        alias: App\Cart\Infrastructure\Catalog\CatalogCartProductProvider
+
     App\Storefront\Infrastructure\Http\EventListener\KernelExceptionEventListener:
         tags:
             - {
                 name: kernel.event_listener,
                 event: kernel.exception,
+                method: onKernelException
+            }
+
+    App\Storefront\Infrastructure\Http\EventListener\CartExceptionEventListener:
+        tags:
+            - {
+                name: kernel.event_listener,
+                event: kernel.exception,
+                priority: 10,
                 method: onKernelException
             }
 
