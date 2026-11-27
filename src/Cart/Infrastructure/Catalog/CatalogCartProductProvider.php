@@ -6,19 +6,24 @@ namespace App\Cart\Infrastructure\Catalog;
 
 use App\Cart\Application\FrontUseCases\Output\CartProductDTO;
 use App\Cart\Application\Interface\CartProductProviderInterface;
-use App\Catalog\Domain\Entity\Product;
+use App\Cart\Domain\Entity\Cart;
+use App\Cart\Domain\Entity\CartItem;
 use Doctrine\ORM\EntityManagerInterface;
 
-/** Reads Catalog data for the cart page with one scalar query, so no Catalog entities cross the boundary. */
+/**
+ * Reads Catalog data for the cart page with one scalar query, so no Catalog entities cross the boundary.
+ * The product is reached through the read-only CartItem::$product association (see the CartItem docblock),
+ * joined in the same query, so the stock balance (`max` in the UI) never costs an extra query per line.
+ */
 final readonly class CatalogCartProductProvider implements CartProductProviderInterface
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
     }
 
-    public function findActiveByIds(array $productIds): array
+    public function findActiveInCart(Cart $cart): array
     {
-        if ([] === $productIds) {
+        if (null === $cart->getId()) {
             return [];
         }
 
@@ -31,12 +36,14 @@ final readonly class CatalogCartProductProvider implements CartProductProviderIn
                 'product.price.minorUnits AS priceMinorUnits',
                 'product.price.currencyCode AS currencyCode',
                 'product.oldPrice.minorUnits AS oldPriceMinorUnits',
+                'product.balance.units AS availableUnits',
             )
-            ->from(Product::class, 'product')
+            ->from(CartItem::class, 'item')
+            ->join('item.product', 'product')
             ->join('product.brand', 'brand')
-            ->where('product.id IN (:ids)')
+            ->where('item.cart = :cart')
             ->andWhere('product.isActive = true')
-            ->setParameter('ids', $productIds)
+            ->setParameter('cart', $cart)
             ->getQuery()
             ->getArrayResult();
 
@@ -51,6 +58,7 @@ final readonly class CatalogCartProductProvider implements CartProductProviderIn
                 priceMinorUnits: (int) $row['priceMinorUnits'],
                 oldPriceMinorUnits: null === $row['oldPriceMinorUnits'] ? null : (int) $row['oldPriceMinorUnits'],
                 currencyCode: (string) $row['currencyCode'],
+                availableUnits: (int) $row['availableUnits'],
             );
         }
 

@@ -23,6 +23,6 @@ final readonly class GetCartSummaryHandler
 
         return null === $cart
             ? CartSummaryDTO::empty()
-            : new CartSummaryDTO($cart->itemsCount(), $cart->getProductIds());
+            : new CartSummaryDTO($cart->getTotalQuantity(), $cart->getProductIds());
     }
 }

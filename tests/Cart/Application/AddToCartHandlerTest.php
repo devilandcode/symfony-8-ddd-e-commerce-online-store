@@ -43,7 +43,7 @@ final class AddToCartHandlerTest extends TestCase
     {
         $summary = ($this->handler)(new AddToCartDTO(1, 2));
 
-        self::assertSame(1, $summary->itemsCount);
+        self::assertSame(2, $summary->totalQuantity);
         self::assertTrue($summary->contains(1));
         self::assertCount(1, $this->carts->all());
         self::assertSame(1, $this->flusher->commits);
@@ -54,9 +54,9 @@ final class AddToCartHandlerTest extends TestCase
         ($this->handler)(new AddToCartDTO(1, 2));
         $summary = ($this->handler)(new AddToCartDTO(1, 3));
 
-        self::assertSame(1, $summary->itemsCount);
+        self::assertSame(5, $summary->totalQuantity);
         self::assertCount(1, $this->carts->all());
-        self::assertSame(5, $this->carts->all()[0]->getItems()[0]->getQuantity());
+        self::assertSame(5, $this->carts->all()[0]->getItems()[0]->getQuantity()->getValue());
     }
 
     public function testUnknownProductIsRejectedWithoutPersisting(): void
@@ -97,12 +97,12 @@ final class AddToCartHandlerTest extends TestCase
         ($this->handler)(new AddToCartDTO(1));
         $summaryHandler = new GetCartSummaryHandler($this->carts, $this->owners);
 
-        self::assertSame(1, $summaryHandler()->itemsCount);
+        self::assertSame(1, $summaryHandler()->totalQuantity);
 
         $this->owners->current = CartOwner::guest(hash('sha256', 'someone else'));
-        self::assertSame(0, $summaryHandler()->itemsCount);
+        self::assertSame(0, $summaryHandler()->totalQuantity);
 
         $this->owners->current = null;
-        self::assertSame(0, $summaryHandler()->itemsCount);
+        self::assertSame(0, $summaryHandler()->totalQuantity);
     }
 }

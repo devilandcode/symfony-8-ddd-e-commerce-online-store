@@ -13,6 +13,6 @@ final class InvalidCartQuantityException extends \DomainException
 
     public static function limitExceeded(int $allowed): self
     {
-        return new self(sprintf('Cart quantity for a single product cannot exceed %d.', $allowed));
+        return new self(sprintf('Cart quantity for a single product cannot exceed the %d unit(s) in stock.', $allowed));
     }
 }

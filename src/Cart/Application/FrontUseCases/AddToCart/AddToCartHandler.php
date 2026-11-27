@@ -13,6 +13,8 @@ use App\Cart\Application\Interface\PurchasableProductProviderInterface;
 use App\Cart\Domain\Entity\Cart;
 use App\Cart\Domain\Exception\InvalidCartQuantityException;
 use App\Cart\Domain\Repository\CartRepositoryInterface;
+use App\Cart\Domain\ValueObject\Quantity;
+use App\Cart\Domain\ValueObject\StockLimit;
 use App\Shared\Application\FlusherInterface;
 
 final readonly class AddToCartHandler
@@ -43,11 +45,11 @@ final readonly class AddToCartHandler
         $now = new \DateTime();
         $cart = $this->cartRepository->findByOwner($owner) ?? Cart::create($owner, $now);
 
-        $cart->addProduct($product->id, $data->quantity, $product->availableUnits, $now);
+        $cart->addProduct($product->id, Quantity::of($data->quantity), StockLimit::ofUnits($product->availableUnits), $now);
 
         $this->cartRepository->save($cart);
         $this->flusher->commit();
 
-        return new CartSummaryDTO($cart->itemsCount(), $cart->getProductIds());
+        return new CartSummaryDTO($cart->getTotalQuantity(), $cart->getProductIds());
     }
 }

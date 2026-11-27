@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Cart\Domain\Entity;
 
-use App\Cart\Domain\Exception\InvalidCartQuantityException;
+use App\Cart\Domain\Exception\ProductNotInCartException;
 use App\Cart\Domain\ValueObject\CartOwner;
+use App\Cart\Domain\ValueObject\Quantity;
+use App\Cart\Domain\ValueObject\StockLimit;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,8 +24,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'uniq_cart_guest_token', columns: ['guest_token'])]
 class Cart
 {
-    public const int MAX_QUANTITY_PER_PRODUCT = 99;
-
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
@@ -59,31 +59,34 @@ class Cart
         return new self($owner, $now);
     }
 
-    /**
-     * Adds a product, or increases its quantity when it is already in the cart.
-     *
-     * @param int $availableUnits stock currently available for the product (supplied by the caller from Catalog)
-     */
-    public function addProduct(int $productId, int $quantity, int $availableUnits, \DateTime $now): void
+    /** Adds a product, or increases its quantity when it is already in the cart. The line enforces the stock rule. */
+    public function addProduct(int $productId, Quantity $quantity, StockLimit $stock, \DateTime $now): void
     {
-        if ($quantity < 1) {
-            throw InvalidCartQuantityException::mustBePositive($quantity);
-        }
-
         $item = $this->findItem($productId);
-        $newQuantity = ($item?->getQuantity() ?? 0) + $quantity;
-        $allowed = min(self::MAX_QUANTITY_PER_PRODUCT, $availableUnits);
-
-        if ($newQuantity > $allowed) {
-            throw InvalidCartQuantityException::limitExceeded($allowed);
-        }
 
         if (null === $item) {
-            $this->items->add(new CartItem($this, $productId, $newQuantity));
+            $this->items->add(new CartItem($this, $productId, $quantity, $stock));
         } else {
-            $item->changeQuantity($newQuantity);
+            $item->increaseBy($quantity, $stock);
         }
 
+        $this->updatedAt = $now;
+    }
+
+    /** Sets the exact quantity of a product that is already in the cart. Use removeProduct() to drop a line. */
+    public function changeQuantity(int $productId, Quantity $quantity, StockLimit $stock, \DateTime $now): void
+    {
+        $item = $this->findItem($productId) ?? throw ProductNotInCartException::withProductId($productId);
+
+        $item->changeTo($quantity, $stock);
+        $this->updatedAt = $now;
+    }
+
+    public function removeProduct(int $productId, \DateTime $now): void
+    {
+        $item = $this->findItem($productId) ?? throw ProductNotInCartException::withProductId($productId);
+
+        $this->items->removeElement($item);
         $this->updatedAt = $now;
     }
 
@@ -92,10 +95,18 @@ class Cart
         return null !== $this->findItem($productId);
     }
 
-    /** Number of distinct products in the cart. */
-    public function itemsCount(): int
+    public function isEmpty(): bool
     {
-        return $this->items->count();
+        return $this->items->isEmpty();
+    }
+
+    /** Total number of units in the cart: the sum of all line quantities (not the number of lines). */
+    public function getTotalQuantity(): int
+    {
+        return array_sum(array_map(
+            static fn (CartItem $item): int => $item->getQuantity()->getValue(),
+            $this->items->toArray(),
+        ));
     }
 
     /** @return list<int> */

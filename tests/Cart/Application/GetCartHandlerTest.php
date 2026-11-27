@@ -8,6 +8,8 @@ use App\Cart\Application\FrontUseCases\GetCart\GetCartHandler;
 use App\Cart\Application\FrontUseCases\Output\CartProductDTO;
 use App\Cart\Domain\Entity\Cart;
 use App\Cart\Domain\ValueObject\CartOwner;
+use App\Cart\Domain\ValueObject\Quantity;
+use App\Cart\Domain\ValueObject\StockLimit;
 use App\Tests\Cart\Double\FakeCartProductProvider;
 use App\Tests\Cart\Double\FakeOwnerProvider;
 use App\Tests\Cart\Double\InMemoryCartRepository;
@@ -42,8 +44,8 @@ final class GetCartHandlerTest extends TestCase
     {
         $this->addToCart([10 => 2, 11 => 1]);
         $products = new FakeCartProductProvider([
-            10 => new CartProductDTO(10, 'Perfume', 'Burberry', 'a.jpg', 10000, 20000, 'BYN'),
-            11 => new CartProductDTO(11, 'Cream', 'Dior', null, 550, null, 'BYN'),
+            10 => new CartProductDTO(10, 'Perfume', 'Burberry', 'a.jpg', 10000, 20000, 'BYN', 5),
+            11 => new CartProductDTO(11, 'Cream', 'Dior', null, 550, null, 'BYN', 5),
         ]);
 
         $cart = $this->handler($products)();
@@ -55,6 +57,10 @@ final class GetCartHandlerTest extends TestCase
         self::assertSame(20000, $cart->items[0]->totalMinorUnits());
         self::assertSame(40000, $cart->items[0]->oldTotalMinorUnits());
         self::assertNull($cart->items[1]->oldTotalMinorUnits());
+        self::assertSame(5, $cart->items[0]->availableUnits);
+        self::assertTrue($cart->items[0]->canIncreaseQuantity());
+        self::assertSame(50, $cart->items[0]->discountPercent());
+        self::assertNull($cart->items[1]->discountPercent());
 
         self::assertCount(1, $cart->totals);
         self::assertSame('BYN', $cart->totals[0]->currencyCode);
@@ -67,8 +73,8 @@ final class GetCartHandlerTest extends TestCase
     {
         $this->addToCart([10 => 1, 11 => 1]);
         $products = new FakeCartProductProvider([
-            10 => new CartProductDTO(10, 'A', 'B', null, 100, null, 'BYN'),
-            11 => new CartProductDTO(11, 'C', 'D', null, 200, null, 'USD'),
+            10 => new CartProductDTO(10, 'A', 'B', null, 100, null, 'BYN', 5),
+            11 => new CartProductDTO(11, 'C', 'D', null, 200, null, 'USD', 5),
         ]);
 
         $totals = $this->handler($products)()->totals;
@@ -81,7 +87,7 @@ final class GetCartHandlerTest extends TestCase
     {
         $this->addToCart([10 => 1, 11 => 1]);
         $products = new FakeCartProductProvider([
-            11 => new CartProductDTO(11, 'Cream', 'Dior', null, 550, null, 'BYN'),
+            11 => new CartProductDTO(11, 'Cream', 'Dior', null, 550, null, 'BYN', 5),
         ]);
 
         $cart = $this->handler($products)();
@@ -94,7 +100,7 @@ final class GetCartHandlerTest extends TestCase
     public function testReadsOnlyTheCurrentOwnersCart(): void
     {
         $this->addToCart([10 => 1]);
-        $products = new FakeCartProductProvider([10 => new CartProductDTO(10, 'A', 'B', null, 100, null, 'BYN')]);
+        $products = new FakeCartProductProvider([10 => new CartProductDTO(10, 'A', 'B', null, 100, null, 'BYN', 5)]);
 
         $this->owners->current = CartOwner::guest(hash('sha256', 'someone else'));
 
@@ -107,7 +113,7 @@ final class GetCartHandlerTest extends TestCase
         $now = new \DateTime();
         $cart = Cart::create($this->owner, $now);
         foreach ($quantitiesByProductId as $productId => $quantity) {
-            $cart->addProduct($productId, $quantity, 50, $now);
+            $cart->addProduct($productId, Quantity::of($quantity), StockLimit::ofUnits(50), $now);
         }
         $this->carts->save($cart);
     }

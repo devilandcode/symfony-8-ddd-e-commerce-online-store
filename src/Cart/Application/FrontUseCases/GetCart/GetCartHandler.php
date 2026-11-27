@@ -25,11 +25,11 @@ final readonly class GetCartHandler
         $owner = $this->ownerProvider->findCurrent();
         $cart = null === $owner ? null : $this->cartRepository->findByOwner($owner);
 
-        if (null === $cart || 0 === $cart->itemsCount()) {
+        if (null === $cart || $cart->isEmpty()) {
             return CartDTO::empty();
         }
 
-        $products = $this->productProvider->findActiveByIds($cart->getProductIds());
+        $products = $this->productProvider->findActiveInCart($cart);
 
         $items = [];
         foreach ($cart->getItems() as $cartItem) {
@@ -44,10 +44,11 @@ final readonly class GetCartHandler
                 title: $product->title,
                 brandTitle: $product->brandTitle,
                 image: $product->image,
-                quantity: $cartItem->getQuantity(),
+                quantity: $cartItem->getQuantity()->getValue(),
                 unitPriceMinorUnits: $product->priceMinorUnits,
                 unitOldPriceMinorUnits: $product->oldPriceMinorUnits,
                 currencyCode: $product->currencyCode,
+                availableUnits: $product->availableUnits,
             );
         }
 

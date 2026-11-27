@@ -1,0 +1,7 @@
+
+
+/* Cart quantity controls: a step button that would leave the allowed 1..stock range */
+.pcscontrolls .btn.disabled {
+    opacity: .4;
+    pointer-events: none;
+}

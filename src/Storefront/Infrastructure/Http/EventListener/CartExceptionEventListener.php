@@ -7,6 +7,7 @@ namespace App\Storefront\Infrastructure\Http\EventListener;
 use App\Cart\Application\FrontUseCases\Exception\ProductNotFoundException;
 use App\Cart\Application\FrontUseCases\Exception\ProductNotPurchasableException;
 use App\Cart\Domain\Exception\InvalidCartQuantityException;
+use App\Cart\Domain\Exception\ProductNotInCartException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -14,25 +15,28 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 /**
- * Translates add-to-cart failures (business, CSRF and payload validation) into the JSON error contract.
+ * Translates failures of the cart JSON endpoints (add, update, remove: business, CSRF and payload validation)
+ * into the JSON error contract.
  *
  * Registered with a priority above the security firewall listener (1), which would otherwise turn the
  * authentication-type CSRF exception into a redirect to the login page.
  */
 final class CartExceptionEventListener
 {
-    private const string ADD_TO_CART_ROUTE = 'cart.add';
+    /** @var list<string> */
+    private const array CART_JSON_ROUTES = ['cart.add', 'cart.update', 'cart.remove'];
 
     /** @var array<class-string<\Throwable>, int> */
     private const array BUSINESS_EXCEPTION_STATUS = [
         ProductNotFoundException::class => Response::HTTP_NOT_FOUND,
+        ProductNotInCartException::class => Response::HTTP_NOT_FOUND,
         ProductNotPurchasableException::class => Response::HTTP_CONFLICT,
         InvalidCartQuantityException::class => Response::HTTP_UNPROCESSABLE_ENTITY,
     ];
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        if (self::ADD_TO_CART_ROUTE !== $event->getRequest()->attributes->get('_route')) {
+        if (!\in_array($event->getRequest()->attributes->get('_route'), self::CART_JSON_ROUTES, true)) {
             return;
         }
 

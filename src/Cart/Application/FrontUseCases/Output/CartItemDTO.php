@@ -15,7 +15,26 @@ final readonly class CartItemDTO
         public int $unitPriceMinorUnits,
         public ?int $unitOldPriceMinorUnits,
         public string $currencyCode,
+        public int $availableUnits,
+        public ?string $volume = null,
+        public ?string $color = null,
     ) {
+    }
+
+    /** True while the cart quantity is below the stock balance, i.e. one more unit can be added. */
+    public function canIncreaseQuantity(): bool
+    {
+        return $this->quantity < $this->availableUnits;
+    }
+
+    /** Whole-percent discount of the old price versus the current price, when an old price exists. */
+    public function discountPercent(): ?int
+    {
+        if (null === $this->unitOldPriceMinorUnits || $this->unitOldPriceMinorUnits <= $this->unitPriceMinorUnits) {
+            return null;
+        }
+
+        return intdiv(($this->unitOldPriceMinorUnits - $this->unitPriceMinorUnits) * 100, $this->unitOldPriceMinorUnits);
     }
 
     public function totalMinorUnits(): int

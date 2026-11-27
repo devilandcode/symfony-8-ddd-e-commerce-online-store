@@ -6,9 +6,12 @@ namespace App\Cart\Application\FrontUseCases\Output;
 
 final readonly class CartSummaryDTO
 {
-    /** @param list<int> $productIds */
+    /**
+     * @param int       $totalQuantity sum of the quantities of all cart lines (units, not number of lines)
+     * @param list<int> $productIds
+     */
     public function __construct(
-        public int $itemsCount,
+        public int $totalQuantity,
         public array $productIds,
     ) {
     }

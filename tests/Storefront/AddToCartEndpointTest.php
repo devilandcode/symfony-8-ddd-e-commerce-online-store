@@ -47,7 +47,7 @@ final class AddToCartEndpointTest extends WebTestCase
         $response = $this->post(['productId' => 1, 'quantity' => 2]);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertSame(['success' => true, 'cartCount' => 1, 'cartUrl' => '/cart'], $response);
+        self::assertSame(['success' => true, 'cartCount' => 2, 'cartUrl' => '/cart'], $response);
         self::assertCount(1, $this->carts->all());
     }
 
@@ -56,8 +56,9 @@ final class AddToCartEndpointTest extends WebTestCase
         $this->post(['productId' => 1, 'quantity' => 1]);
         $response = $this->post(['productId' => 1, 'quantity' => 1]);
 
-        self::assertSame(1, $response['cartCount']);
-        self::assertSame(2, $this->carts->all()[0]->getItems()[0]->getQuantity());
+        self::assertSame(2, $response['cartCount'], 'The counter is the sum of quantities, not the number of lines.');
+        self::assertCount(1, $this->carts->all()[0]->getItems());
+        self::assertSame(2, $this->carts->all()[0]->getItems()[0]->getQuantity()->getValue());
     }
 
     public function testRejectsMissingCsrfToken(): void

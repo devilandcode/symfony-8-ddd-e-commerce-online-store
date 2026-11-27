@@ -6,6 +6,7 @@ namespace App\Tests\Cart\Double;
 
 use App\Cart\Application\FrontUseCases\Output\CartProductDTO;
 use App\Cart\Application\Interface\CartProductProviderInterface;
+use App\Cart\Domain\Entity\Cart;
 
 final class FakeCartProductProvider implements CartProductProviderInterface
 {
@@ -16,10 +17,10 @@ final class FakeCartProductProvider implements CartProductProviderInterface
     {
     }
 
-    public function findActiveByIds(array $productIds): array
+    public function findActiveInCart(Cart $cart): array
     {
         ++$this->calls;
 
-        return array_intersect_key($this->products, array_flip($productIds));
+        return array_intersect_key($this->products, array_flip($cart->getProductIds()));
     }
 }

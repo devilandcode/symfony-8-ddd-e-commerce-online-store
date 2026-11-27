@@ -15,6 +15,7 @@ final readonly class CartProductDTO
         public int $priceMinorUnits,
         public ?int $oldPriceMinorUnits,
         public string $currencyCode,
+        public int $availableUnits,
     ) {
     }
 }
